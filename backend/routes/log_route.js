@@ -1,0 +1,29 @@
+const express = require('express');
+const router = express.Router();
+const logs = require('../controllers/log_controller.js');
+const authorize = require('../auth/authorize.js');
+
+
+// Get maximum timestamp of logs in a logbook
+router.get('/lastactive', logs.findLastActive);
+
+// Get logs
+router.get('/', logs.findLogs);
+
+// Create a log
+router.post('/', authorize.loggedIn, logs.createLogFormData);
+
+// Get single log
+router.get('/:logId', logs.findLog);
+
+// Update a log
+router.put('/:logId', authorize.loggedIn, authorize.canEditLog, logs.updateLogFormData);
+
+// Delete a log
+router.delete('/:logId', authorize.loggedIn, authorize.canEditLog, logs.deleteLog);
+
+// Get single attachment
+router.get('/attachments/:logId/:attachmentId', logs.findAttachment);
+
+
+module.exports = router;

@@ -1,0 +1,18 @@
+.p-menubar {
+    // background-color: skyblue !important;
+    // height: 85px;
+    position: sticky !important;
+    z-index: 999;
+    // @include linear-gradient-left(skyblue,lightblue);
+    // @include linear-gradient-left(deepskyblue,lightskyblue);
+    // @include linear-gradient-left(cyan,lightcyan);
+    // @include linear-gradient-left(#07BDF4,#c3e8fb);
+    @include linear-gradient-left(#07BDF4,lightblue);
+}
+
+.p-menuitem-text, .p-menuitem-icon, .p-submenu-icon {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+

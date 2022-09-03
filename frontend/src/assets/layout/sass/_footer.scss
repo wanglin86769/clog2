@@ -1,0 +1,8 @@
+.layout-footer {
+    display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
+    height: $footerHeight;
+    background-color: white;
+    color: lightseagreen;
+}

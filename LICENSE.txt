@@ -1,0 +1,15 @@
+/*
+ * This software is Copyright by Institute of High Energy Physics
+ *  (IHEP) (c) Copyright 2022.
+ *  
+ *  You may use this software under the terms of the GNU public license
+ *  (GPL). The terms of this license are described at:
+ *    http://www.gnu.org/licenses/gpl.txt
+ *  
+ *  Contact Information:
+ *       China Spallation Neutron Source (CSNS)
+ *       Institute of High Energy Physics (IHEP)
+ *       http://english.ihep.cas.cn/csns/
+ *       Author: Lin Wang
+ *       Email: wanglin@ihep.ac.cn
+ */
