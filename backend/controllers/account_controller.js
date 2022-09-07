@@ -15,7 +15,7 @@ exports.registerAccount = async (req, res, next) => {
     let account;
     try {
         let a = await Account.findOne({email: req.body.email, active: true});
-        if(a)  return res.status(406).json({message: '此邮箱已注册，不能重复注册！'});
+        if(a)  return res.status(406).json({message: 'This email has been registered and cannot be registered again.'});
 
         account = await Account.create(req.body);
         res.json(account);
@@ -24,8 +24,8 @@ exports.registerAccount = async (req, res, next) => {
         return res.status(500).json({message: error.message});
     }
 
-    let subject = "Clog新用户注册确认";
-    let text = "请点击如下链接完成Clog用户注册\n" + frontendConfig.url;
+    let subject = "Clog new user registration confirmation";
+    let text = "Please click the following link to complete Clog user registration\n" + frontendConfig.url;
     text += text.endsWith("/") ? "" : "/"
     text += "verifyaccount" + "/" + account.random;
 
@@ -42,9 +42,9 @@ exports.verifyAccount = async (req, res, next) => {
     let account;
     try {
         let a = await Account.findOne({ random: random, active: false });
-        if(!a)  return res.status(406).json({message: '未找到待确认的注册信息！'});
+        if(!a)  return res.status(406).json({message: 'No registration information to be confirmed found.'});
 
-        if(a.active === true)  return res.status(406).json({message: '此注册信息已经确认，无需重复确认！'});
+        if(a.active === true)  return res.status(406).json({message: 'This registration information has been confirmed, there is no need to repeat the confirmation.'});
 
         account = await Account.findOneAndUpdate({ random: random, active: false }, {$set: req.body}, {new: true, useFindAndModify: false});
         res.json(account);
@@ -53,9 +53,9 @@ exports.verifyAccount = async (req, res, next) => {
         return res.status(500).json({message: error.message});
     }
 
-    let subject = "Clog新用户注册完成";
-    let text = `您的Clog用户注册已经完成\n登录邮箱：${account.email}\n姓名：${account.name}`;
-    text += "\n登录地址如下：\n" + frontendConfig.url;
+    let subject = "Clog new user registration completed";
+    let text = `Your Clog user registration is complete.\nLogin Email: ${account.email}\nName: ${account.name}`;
+    text += "\nThe login address is as follows: \n" + frontendConfig.url;
 
     notifier.sendMail(subject, text, account.email);
 }
@@ -70,9 +70,9 @@ exports.updatePassword = async (req, res, next) => {
     let account;
     try {
         let a = await Account.findOne({email: email, active: true});
-        if(!a)  return res.status(406).json({message: '未找到相应账号，请先注册！'});
+        if(!a)  return res.status(406).json({message: 'No corresponding account found, please register first.'});
 
-        if(a.password !== req.body.currentPassword)  return res.status(406).json({message: '当前密码输入错误，请重新输入！'});
+        if(a.password !== req.body.currentPassword)  return res.status(406).json({message: 'The current password is incorrect. Please re-enter it.'});
 
         account = await Account.findOneAndUpdate({email: email, active: true}, {$set: req.body}, {new: true, useFindAndModify: false})
         res.json(account);
@@ -81,9 +81,9 @@ exports.updatePassword = async (req, res, next) => {
         return res.status(500).json({message: error.message});
     }
 
-    let subject = "Clog用户信息修改完成";
-    let text = "您的Clog用户信息已经修改完成。";
-    text += "\n登录地址如下：\n" + frontendConfig.url;
+    let subject = "The Clog user password is changed successfully";
+    let text = "Your Clog user password has been changed.";
+    text += "\nThe login address is as follows: \n" + frontendConfig.url;
 
     notifier.sendMail(subject, text, account.email);
 };
@@ -96,7 +96,7 @@ exports.forgetPassword = async (req, res, next) => {
     let account;
     try {
         let a = await Account.findOne({email: email, active: true});
-        if(!a)  return res.status(406).json({message: '未找到相应账号，请先注册！'});
+        if(!a)  return res.status(406).json({message: 'No corresponding account found, please register first.'});
 
         account = await Account.findOneAndUpdate({email: email, active: true}, {$set: req.body}, {new: true, useFindAndModify: false})
         res.json(account);
@@ -105,8 +105,8 @@ exports.forgetPassword = async (req, res, next) => {
         return res.status(500).json({message: error.message});
     }
 
-    let subject = "Clog找回密码";
-    let text = "请点击如下链接重置Clog用户密码\n" + frontendConfig.url;
+    let subject = "Clog Retrieve Password";
+    let text = "Please click the following link to reset the Clog user password\n" + frontendConfig.url;
     text += text.endsWith("/") ? "" : "/"
     text += "resetpassword" + "/" + account.random;
 
@@ -123,7 +123,7 @@ exports.resetPassword = async (req, res, next) => {
     let account;
     try {
         let a = await Account.findOne({random: random, active: true});
-        if(!a)  return res.status(406).json({message: '未找到相应账号，请先注册！'});
+        if(!a)  return res.status(406).json({message: 'No corresponding account found, please register first.'});
 
         account = await Account.findOneAndUpdate({random: random}, {$set: req.body}, {new: true, useFindAndModify: false})
         res.json(account);
@@ -132,9 +132,9 @@ exports.resetPassword = async (req, res, next) => {
         return res.status(500).json({message: error.message});
     }
 
-    let subject = "Clog用户密码重置";
-    let text = "您的Clog用户密码已经重置。";
-    text += "\n登录地址如下：\n" + frontendConfig.url;
+    let subject = "Clog user password reset";
+    let text = "Your Clog user password has been reset.";
+    text += "\nThe login address is as follows:\n" + frontendConfig.url;
 
     notifier.sendMail(subject, text, account.email);
 };

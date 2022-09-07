@@ -12,7 +12,7 @@ async function loggedIn(req, res, next) {
     // Check authentication header for user credential or token
     let authHeader = req.headers['authorization'];
     if(!authHeader) {
-      return res.status(401).json({ message: '未检测到 Authentication Header' });
+      return res.status(401).json({ message: 'Authentication header is not detected.' });
     }
 
     let success;
@@ -33,17 +33,17 @@ async function loggedIn(req, res, next) {
                 success = await authenticate.loginSMTP(username, password);
                 break;
             default:
-                return res.status(401).json({ message: 'Unknown login method' });
+                return res.status(401).json({ message: 'Unknown login method.' });
         }
         
         if(success) {            
             let email = username.includes('@') ? username : username.concat(loginConfig.defaultEmailSuffix);
             user = await User.findOne({email: email});
             if(!user) {
-                return res.status(401).json({ message: 'User information not found' });
+                return res.status(401).json({ message: 'User information not found.' });
             }
         } else {
-            return res.status(401).json({ message: 'Basic authentication failed, username or password is incorrect' });
+            return res.status(401).json({ message: 'Basic authentication failed, username or password is incorrect.' });
         }
     } else if(authHeader.includes('Bearer')) {  // Bearer token
         let token = authHeader.replace('Bearer ', '');
@@ -53,10 +53,10 @@ async function loggedIn(req, res, next) {
             decoded = jwt.verify(token, jwtConfig.secret);
             user = decoded;
         } catch(error) {
-            return res.status(401).json({ message: 'JWT Token解析错误' });
+            return res.status(401).json({ message: 'JWT token parsing error.' });
         }
     } else {
-        return res.status(401).json({ message: 'Unknown Authentication Header' });
+        return res.status(401).json({ message: 'Unknown authentication header.' });
     }
 
     req.headers['user'] = user;
@@ -67,22 +67,22 @@ async function loggedIn(req, res, next) {
 async function canEditLog(req, res, next) {
     let user = req.headers['user'];
     if(!user) {
-        return res.status(401).json({ message: 'No user information was found' });
+        return res.status(401).json({ message: 'No user information was found.' });
     }
 
     let logId = req.params.logId;
     if(!logId) {
-        return res.status(401).json({ message: 'Cannot extract log id' });
+        return res.status(401).json({ message: 'Cannot extract log id.' });
     }
 
     let log = await Log.findById(logId);
     if(!log) {
-        return res.status(401).json({ message: 'No log with specified id was found' });
+        return res.status(401).json({ message: 'No log with specified id was found.' });
     }
 
     // Only log author or admin can edit the log
     if(log.createdBy !== user.email && user.admin !== true) {
-        return res.status(401).json({ message: 'Insufficient permission, only author or admin can edit / delete the log' });
+        return res.status(401).json({ message: 'Insufficient permission, only author or admin can edit / delete the log.' });
     }
 
     // authentication and authorization successful
@@ -93,10 +93,10 @@ async function canEditLog(req, res, next) {
 function admin(req, res, next) {
     let user = req.headers['user'];
     if(!user) {
-        return res.status(401).json({ message: '未提取到用户信息' });
+        return res.status(401).json({ message: 'No user information is extracted.' });
     }
     if(user.admin !== true) {
-        return res.status(401).json({ message: '用户权限不足' }); 
+        return res.status(401).json({ message: 'Insufficient user permissions.' }); 
     }
 
     next();

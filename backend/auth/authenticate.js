@@ -20,14 +20,14 @@ const agent = new https.Agent({
 
 async function updateLoginTime(username) {
     if(!username) {
-        console.log("updateLoginTime(): No username specified");
+        console.log("updateLoginTime(): No username specified.");
         return;
     }
     let email = username.includes('@') ? username : username.concat(loginConfig.defaultEmailSuffix);
 
     let currentUser = await User.findOne({email: email});
     if(!currentUser) {
-        console.log("updateLoginTime(): currentUser not found");
+        console.log("updateLoginTime(): currentUser not found.");
         return;
     }
 
@@ -45,14 +45,14 @@ async function updateLoginTime(username) {
 // Authenticate via local account database
 router.post('/local', async function(req, res, next) {
     if(loginConfig.loginMethod !== LOGIN_METHOD_LOCAL) {
-        return res.status(401).send({ auth: false, token: null, message: "服务端当前配置不支持 local 数据库认证" });
+        return res.status(401).send({ auth: false, token: null, message: "Current configuration of server side does not support authentication via local database." });
     }
 
     let username = req.body.username;
     let password = md5(req.body.password);
 
     if (!username || !password) {
-        return res.status(401).send({ auth: false, token: null, message: "用户名和密码不能为空" });
+        return res.status(401).send({ auth: false, token: null, message: "Username and password cannot be empty." });
     }
 
     let email = username.includes('@') ? username : username.concat(loginConfig.defaultEmailSuffix);
@@ -60,7 +60,7 @@ router.post('/local', async function(req, res, next) {
     try {
         let account = await Account.findOne({email: email, password: password, active: true});
         if (!account) {
-            return res.status(401).send({ auth: false, token: null, message: "用户名或密码错误" });
+            return res.status(401).send({ auth: false, token: null, message: "Username or password is incorrect." });
         }
 
         let jwtUser = {};
@@ -101,14 +101,14 @@ router.post('/local', async function(req, res, next) {
 // Authenticate via LDAP
 router.post('/ldap', async function(req, res, next) {
     if(loginConfig.loginMethod !== LOGIN_METHOD_LDAP) {
-        return res.status(401).send({ auth: false, token: null, message: "服务端当前配置不支持 LDAP 认证" });
+        return res.status(401).send({ auth: false, token: null, message: "Current configuration of server side does not support authentication via LDAP." });
     }
 
     let username = req.body.username;
     let password = req.body.password
 
     if (!username || !password) {
-        return res.status(401).send({ auth: false, token: null, message: "用户名和密码不能为空" });
+        return res.status(401).send({ auth: false, token: null, message: "Username and password cannot be empty." });
     }
 
     // auth with regular user
@@ -130,12 +130,12 @@ router.post('/ldap', async function(req, res, next) {
     try {
         user = await authenticate(options);
         if(!user) {
-            return res.status(401).send({ auth: false, token: null, message: "No user detail returned from LDAP server" });
+            return res.status(401).send({ auth: false, token: null, message: "No user detail returned from LDAP server." });
         }
         // console.log(user);
     } catch(error) {
         console.log(error);
-        return res.status(401).json({message: "用户名或密码错误"});
+        return res.status(401).json({message: "Username or password is incorrect."});
     }
 
     try {
@@ -176,18 +176,18 @@ router.post('/ldap', async function(req, res, next) {
 // Authenticate via OAuth2
 router.post('/oauth', async function(req, res, next) {
     if(loginConfig.loginMethod !== LOGIN_METHOD_OAUTH) {
-        return res.status(401).send({ auth: false, token: null, message: "服务端当前配置不支持 OAuth 认证" });
+        return res.status(401).send({ auth: false, token: null, message: "Current configuration of server side does not support authentication via OAuth2." });
     }
 
     url = req.body.url;
-    if(!url) return res.status(400).json({message: '未接收到url信息'});
+    if(!url) return res.status(400).json({message: 'The URL information is not received.'});
     // console.log(url);
 
     try {
         let response = await axios.post(url, null, { httpsAgent: agent });
         // let response = await axios.post(url, null);
         if(!response || !response.data || !response.data.userInfo) {
-            return res.status(500).json({message: '未从统一认证服务器获取到用户登录信息'});
+            return res.status(500).json({message: 'The user login information is not obtained from the unified authentication server.'});
         }
 
         let userInfo = JSON.parse(response.data.userInfo);

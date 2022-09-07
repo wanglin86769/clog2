@@ -73,7 +73,7 @@ function generateSort(sort, sortField, sortOrder) {
 exports.findLastActive = async (req, res, next) => {
     let logbook = req.query.logbook;
     if(!logbook) {
-        return res.status(401).json({ message: '未指定Logbook' });
+        return res.status(401).json({ message: 'Logbook is not specified.' });
     }
 
     try {
@@ -113,11 +113,11 @@ exports.findLastActive = async (req, res, next) => {
 
 exports.findLogs = async (req, res, next) => {
     if(!req.query.logbook) {
-        return res.status(401).json({ message: '未指定Logbook' });
+        return res.status(401).json({ message: 'Logbook is not specified.' });
     }
 
     if(!req.query.lazyEvent) {
-        return res.status(401).json({ message: '未指定分页加载参数' });
+        return res.status(401).json({ message: 'No lazy loading parameter is specified.' });
     }
 
     let lazyEvent = JSON.parse(req.query.lazyEvent);
@@ -132,7 +132,7 @@ exports.findLogs = async (req, res, next) => {
     let filters = lazyEvent.filters;
 
     if(isNaN(first) || isNaN(rows)) {
-        return res.status(401).json({ message: '未指定起始数据和数量' });
+        return res.status(401).json({ message: 'Starting data and quantity are not specified.' });
     }
 
     let query = { active: true, logbook: mongoose.Types.ObjectId(logbook) };
@@ -368,7 +368,7 @@ exports.findLog = async (req, res, next) => {
 
 
 exports.createLog = async (req, res, next) => {
-    if(!req.headers['user']) return res.status(500).json({message: '未提取到用户信息'});
+    if(!req.headers['user']) return res.status(500).json({message: 'No user information is extracted.'});
     
     let timeNow = new Date();
     req.body.createdAt = timeNow;
@@ -387,7 +387,7 @@ exports.createLog = async (req, res, next) => {
 
 
 exports.updateLog = async (req, res, next) => {
-    if(!req.headers['user']) return res.status(500).json({message: '未提取到用户信息'});
+    if(!req.headers['user']) return res.status(500).json({message: 'No user information is extracted.'});
 
     let timeNow = new Date();
     req.body.updatedAt = timeNow;
@@ -396,7 +396,7 @@ exports.updateLog = async (req, res, next) => {
 
     try {
         let origin = await Log.findById(req.params.logId);
-        if(!origin) return res.status(400).json({ message: `未找到id是 ${id} 的年度任务` });
+        if(!origin) return res.status(400).json({ message: 'The specified log was not found.' });
 
         historyItem = {};
         historyItem.createdAt = origin.createdAt;
@@ -422,7 +422,7 @@ exports.updateLog = async (req, res, next) => {
 
 exports.createLogFormData = [upload.array('attachments', 20), async (req, res, next) => {
     let user = req.headers['user'];
-    if(!user) return res.status(500).json({message: '未提取到用户信息'});
+    if(!user) return res.status(500).json({message: 'No user information is extracted.'});
 
     // console.log(req.body);
     
@@ -459,7 +459,7 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
 
 exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, next) => {
     let user = req.headers['user'];
-    if(!user) return res.status(500).json({message: '未提取到用户信息'});
+    if(!user) return res.status(500).json({message: 'No user information is extracted.'});
 
     let log = JSON.parse(req.body.log);
     // console.log(log);
@@ -470,7 +470,7 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
 
     try {
         let currentLog = await Log.findById(req.params.logId);
-        if(!currentLog) return res.status(400).json({message: "CurrentLog not found"});
+        if(!currentLog) return res.status(400).json({message: "CurrentLog not found."});
 
         let increaseAttachments = [];
         if(Array.isArray(req.files) && req.files.length) {
@@ -532,7 +532,7 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
 
 
 exports.deleteLog = async (req, res, next) => {
-    if(!req.headers['user']) return res.status(500).json({message: '未提取到用户信息'});
+    if(!req.headers['user']) return res.status(500).json({message: 'No user information is extracted.'});
 
     let timeNow = new Date();
     req.body.updatedAt = timeNow;
@@ -556,16 +556,16 @@ exports.findAttachment = async (req, res, next) => {
     // console.log(logId);
     // console.log(attachmentId);
 
-    if(!logId) return res.status(400).json({message: "No logId is specified"});
-    if(!attachmentId) return res.status(400).json({message: "No attachmentId is specified"});
+    if(!logId) return res.status(400).json({message: "No logId is specified."});
+    if(!attachmentId) return res.status(400).json({message: "No attachmentId is specified."});
 
     try {
         let log = await Log.findOne({ _id: logId });
-        if(!log) return res.status(204).json({message: "Log not found"});
+        if(!log) return res.status(204).json({message: "Log not found."});
 
         // console.log(log);
 
-        if(!Array.isArray(log.attachments) || log.attachments.length === 0) return res.status(204).json({message: "No attachments found for this log"});
+        if(!Array.isArray(log.attachments) || log.attachments.length === 0) return res.status(204).json({message: "No attachments found for this log."});
         let attachment = null;
         for(let item of log.attachments) {
             if(item._id.equals(attachmentId)) {
@@ -573,7 +573,7 @@ exports.findAttachment = async (req, res, next) => {
                 break;
             }
         }
-        if(!attachment) return res.status(204).json({message: "Attachment for specified id is not found"});
+        if(!attachment) return res.status(204).json({message: "Attachment for specified id is not found."});
 
         // console.log(attachment);
 
