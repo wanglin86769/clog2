@@ -175,7 +175,8 @@ exports.findAll = async (req, res, next) => {
 
 // Add an account
 exports.addAccount = async (req, res, next) => {
-    req.body.active = false;
+    req.body.active = true;
+    req.body.password = md5(req.body.password);
     req.body.createdAt = new Date();
     try {	
         let account = await Account.create(req.body);
@@ -197,6 +198,7 @@ exports.findAccount = async (req, res, next) => {
 
 // Update an account
 exports.updateAccount = async (req, res, next) => {
+    req.body.password = md5(req.body.password);
     req.body.updatedAt = new Date();
     try {	
         let account = await Account.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true, useFindAndModify: false})

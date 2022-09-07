@@ -3,18 +3,18 @@
         <br>
         <br>
         <div class="register">
-            <h1>新用户注册</h1>
-            <p><span style="color: red">* </span><input type="text" v-model="account.email" placeholder="邮箱"></p>
-            <p><span style="color: red">* </span><input type="text" v-model="account.name" placeholder="姓名"></p>
-            <p><span style="color: red">* </span><input type="password" v-model="account.password" placeholder="密码"></p>
-            <p><span style="color: red">* </span><input type="password" v-model="password2" placeholder="密码确认"></p>
-            <p class="submit"><input type="button" value="注册" @click="register"></p>
+            <h1>{{ $t('registeraccount_new_user_register') }}</h1>
+            <p><span style="color: red">* </span><input type="text" v-model="account.email" :placeholder="$t('global_email')"></p>
+            <p><span style="color: red">* </span><input type="text" v-model="account.name" :placeholder="$t('global_name')"></p>
+            <p><span style="color: red">* </span><input type="password" v-model="account.password" :placeholder="$t('global_password')"></p>
+            <p><span style="color: red">* </span><input type="password" v-model="password2" :placeholder="$t('global_confirm_password')"></p>
+            <p class="submit"><input type="button" :value="$t('registeraccount_register_button')" @click="register"></p>
         </div>
 
         <div class="register-help">
-            <a href="/login">登录页</a>
+            <a href="/login">{{ $t('global_login_page') }}</a>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="/">首页</a>
+            <a href="/">{{ $t('global_home_page') }}</a>
         </div>
     </div>
 </template>
@@ -36,36 +36,35 @@ export default {
     methods: {
         register() {
             if(!this.account.email) {
-                this.$toast.add({ severity: 'error', summary: '操作失败', detail: '邮箱不能为空！' });
+                this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: this.$t('global_email_cannot_empty') });
                 return;
             }
             if(!this.account.name) {
-                this.$toast.add({ severity: 'error', summary: '操作失败', detail: '姓名不能为空！' });
+                this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: this.$t('global_name_cannot_empty') });
                 return;
             }
             if(!this.account.password) {
-                this.$toast.add({ severity: 'error', summary: '操作失败', detail: '密码不能为空！' });
+                this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: this.$t('global_password_cannot_empty') });
                 return;
             }
             if(!this.password2) {
-                this.$toast.add({ severity: 'error', summary: '操作失败', detail: '密码确认不能为空！' });
+                this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: this.$t('global_confirm_password_cannot_empty') });
                 return;
             }
-
             if(this.account.password !== this.password2) {
-                this.$toast.add({ severity: 'error', summary: '操作失败', detail: '两次输入的密码不一致！' });
+                this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: this.$t('global_two_passwords_different') });
                 return;
             }
 
             this.accountService.registerAccount(this.account)
             .then(() => {
-                this.$toast.add({severity:'success', summary: '操作完成', detail:'注册信息已提交，请登录邮箱验证。'});
+                this.$toast.add({severity:'success', summary: this.$t('global_success'), detail: this.$t('registeraccount_login_email_verify') });
                 this.reset();
             }).catch(error => {
               if(error.response) {
-                this.$toast.add({ severity: 'error', summary: '操作失败', detail: error.response.data.message });
+                this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.response.data.message });
               } else {
-                this.$toast.add({ severity: 'error', summary: '操作失败', detail: error.message });
+                this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.message });
               }
             });
         },

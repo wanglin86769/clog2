@@ -1,0 +1,199 @@
+{
+    "global_clog_software": "Compact Electronic Logbook System",
+    "global_ok": "OK",
+    "global_cancel": "Cancel",
+    "global_close": "Close",
+    "global_yes": "Yes",
+    "global_no": "No",
+    "global_message": "Message",
+    "global_email": "Email",
+    "global_name": "Name",
+    "global_admin": "Admin",
+    "global_home_page": "Home",
+    "global_login_page": "Login",
+    "global_register_page": "Register",
+    "global_retrieve_password": "Retrieve Password",
+    "global_reset": "Reset",
+    "global_password": "Password",
+    "global_confirm_password": "Confirm Password",
+    "global_success": "Success",
+    "global_fail": "Fail",
+    "global_current_password_cannot_empty": "Current password cannot be empty！",
+    "global_password_cannot_empty": "Password cannot be empty！",
+    "global_confirm_password_cannot_empty": "Confirm password cannot be empty！",
+    "global_two_passwords_different": "Two passwords are different！",
+    "global_email_cannot_empty": "Email cannot be empty！",
+    "global_name_cannot_empty": "Name cannot be empty！",
+    "global_create": "Create",
+    "global_modify": "Modify",
+    "global_add": "Add",
+    "global_index": "Index",
+    "global_operate": "Operate",
+    "global_edit": "Edit",
+    "global_delete": "Delete",
+    "global_no_data": "No records found.",
+    "global_naming": "Name",
+    "global_number": "Number",
+    "global_go_back": "Back",
+    "global_new": "New",
+    "global_log_author": "Author",
+    "global_log_author_email": "Author Email",
+    "global_log_create_date": "Created At",
+    "global_log_category": "Category",
+    "global_log_tag": "Tag",
+    "global_log_title": "Title",
+    "global_log_description": "Description",
+    "global_log_attachment": "Attachment",
+    "global_log_logbook": "Logbook",
+    "global_log_description_placeholder": "Please enter the log content",
+    "global_log_discard_edit_prompt": "Are you sure you want to abandon editing the current log?",
+    "global_log_last_update": "Last Update",
+    "global_keyword": "Keyword",
+    "global_select": "Select",
+    "global_grouping": "Grouping",
+    "global_history": "History",
+    "global_modification_history": "Modification History",
+
+
+    "app_login": "Login",
+    "app_logout_confirm_message": "Are you sure you want to log out？",
+    "app_account_information": "Account Info",
+    "app_logout": "Logout",
+    "app_browser_languages": "Browser Languages",
+    "app_session_expire_message": "The session timed out and you are about to log out!",
+
+
+    "verifyaccount_email_verify_sucdess": "Email verification succeeded",
+    "verifyaccount_email_verify_fail": "Email verification failed",
+    "verifyaccount_email_verifying": "Email Verifying ...",
+    "verifyaccount_login_email": "Login Email",
+    "verifyaccount_error_message": "Error Message",
+
+
+    "registeraccount_new_user_register": "New User Register",
+    "registeraccount_register_button": "Register",
+    "registeraccount_login_email_verify": "Registration information has been submitted, please login email and verify.",
+
+
+    "forgetpassword_login_email_reset": "Please log in to the email address to reset the password",
+
+
+    "resetpassword_password_has_reset": "Password has been reset.",
+
+
+    "updatepassword_current_password": "Current Password",
+    "updatepassword_change_password": "Change Password",
+    "updatepassword_password_has_updated": "User password has been updated",
+
+
+    "accountmanagement_title": "Account Management",
+    "accountmanagement_search": "Keyword",
+    "accountmanagement_create_time": "Created At",
+    "accountmanagement_confirm_time": "Confirmed At",
+    "accountmanagement_modify_time": "Modified At",
+    "accountmanagement_create_account": "Create Account",
+    "accountmanagement_edit_account": "Edit Account",
+    "accountmanagement_delete_account_prompt": "Are you sure you want to delete the following account?",
+    "accountmanagement_account_load_error": "Fail to load account information",
+    "accountmanagement_account_create_success": "Account created successfully",
+    "accountmanagement_account_modify_success": "Account modified successfully",
+    "accountmanagement_account_delete_success": "Account deleted successfully",
+
+
+    "groupmanagement_title": "Grouping Management",
+    "groupmanagement_create_group": "Create Group",
+    "groupmanagement_edit_group": "Edit Group",
+    "groupmanagement_delete_group_prompt": "Are you sure you want to delete the following group?",
+    "groupmanagement_group_load_error": "Fail to load grouping information",
+    "groupmanagement_group_create_success": "Group created successfully",
+    "groupmanagement_group_modify_success": "Group modified successfully",
+    "groupmanagement_group_delete_success": "Group deleted successfully",
+
+
+    "home_logbook": "Logbook",
+    "home_log_count": "Log Number",
+    "home_last_submit": "Last Submission",
+    "home_default_group": "Default Group",
+    "home_logbook_load_error": "Fail to load logbook information",
+
+
+    "logbook_search": "Keyword",
+    "logbook_log_load_error": "Fail to load logs",
+
+
+    "logbookmanagement_title": "Logbook Management",
+    "logbookmanagement_create_logbook": "Create Logbook",
+    "logbookmanagement_edit_logbook": "Edit Logbook",
+    "logbookmanagement_delete_logbook_prompt": "Are you sure you want to delete the following logbook?",
+    "logbookmanagement_logbook_load_error": "Fail to load logbook information",
+    "logbookmanagement_group_load_error": "Fail to load group information",
+    "logbookmanagement_logbook_create_success": "Group created successfully",
+    "logbookmanagement_logbook_modify_success": "Group modified successfully",
+    "logbookmanagement_logbook_delete_success": "Group deleted successfully",
+
+
+    "tagmanagement_title": "Tag Management",
+    "tagmanagement_create_tag": "New Tag",
+    "tagmanagement_edit_tag": "Edit Tag",
+    "tagmanagement_delete_tag_prompt": "Are you sure you want to delete the following tag?",
+    "tagmanagement_tag_load_error": "Fail to load tag information",
+    "tagmanagement_tag_create_success": "Tag created successfully",
+    "tagmanagement_tag_modify_success": "Tag modified successfully",
+    "tagmanagement_tag_delete_success": "Tag deleted successfully",
+
+
+    "usermanagement_title": "User Management",
+    "usermanagement_search": "Keyword",
+    "usermanagement_create_user": "Create User",
+    "usermanagement_edit_user": "Edit User",
+    "usermanagement_delete_user_prompt": "Are you sure you want to delete the following user??",
+    "usermanagement_user_load_error": "Fail to load user information",
+    "usermanagement_user_create_success": "User created successfully",
+    "usermanagement_user_modify_success": "User modified successfully",
+    "usermanagement_user_delete_success": "User deleted successfully",
+
+
+    "logcreate_title": "New Log",
+
+
+    "logdetail_title": "Log Detail",
+    "logdetail_delete_log_prompt": "Are you sure you want to delete the current log?",
+    "logdetail_log_load_error": "Fail to load the current log",
+
+
+    "logedit_title": "Edit Log",
+    "logedit_existing_attachments": "Existing Attachments",
+    "logedit_new_attachments": "New Attachments",
+    "logedit_log_load_error": "Fail to load the current log",
+    "logedit_tag_load_error": "Fail to load tag information",
+
+
+    "login_title": "Clog User Login",
+    "login_username": "Username",
+    "login_password": "Password",
+    "login_button": "Login",
+    "login_register_account": "Register Account",
+    "login_forget_password": "Forget Password",
+    "login_change_password": "Change Password",
+    "login_fail": "Login Failed",
+    "login_username_cannot_empty": "Username cannot be empty！",
+    "login_password_cannot_empty": "Password cannot be empty！",
+
+
+    "oauth_login_fail": "Login Failed",
+    "oauth_return_home": "Return Home",
+    "oauth_logging_in": "Logging in ...",
+
+
+    "menu_home": "Home",
+    "menu_manage": "Manage",
+    "menu_config": "Config",
+    "menu_about": "About",
+    "menu_logbook_grouping": "Grouping",
+    "menu_logbook": "Logbook",
+    "menu_tag": "Tag",
+    "menu_user_management": "Permission",
+    "menu_account_management": "Account",
+    "menu_browser_languages": "Browser Langs",
+    "menu_multi_language": "Select Lang"
+}

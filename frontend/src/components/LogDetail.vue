@@ -1,12 +1,12 @@
 <template>
 	<div style="margin-left: 1%; margin-right: 1%; margin-top: 20px;">
-		<Button label="返回" icon="fa fa-arrow-left" class="p-button-help" style="margin-right: 15px" @click="onReturnClick" />
-		<Button label="编辑" icon="fa fa-pencil" class="p-button-warning" style="margin-right: 15px" @click="onEditClick" :disabled="!canEdit" />
-		<Button label="删除" icon="fa fa-trash" class="p-button-danger" style="margin-right: 15px" @click="onDeleteClick" :disabled="!canEdit" />
-		<Button label="历史" icon="fa fa-info" class="p-button-info" @click="onHistoryClick" :disabled="!log.histories || !log.histories.length" />
+		<Button :label="$t('global_go_back')" icon="fa fa-arrow-left" class="p-button-help" style="margin-right: 15px" @click="onReturnClick" />
+		<Button :label="$t('global_edit')" icon="fa fa-pencil" class="p-button-warning" style="margin-right: 15px" @click="onEditClick" :disabled="!canEdit" />
+		<Button :label="$t('global_delete')" icon="fa fa-trash" class="p-button-danger" style="margin-right: 15px" @click="onDeleteClick" :disabled="!canEdit" />
+		<Button :label="$t('global_history')" icon="fa fa-info" class="p-button-info" @click="onHistoryClick" :disabled="!log.histories || !log.histories.length" />
 		<Card class="p-shadow-2" style="margin-bottom: 2em;">
             <template #title>
-                日志查询
+                {{ $t('logdetail_title') }}
             </template>
             <template #subtitle>
 				<span v-if="log && log.updatedBy && log.updatedAt" v-tooltip="{ value: creator, disabled: !showCreator }">
@@ -30,16 +30,8 @@
                         <td width="20%" align="left"><span style="margin-left: 0.8em; font-weight: bold;">Logbook</span></td>
                         <td width="80%" align="left"><span v-if="log && log.logbook" style="margin-left: 0.8em;">{{ log.logbook.name }}</span></td>
                     </tr>
-                    <!-- <tr height="40em">
-                        <td align="left"><span style="margin-left: 0.8em; font-weight: bold;">作者</span></td>
-                        <td align="left"><span v-if="log && log.createdBy" style="margin-left: 0.8em;">{{ log.createdBy.name }}</span></td>
-                    </tr>
 					<tr height="40em">
-                        <td align="left"><span style="margin-left: 0.8em; font-weight: bold;">作者邮箱</span></td>
-                        <td align="left"><span v-if="log && log.createdBy" style="margin-left: 0.8em;">{{ log.createdBy.email }}</span></td>
-                    </tr> -->
-					<tr height="40em">
-                        <td align="left"><span style="margin-left: 0.8em; font-weight: bold;">标签</span></td>
+                        <td align="left"><span style="margin-left: 0.8em; font-weight: bold;">{{ $t('global_log_tag') }}</span></td>
                         <td align="left">
 							<span style="margin-left: 0.8em;">
 								<span v-for="(item, index) in log.tags" :key="index">
@@ -52,13 +44,13 @@
 						</td>
                     </tr>
 					<tr height="40em">
-                        <td align="left"><span style="margin-left: 0.8em; font-weight: bold;">类别</span></td>
+                        <td align="left"><span style="margin-left: 0.8em; font-weight: bold;">{{ $t('global_log_category') }}</span></td>
                         <td align="left">
 							<span style="margin-left: 0.8em;">{{ log.category }}</span>
 						</td>
                     </tr>
 					<tr height="40em">
-                        <td align="left"><span style="margin-left: 0.8em; font-weight: bold;">标题</span></td>
+                        <td align="left"><span style="margin-left: 0.8em; font-weight: bold;">{{ $t('global_log_title') }}</span></td>
                         <td align="left">
 							<span style="margin-left: 0.8em;">{{ log.title }}</span>
 						</td>
@@ -71,7 +63,7 @@
 						</td>
                     </tr>
                 </table>
-				<Panel v-if="log && log.attachments && log.attachments.length" header="附件" :toggleable="true">
+				<Panel v-if="log && log.attachments && log.attachments.length" :header="$t('global_log_attachment')" :toggleable="true">
 					<div class="p-grid" style="margin-top: 2em">
 						<div class="p-col-12 p-md-6 p-lg-4 p-xl-3" v-for="(attachment, index) in log.attachments" :key="index" style="padding: 1em;">
 							<div v-if="['image/jpeg', 'image/png', 'image/bmp', 'image/gif'].includes(attachment.contentType)">
@@ -94,30 +86,30 @@
             </template>
         </Card>
 
-		<Dialog v-model:visible="deleteLogDialog" header="消息确认" :modal="true" style="min-width: 40%">
+		<Dialog v-model:visible="deleteLogDialog" :header="$t('global_message')" :modal="true" style="min-width: 40%">
 			<div>
 				<i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2em; color: orange; vertical-align: middle;" />
-				<span style="color: orange; font-size: 1.2em;">确定要删除当前日志吗?</span>
+				<span style="color: orange; font-size: 1.2em;">{{ $t('logdetail_delete_log_prompt') }}</span>
 			</div>
 			<template #footer>
-				<Button label="取消" icon="pi pi-times" class="p-button-text" @click="deleteLogDialog = false"/>
-				<Button label="确定" icon="pi pi-check" class="p-button-primary" @click="deleteLog" />
+				<Button :label="$t('global_cancel')" icon="pi pi-times" class="p-button-text" @click="deleteLogDialog = false"/>
+				<Button :label="$t('global_ok')" icon="pi pi-check" class="p-button-primary" @click="deleteLog" />
 			</template>
 		</Dialog>
 
 		<Dialog v-model:visible="logHistoryDialog" :modal="true" class="p-fluid" :style="{width: '80vw'}">
 			<template #header>
-				<div style="font-size: 1.2em; color: RGB(29,149,243);">修改历史</div>
+				<div style="font-size: 1.2em; color: RGB(29,149,243);">{{ $t('global_modification_history') }}</div>
 			</template>
 
 			<DataTable :value="histories" :showGridlines="true">
-				<Column header="序号">
+				<Column :header="$t('global_index')">
 					<template #body="slotProps">
 						{{slotProps.index + 1}}
 					</template>
 				</Column>
-				<Column field="category" header="类别"></Column>
-				<Column field="tags" header="标签">
+				<Column field="category" :header="$t('global_log_category')"></Column>
+				<Column field="tags" :header="$t('global_log_tag')">
 					<template #body="slotProps">
 						<span v-for="(item, index) in slotProps.data.tags" :key="index">
 							<span v-if="item">
@@ -127,16 +119,16 @@
 						</span>
 					</template>
 				</Column>
-				<Column field="title" header="标题" headerStyle="width: 15%"></Column>
-				<Column field="description" header="内容" headerStyle="width: 35%"></Column>
-				<Column field="attachments" header="附件" headerStyle="width: 15%">
+				<Column field="title" :header="$t('global_log_title')" headerStyle="width: 15%"></Column>
+				<Column field="description" :header="$t('global_log_description')" headerStyle="width: 35%"></Column>
+				<Column field="attachments" :header="$t('global_log_attachment')" headerStyle="width: 15%">
 					<template #body="slotProps">
 						<div v-for="(item, index) in slotProps.data.attachments" :key="index">
 							<span>{{ item.name }}</span>
 						</div>
 					</template>
 				</Column>
-				<Column field="updatedAt" header="最后更新">
+				<Column field="updatedAt" :header="$t('global_log_last_update')">
 					<template #body="slotProps">
 						<span>{{ showDateTime(slotProps.data.updatedAt) }}</span>
 						&nbsp;&nbsp;
@@ -146,7 +138,7 @@
 			</DataTable>					
 
 			<template #footer>
-				<Button label="关闭" icon="pi pi-times" class="p-button-text" @click="logHistoryDialog=false"/>
+				<Button :label="$t('global_close')" icon="pi pi-times" class="p-button-text" @click="logHistoryDialog=false"/>
 			</template>
 		</Dialog>
 	</div>
@@ -192,9 +184,9 @@ export default {
                 this.log = log;
             }).catch((error) => {
                 if(error.response) {
-					this.$toast.add({ severity: 'error', summary: '日志加载失败', detail: error.response.data.message });
+					this.$toast.add({ severity: 'error', summary: this.$t('logdetail_log_load_error'), detail: error.response.data.message });
 				} else {
-					this.$toast.add({ severity: 'error', summary: '日志加载失败', detail: error.message });
+					this.$toast.add({ severity: 'error', summary: this.$t('logdetail_log_load_error'), detail: error.message });
 				}
             });
         },
@@ -204,9 +196,9 @@ export default {
                 this.$router.push({name: 'logbook', params: { id: this.log.logbook._id }});
             }).catch((error) => {
                 if(error.response) {
-					this.$toast.add({ severity: 'error', summary: '日志删除失败', detail: error.response.data.message });
+					this.$toast.add({ severity: 'error', summary: this.$t("global_fail"), detail: error.response.data.message });
 				} else {
-					this.$toast.add({ severity: 'error', summary: '日志删除失败', detail: error.message });
+					this.$toast.add({ severity: 'error', summary: this.$t("global_fail"), detail: error.message });
 				}
             });
 		},
@@ -244,7 +236,7 @@ export default {
             .then((attachment) => {
                 fileDownload(attachment, fileName);
             }).catch(error => {
-                this.$toast.add({ severity: 'error', summary: '操作失败', detail: error.message });
+                this.$toast.add({ severity: 'error', summary: this.$t("global_fail"), detail: error.message });
             });
         },
 		showDate(value) {
@@ -275,7 +267,7 @@ export default {
 			return false;
 		},
 		creator() {
-			return `创建时间: ${this.log.createdBy.name}    ${this.log.createdBy.email}    ${this.showDateTime(this.log.createdAt)}\n最后更新: ${this.log.updatedBy.name}    ${this.log.updatedBy.email}    ${this.showDateTime(this.log.updatedAt)}`;
+			return `Created at: ${this.log.createdBy.name}    ${this.log.createdBy.email}    ${this.showDateTime(this.log.createdAt)}\nUpdated at: ${this.log.updatedBy.name}    ${this.log.updatedBy.email}    ${this.showDateTime(this.log.updatedAt)}`;
 		},
 		showCreator() {
 			return this.log && this.log.createdBy && this.log.createdAt && this.log.updatedBy && this.log.updatedAt;

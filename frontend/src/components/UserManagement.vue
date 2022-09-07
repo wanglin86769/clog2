@@ -3,18 +3,18 @@
 		<div class="p-col-12">
 			<div class="card">
 				<div style="text-align: center; color: RGB(29,149,243); font-size: 1.8em; font-weight: bold; margin-bottom: .5em;">
-					用户权限
+					{{ $t('usermanagement_title') }}
 				</div>
 
 				<Toolbar class="p-mb-0">
 					<template v-slot:start>
-						<Button v-if="isAdmin" label="添加" icon="pi pi-plus" class="p-button-success p-button-sm p-mr-2" @click="onAddClick" />
+						<Button v-if="isAdmin" :label="$t('global_add')" icon="pi pi-plus" class="p-button-success p-button-sm p-mr-2" @click="onAddClick" />
 					</template>
 
 					<template v-slot:end>
 						<span class="p-input-icon-left">
 							<i class="pi pi-search" style="color: RGB(29,149,243)" />
-							<InputText class="p-inputtext-sm" @input="onSearchInput" v-model="filters.search" placeholder="姓名、邮箱" />
+							<InputText class="p-inputtext-sm" @input="onSearchInput" v-model="filters.search" :placeholder="$t('usermanagement_search')" />
 							<!-- <Button icon="pi pi-search" class="p-button-primary p-button-sm" @click="search"/> -->
 						</span>
 					</template>
@@ -25,80 +25,80 @@
 							currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users" 
 							paginatorPosition="both" responsiveLayout="stack" v-model:first="currentPageFirstIndex">
 
-					<Column field="name" header="序号">
+					<Column field="name" :header="$t('global_index')">
 						<template #body="slotProps">
 							{{currentPageFirstIndex + slotProps.index + 1}}
 						</template>
 					</Column>
-					<Column field="name" header="姓名">
+					<Column field="name" :header="$t('global_name')">
 						<template #body="slotProps">
 							{{slotProps.data.name}}
 						</template>
 					</Column>
-					<Column field="email" header="邮箱" :sortable="true">
+					<Column field="email" :header="$t('global_email')" :sortable="true">
 						<template #body="slotProps">
 							{{slotProps.data.email}}
 						</template>
 					</Column>
-					<Column field="admin" header="管理员" :sortable="true">
+					<Column field="admin" :header="$t('global_admin')" :sortable="true">
 						<template #body="slotProps">
-							<span v-if="slotProps.data.admin===true">是</span>
+							<span v-if="slotProps.data.admin===true">{{ $t('global_yes') }}</span>
 						</template>
 					</Column>
 					<Column headerStyle="width: 8em">
 						<template #header>
-							<i class="pi pi-cog" style="fontSize: 1.2rem" v-tooltip.top="'操作'"></i>
+							<i class="pi pi-cog" style="fontSize: 1.2rem" v-tooltip.top="$t('global_operate')"></i>
 						</template>
 						<template #body="slotProps">
-							<i v-if="isAdmin" class="fa fa-pencil" v-tooltip.top="'编辑'" style="cursor: pointer; color: orange; margin-right: .75em" @click="onEditClick(slotProps.data)"></i>
-							<i v-if="isAdmin" class="fa fa-close" v-tooltip.top="'删除'" style="cursor: pointer; color: red; margin-right: .75em" @click="onDeleteClick(slotProps.data)"></i>
+							<i v-if="isAdmin" class="fa fa-pencil" v-tooltip.top="$t('global_edit')" style="cursor: pointer; color: orange; margin-right: .75em" @click="onEditClick(slotProps.data)"></i>
+							<i v-if="isAdmin" class="fa fa-close" v-tooltip.top="$t('global_delete')" style="cursor: pointer; color: red; margin-right: .75em" @click="onDeleteClick(slotProps.data)"></i>
 						</template>
 					</Column>
 					<template #empty>
 						<div style="color: darkorange">
-							暂无数据
+							{{ $t('global_no_data') }}
 						</div>
 					</template>
 				</DataTable>
 			</div>
 
-			<Dialog v-model:visible="userDialog" :header="crudOperation==='create'?'新建用户':crudOperation==='update'?'编辑用户':''" :modal="true" class="p-fluid" style="min-width: 40%">
+			<Dialog v-model:visible="userDialog" :header="crudOperation==='create'?$t('usermanagement_create_user'):crudOperation==='update'?$t('usermanagement_edit_user'):''" :modal="true" class="p-fluid" style="min-width: 40%">
 				<div class="p-field">
-					<span style="color: red">*</span><label> 姓名</label>
+					<span style="color: red">*</span><label> {{ $t('global_name') }}</label>
 					<InputText v-model.trim="user.name" class="p-inputtext-sm" autofocus />
 				</div>
 				<div class="p-field">
-					<span style="color: red">*</span><label> 邮箱</label>
+					<span style="color: red">*</span><label> {{ $t('global_email') }}</label>
 					<InputText v-model.trim="user.email" class="p-inputtext-sm" />
 				</div>
 				<div class="p-field-checkbox">
-					<div>管理员</div>
+					<div>{{ $t('global_admin') }}</div>
 					<InputSwitch v-model="user.admin" style="margin-left: 10px" />
 				</div>
 
 				<template #footer>
 					<div v-if="crudOperation==='create'">
-						<Button label="取消" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
-						<Button label="创建" icon="pi pi-check" class="p-button-primary" @click="createUser" />
+						<Button :label="$t('global_cancel')" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
+						<Button :label="$t('global_create')" icon="pi pi-check" class="p-button-primary" @click="createUser" />
 					</div>
 					<div v-if="crudOperation==='update'">
-						<Button label="取消" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
-						<Button label="修改" icon="pi pi-check" class="p-button-primary" @click="editUser" />
+						<Button :label="$t('global_cancel')" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
+						<Button :label="$t('global_modify')" icon="pi pi-check" class="p-button-primary" @click="editUser" />
 					</div>
 				</template>
 			</Dialog>
 
-			<Dialog v-model:visible="deleteUserDialog" header="消息确认" :modal="true" style="min-width: 40%">
+			<Dialog v-model:visible="deleteUserDialog" :header="$t('global_message')" :modal="true" style="min-width: 40%">
 				<div>
 					<i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2em; color: orange; vertical-align: middle;" />
-					<span style="color: orange">确定要删除如下用户吗?</span>
-					<div style="text-indent: 3em;">姓名：{{ user.name }}</div>
-					<div style="text-indent: 3em;">邮箱：{{ user.email }}</div>
-					<div style="text-indent: 3em;">管理员：{{ user.admin ? '是' : '否' }}</div>
+					<span style="color: orange">{{ $t('usermanagement_delete_user_prompt') }}</span>
+					<div style="text-indent: 3em;">{{ $t('global_name') }}: {{ user.name }}</div>
+					<div style="text-indent: 3em;">{{ $t('global_email') }}: {{ user.email }}</div>
+					<div style="text-indent: 3em;">{{ $t('global_admin') }}: {{ user.admin ? $t('global_yes') : $t('global_no') }}</div>
 				</div>
 				<template #footer>
-					<Button label="取消" icon="pi pi-times" class="p-button-text" @click="deleteUserDialog = false"/>
-					<Button label="确定" icon="pi pi-check" class="p-button-primary" @click="deleteUser" />
+					<Button :label="$t('global_cancel')" icon="pi pi-times" class="p-button-text" @click="deleteUserDialog = false"/>
+					<Button :label="$t('global_ok')" icon="pi pi-check" class="p-button-primary" @click="deleteUser" />
 				</template>
 			</Dialog>
 		</div>
@@ -134,9 +134,9 @@ export default {
 			.then(users => this.users = users)
 			.catch(error => {
 				if(error.response) {
-					this.$toast.add({ severity: 'error', summary: '用户信息加载失败', detail: error.response.data.message });
+					this.$toast.add({ severity: 'error', summary: this.$t('usermanagement_user_load_error'), detail: error.response.data.message });
 				} else {
-                    this.$toast.add({ severity: 'error', summary: '用户信息加载失败', detail: error.message });
+                    this.$toast.add({ severity: 'error', summary: this.$t('usermanagement_user_load_error'), detail: error.message });
 				}
 			});
 		},
@@ -164,15 +164,15 @@ export default {
 		createUser() {
 			let loader = this.$loading.show();
 
-			this.userService.addUser(this.user).then((user) => {
+			this.userService.addUser(this.user).then(() => {
 				this.userDialog = false;
-				this.$toast.add({severity: 'info', summary: '用户创建成功', detail: `姓名: ${user.name}\n邮箱: ${user.email}\n管理员: ${user.admin===true?'是':'否'}`, life: 5000});
+				this.$toast.add({severity: 'info', summary: this.$t('usermanagement_user_create_success'), detail: '', life: 5000});
 				this.loadData();
 			}).catch(error => {
 				if(error.response) {
-					this.$toast.add({ severity: 'error', summary: '操作失败', detail: error.response.data.message });
+					this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.response.data.message });
 				} else {
-                    this.$toast.add({ severity: 'error', summary: '操作失败', detail: error.message });
+                    this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.message });
 				}
 			}).finally(() => {
 				loader.hide();
@@ -181,15 +181,15 @@ export default {
 		editUser() {
 			let loader = this.$loading.show();
 
-			this.userService.updateUser(this.user._id, this.user).then((user) => {
+			this.userService.updateUser(this.user._id, this.user).then(() => {
 				this.userDialog = false;
-				this.$toast.add({severity: 'info', summary: '用户修改成功', detail: `姓名: ${user.name}\n邮箱: ${user.email}\n管理员: ${user.admin===true?'是':'否'}`, life: 5000});
+				this.$toast.add({severity: 'info', summary: this.$t('usermanagement_user_modify_success'), detail: '', life: 5000});
 				this.loadData();
 			}).catch(error => {
 				if(error.response) {
-					this.$toast.add({ severity: 'error', summary: '操作失败', detail: error.response.data.message });
+					this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.response.data.message });
 				} else {
-                    this.$toast.add({ severity: 'error', summary: '操作失败', detail: error.message });
+                    this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.message });
 				}
 			}).finally(() => {
 				loader.hide();
@@ -199,15 +199,15 @@ export default {
 			let loader = this.$loading.show();
 
 			this.userService.deleteUser(this.user._id)
-			.then((user) => {
+			.then(() => {
 				this.deleteUserDialog = false;
-				this.$toast.add({severity: 'info', summary: '用户删除成功', detail: `姓名: ${user.name}\n邮箱: ${user.email}\n管理员: ${user.admin===true?'是':'否'}`, life: 5000});
+				this.$toast.add({severity: 'info', summary: this.$t('usermanagement_user_delete_success'), detail: '', life: 5000});
 				this.loadData();
 			}).catch(error => {
 				if(error.response) {
-					this.$toast.add({ severity: 'error', summary: '操作失败', detail: error.response.data.message });
+					this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.response.data.message });
 				} else {
-                    this.$toast.add({ severity: 'error', summary: '操作失败', detail: error.message });
+                    this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.message });
 				}
 			}).finally(() => {
 				loader.hide();
@@ -223,9 +223,9 @@ export default {
 				this.users = users; 
 			}).catch(error => {
 				if(error.response) {
-					this.$toast.add({ severity: 'error', summary: '操作失败', detail: error.response.data.message });
+					this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.response.data.message });
 				} else {
-					this.$toast.add({ severity: 'error', summary: '操作失败', detail: error.message });
+					this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.message });
 				}
 			});
 		},

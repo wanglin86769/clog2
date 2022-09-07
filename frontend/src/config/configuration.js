@@ -4,9 +4,9 @@ module.exports = {
 
 
     // Login options: "local", "ldap", "oauth"
-    // loginMethod: "local",  
+    loginMethod: "local",  
     // loginMethod: "ldap",
-    loginMethod: "oauth",
+    // loginMethod: "oauth",
 
 
     // The is software user rather than software copyright, the copyright of

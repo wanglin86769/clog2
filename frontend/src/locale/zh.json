@@ -1,0 +1,199 @@
+{
+    "global_clog_software": "Clog电子日志系统",
+    "global_ok": "确定",
+    "global_cancel": "取消",
+    "global_close": "关闭",
+    "global_yes": "是",
+    "global_no": "否",
+    "global_message": "消息确认",
+    "global_email": "邮箱",
+    "global_name": "姓名",
+    "global_admin": "管理员",
+    "global_home_page": "首页",
+    "global_login_page": "登录页",
+    "global_register_page": "注册页",
+    "global_retrieve_password": "找回密码",
+    "global_reset": "重置",
+    "global_password": "密码",
+    "global_confirm_password": "密码确认",
+    "global_success": "操作完成",
+    "global_fail": "操作失败",
+    "global_current_password_cannot_empty": "当前密码不能为空！",
+    "global_password_cannot_empty": "密码不能为空！",
+    "global_confirm_password_cannot_empty": "密码确认不能为空！",
+    "global_two_passwords_different": "两次输入的密码不一致！",
+    "global_email_cannot_empty": "邮箱不能为空！",
+    "global_name_cannot_empty": "姓名不能为空！",
+    "global_create": "创建",
+    "global_modify": "修改",
+    "global_add": "添加",
+    "global_index": "序号",
+    "global_operate": "操作",
+    "global_edit": "编辑",
+    "global_delete": "删除",
+    "global_no_data": "暂无数据",
+    "global_naming": "名称",
+    "global_number": "编号",
+    "global_go_back": "返回",
+    "global_new": "新建",
+    "global_log_author": "作者",
+    "global_log_author_email": "作者邮箱",
+    "global_log_create_date": "创建日期",
+    "global_log_category": "类别",
+    "global_log_tag": "标签",
+    "global_log_title": "标题",
+    "global_log_description": "内容",
+    "global_log_attachment": "附件",
+    "global_log_logbook": "Logbook",
+    "global_log_description_placeholder": "请输入日志内容",
+    "global_log_discard_edit_prompt": "确定要放弃编辑当前日志吗?",
+    "global_log_last_update": "最后更新",
+    "global_keyword": "关键词",
+    "global_select": "请选择",
+    "global_grouping": "分组",
+    "global_history": "历史",
+    "global_modification_history": "修改历史",
+
+
+    "app_login": "登录",
+    "app_logout_confirm_message": "确定要退出登录吗？",
+    "app_account_information": "账号信息",
+    "app_logout": "退出",
+    "app_browser_languages": "浏览器语言",
+    "app_session_expire_message": "会话超时，即将退出登录！",
+
+
+    "verifyaccount_email_verify_sucdess": "邮箱验证成功",
+    "verifyaccount_email_verify_fail": "邮箱验证失败",
+    "verifyaccount_email_verifying": "邮箱验证中 ...",
+    "verifyaccount_login_email": "登录邮箱",
+    "verifyaccount_error_message": "错误信息",
+
+
+    "registeraccount_new_user_register": "新用户注册",
+    "registeraccount_register_button": "注册",
+    "registeraccount_login_email_verify": "注册信息已提交，请登录邮箱验证。",
+
+
+    "forgetpassword_login_email_reset": "请登录邮箱重置密码",
+
+
+    "resetpassword_password_has_reset": "密码已重置。",
+
+
+    "updatepassword_current_password": "当前密码",
+    "updatepassword_change_password": "修改密码",
+    "updatepassword_password_has_updated": "用户密码已更新",
+
+
+    "accountmanagement_title": "账号管理",
+    "accountmanagement_search": "姓名、邮箱",
+    "accountmanagement_create_time": "创建时间",
+    "accountmanagement_confirm_time": "确认时间",
+    "accountmanagement_modify_time": "修改时间",
+    "accountmanagement_create_account": "新建账号",
+    "accountmanagement_edit_account": "编辑账号",
+    "accountmanagement_delete_account_prompt": "确定要删除如下账号吗?",
+    "accountmanagement_account_load_error": "账号信息加载失败",
+    "accountmanagement_account_create_success": "账号创建成功",
+    "accountmanagement_account_modify_success": "账号修改成功",
+    "accountmanagement_account_delete_success": "账号删除成功",
+
+
+    "groupmanagement_title": "分组信息",
+    "groupmanagement_create_group": "新建分组",
+    "groupmanagement_edit_group": "编辑分组",
+    "groupmanagement_delete_group_prompt": "确定要删除如下分组吗?",
+    "groupmanagement_group_load_error": "分组信息加载失败",
+    "groupmanagement_group_create_success": "分组创建成功",
+    "groupmanagement_group_modify_success": "分组修改成功",
+    "groupmanagement_group_delete_success": "分组删除成功",
+
+
+    "home_logbook": "Logbook",
+    "home_log_count": "日志数量",
+    "home_last_submit": "最后提交",
+    "home_default_group": "默认分组",
+    "home_logbook_load_error": "Logbook信息加载失败",
+
+
+    "logbook_search": "&#128269;作者、标题、内容、附件",
+    "logbook_log_load_error": "日志加载失败",
+
+
+    "logbookmanagement_title": "Logbook信息",
+    "logbookmanagement_create_logbook": "新建Logbook",
+    "logbookmanagement_edit_logbook": "编辑Logbook",
+    "logbookmanagement_delete_logbook_prompt": "确定要删除如下Logbook吗?",
+    "logbookmanagement_logbook_load_error": "Logbook信息加载失败",
+    "logbookmanagement_group_load_error": "分组信息加载失败",
+    "logbookmanagement_logbook_create_success": "Logbook创建成功",
+    "logbookmanagement_logbook_modify_success": "Logbook修改成功",
+    "logbookmanagement_logbook_delete_success": "Logbook删除成功",
+
+
+    "tagmanagement_title": "Tag信息",
+    "tagmanagement_create_tag": "新建Tag",
+    "tagmanagement_edit_tag": "编辑Tag",
+    "tagmanagement_delete_tag_prompt": "确定要删除如下Tag吗?",
+    "tagmanagement_tag_load_error": "Tag信息加载失败",
+    "tagmanagement_tag_create_success": "Tag创建成功",
+    "tagmanagement_tag_modify_success": "Tag修改成功",
+    "tagmanagement_tag_delete_success": "Tag删除成功",
+
+
+    "usermanagement_title": "用户权限",
+    "usermanagement_search": "姓名、邮箱",
+    "usermanagement_create_user": "新建用户",
+    "usermanagement_edit_user": "编辑用户",
+    "usermanagement_delete_user_prompt": "确定要删除如下用户吗?",
+    "usermanagement_user_load_error": "用户信息加载失败",
+    "usermanagement_user_create_success": "用户创建成功",
+    "usermanagement_user_modify_success": "用户修改成功",
+    "usermanagement_user_delete_success": "用户删除成功",
+
+
+    "logcreate_title": "新建日志",
+
+
+    "logdetail_title": "日志查询",
+    "logdetail_delete_log_prompt": "确定要删除当前日志吗?",
+    "logdetail_log_load_error": "当前日志加载失败",
+
+
+    "logedit_title": "编辑日志",
+    "logedit_existing_attachments": "已有附件",
+    "logedit_new_attachments": "新增附件",
+    "logedit_log_load_error": "当前日志加载失败",
+    "logedit_tag_load_error": "Tag加载失败",
+
+
+    "login_title": "Clog用户登录",
+    "login_username": "用户名",
+    "login_password": "密码",
+    "login_button": "登录",
+    "login_register_account": "注册账号",
+    "login_forget_password": "找回密码",
+    "login_change_password": "修改密码",
+    "login_fail": "登录失败",
+    "login_username_cannot_empty": "用户名不能为空！",
+    "login_password_cannot_empty": "密码不能为空！",
+
+
+    "oauth_login_fail": "登录失败",
+    "oauth_return_home": "返回首页",
+    "oauth_logging_in": "正在登录中 ...",
+
+
+    "menu_home": "首页",
+    "menu_manage": "管理",
+    "menu_config": "设置",
+    "menu_about": "关于",
+    "menu_logbook_grouping": "Logbook分组",
+    "menu_logbook": "Logbook",
+    "menu_tag": "Tag",
+    "menu_user_management": "用户权限",
+    "menu_account_management": "账号管理",
+    "menu_browser_languages": "浏览器语言",
+    "menu_multi_language": "多语言"
+}

@@ -2,13 +2,13 @@
     <div class="layout-wrapper">
         <div class="layout-main">
 
-            <Menubar :model="items">
+            <Menubar :model="menuitems">
                 <template #start>
                     <img alt="logo" src="@/assets/images/clog.png" style="vertical-align: middle" height="40" class="p-mr-2">
                 </template>
                 <template #end>
                     <SplitButton v-if="userInfo" :label="userInfo.email ? userInfo.email.split('@')[0] : ''" icon="fa fa-user" :model="buttonItems"></SplitButton>
-                    <Button v-else label="登录" class="p-button-primary" style="width: 100px" @click="onLoginClick" />
+                    <Button v-else :label="$t('app_login')" class="p-button-primary" style="width: 100px" @click="onLoginClick" />
                 </template>
             </Menubar>
 
@@ -30,41 +30,52 @@
             <span class="footer-text">{{ softwareUser }}</span>
         </div>
 
-        <Dialog header="消息确认" v-model:visible="logoutDialogDisplay" style="min-width: 300px" :modal="true">
+        <Dialog :header="$t('global_message')" v-model:visible="logoutDialogDisplay" style="min-width: 300px" :modal="true">
             <div>
                 <i class="fa fa-exclamation-circle fa-2x" style="vertical-align: middle; color: orange"></i>
-                <span class="p-text-center p-ml-2" style="vertical-align: middle">确定要退出登录吗？</span>
+                <span class="p-text-center p-ml-2" style="vertical-align: middle">{{ $t('app_logout_confirm_message') }}</span>
             </div>
 
             <template #footer>
-                <Button label="取消" icon="pi pi-times" @click="logoutDialogDisplay=false" class="p-button-text"/>
-                <Button label="确定" icon="pi pi-check" @click="handleLogout" />
+                <Button :label="$t('global_cancel')" icon="pi pi-times" @click="logoutDialogDisplay=false" class="p-button-text"/>
+                <Button :label="$t('global_ok')" icon="pi pi-check" @click="handleLogout" />
             </template>
         </Dialog>
 
-		<Dialog header="账号信息" v-model:visible="showAccountDialogDisplay" style="min-width: 400px" :modal="true">
+		<Dialog :header="$t('app_account_information')" v-model:visible="showAccountDialogDisplay" style="min-width: 400px" :modal="true">
             <div v-if="userInfo">
-                <p><span>邮箱： </span><span>{{ userInfo.email }}</span></p>
-                <p><span>姓名： </span><span>{{ userInfo.name }}</span></p>
+                <p><span style="font-weight: bold">{{ $t('global_email') }}: </span><span>{{ userInfo.email }}</span></p>
+                <p><span style="font-weight: bold">{{ $t('global_name') }}: </span><span>{{ userInfo.name }}</span></p>
                 <p>
-                    <span>管理员： </span>
-                    <span>{{ isAdmin ? '是' : '否' }}</span>
+                    <span style="font-weight: bold">{{ $t('global_admin') }}: </span>
+                    <span>{{ isAdmin ? $t('global_yes') : $t('global_no') }}</span>
                 </p>
             </div>
 
             <template #footer>
-                <Button label="关闭" icon="pi pi-times" @click="showAccountDialogDisplay=false" class="p-button-text"/>
+                <Button :label="$t('global_close')" icon="pi pi-times" @click="showAccountDialogDisplay=false" class="p-button-text"/>
             </template>
         </Dialog>
 
-        <Dialog header="消息确认" v-model:visible="sessionExpireDialogDisplay" :style="{width: '30vw'}" :modal="true" :closable="false">
+        <Dialog :header="$t('global_message')" v-model:visible="sessionExpireDialogDisplay" :style="{width: '30vw'}" :modal="true" :closable="false">
             <div style="color: orange; font-weight: bold">
                 <i class="fa fa-exclamation-triangle fa-2x" style="vertical-align: middle; color: orange"></i>
-                <span class="p-text-center p-ml-2" style="vertical-align: middle">会话超时，即将退出登录！</span>
+                <span class="p-text-center p-ml-2" style="vertical-align: middle">{{ $t('app_session_expire_message') }}</span>
             </div>
 
             <template #footer>
-                <Button label="确定" icon="pi pi-check" @click="handleLogout" />
+                <Button :label="$t('global_ok')" icon="pi pi-check" @click="handleLogout" />
+            </template>
+        </Dialog>
+
+        <Dialog :header="$t('app_browser_languages')" v-model:visible="browserLanguagesDialogDisplay" :style="{width: '30vw'}" :modal="true" :closable="false">
+            <div v-for="(item, index) in browserLanguages" :key="index">
+                <i class="fa fa-circle" style="vertical-align: middle; margin-right: .8em; color: orange;"></i>
+                <span style="vertical-align: middle; font-size: 1.4em;">{{ item }}</span>
+            </div>
+
+            <template #footer>
+                <Button :label="$t('global_close')" icon="pi pi-times" @click="browserLanguagesDialogDisplay=false" class="p-button-text"/>
             </template>
         </Dialog>
 
@@ -86,61 +97,22 @@ export default {
             authenticationService: null,
             logoutDialogDisplay: false,
             showAccountDialogDisplay: false,
-            items: [
+
+            browserLanguagesDialogDisplay: false,
+            browserLanguages: [],
+
+            menuitems: [],
+
+            buttonItems: [
                 {
-                   label:'首页',
-                   icon:'pi pi-fw pi-home',
-                   to: '/'
-                },
-                {
-                   label:'设置',
-                   icon:'fa fa-fw fa-cog',
-                   items:[
-                        {
-                            label:'Logbook分组',
-                            icon:'fa fa-fw fa-bars',
-                            to: '/groupmanagement'
-                        },
-                        {
-                            label:'Logbook',
-                            icon:'fa fa-fw fa-book',
-                            to: '/logbookmanagement'
-                        },
-                        {
-                            label:'Tag',
-                            icon:'fa fa-fw fa-tag',
-                            to: '/tagmanagement'
-                        },
-                        {
-                            label:'用户权限',
-                            icon:'fa fa-fw fa-lock',
-                            to: '/usermanagement',
-                            disabled: () => !this.userInfo
-                        },
-                        {
-                            label:'账号管理',
-                            icon:'fa fa-fw fa-user',
-                            to: '/accountmanagement',
-                            disabled: () => !this.isAdmin
-                        },
-                   ]
-                },
-                {
-                   label:'关于',
-                   icon:'pi pi-fw pi-info-circle',
-                   to: '/about'
-                }
-             ],
-             buttonItems: [
-                {
-                    label: '账号信息',
+                    label: this.$t('app_account_information'),
                     icon: 'pi pi-user',
                     command: () => {
                         this.onAccountInfoClick();
                     }
                 },
                 {
-                    label: '退出',
+                    label: this.$t('app_logout'),
                     icon: 'pi pi-power-off',
                     command: () => {
                         this.onLogoutClick();
@@ -149,18 +121,95 @@ export default {
             ]
         }
     },
-    watch: {
-        $route() {
-            
-        }
-    },
     created () {
         this.authenticationService = new AuthenticationService();
 
         this.checkSessionStatus();
 		this.intervalId = setInterval(this.checkSessionStatus, 60000);
     },
+    mounted() {
+        this.browserLanguages = navigator.languages && navigator.languages.length ? navigator.languages : navigator.language;
+        this.updateMenuItems();
+    },
     methods: {
+        // Menuitems are provided here instead of data are due to a bug of PrimeVUE when trying to add i18n support.
+        // If menuitems are provided within data, locale cannot be switched since data is initiated only once.
+        // To support i18n, if menuitems are provided as computed property, submenu of menubar cannot be displayed.
+        updateMenuItems() {
+            this.menuitems = [
+                {
+                   label: this.$t('menu_home'),
+                   icon: 'pi pi-fw pi-home',
+                   to: '/'
+                },
+                {
+                   label: this.$t('menu_manage'),
+                   icon: 'fa fa-fw fa-paint-brush',
+                   items: [
+                        {
+                            label: this.$t('menu_logbook_grouping'),
+                            icon: 'fa fa-fw fa-bars',
+                            to: '/groupmanagement'
+                        },
+                        {
+                            label: this.$t('menu_logbook'),
+                            icon: 'fa fa-fw fa-book',
+                            to: '/logbookmanagement'
+                        },
+                        {
+                            label: this.$t('menu_tag'),
+                            icon: 'fa fa-fw fa-tag',
+                            to: '/tagmanagement'
+                        },
+                        {
+                            label: this.$t('menu_user_management'),
+                            icon: 'fa fa-fw fa-lock',
+                            to: '/usermanagement',
+                            disabled: () => !this.userInfo
+                        },
+                        {
+                            label: this.$t('menu_account_management'),
+                            icon: 'fa fa-fw fa-user',
+                            to: '/accountmanagement',
+                            disabled: () => !this.isAdmin,
+                            visible: () => this.isLocalLogin
+                        },
+                   ]
+                },
+                {
+                   label: this.$t('menu_config'),
+                   icon: 'fa fa-fw fa-cog',
+                   items: [
+                        {
+                            label: this.$t('menu_browser_languages'),
+                            icon: 'fa fa-fw fa-edge',
+                            command: () => { this.browserLanguagesDialogDisplay = true; },
+                        },
+                        {
+                            label: this.$t('menu_multi_language'),
+                            icon: 'fa fa-fw fa-globe',
+                            items: [
+                                {
+                                    label: '简体中文',
+                                    icon: 'fa fa-fw fa-circle-o',
+                                    command: () => { this.$i18n.locale='zh'; },
+                                },
+                                {
+                                    label: 'English',
+                                    icon: 'fa fa-fw fa-circle-o',
+                                    command: () => { this.$i18n.locale='en'; },
+                                },
+                            ]
+                        },
+                   ]
+                },
+                {
+                   label: this.$t('menu_about'),
+                   icon: 'pi pi-fw pi-info-circle',
+                   to: '/about'
+                }
+            ];
+        },
         onAccountInfoClick() {
             this.showAccountDialogDisplay = true;
         },
@@ -225,11 +274,19 @@ export default {
         isAdmin() {
 			return this.$store.state.authentication.user && this.$store.state.authentication.user.admin === true;
         },
+        isLocalLogin() {
+            return config.loginMethod === 'local';
+        },
         isOauthLogin() {
             return config.loginMethod === 'oauth';
         },
         softwareUser() {
             return config.softwareUser;
+        },
+    },
+    watch: {
+        '$i18n.locale'() {
+            this.updateMenuItems();
         },
     },
     components: {

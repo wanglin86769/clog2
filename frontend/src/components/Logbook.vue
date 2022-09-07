@@ -8,8 +8,8 @@
 				</div>
 				<Toolbar class="p-mb-0">
 					<template #start>
-						<Button label="返回" icon="fa fa-arrow-left" class="p-button-help" style="margin-right: 15px" @click="onReturnClick" />
-						<Button label="新建" icon="pi pi-plus" class="p-button-primary" style="margin-right: 10px" @click="onNewClick" :disabled="!userInfo" />
+						<Button :label="$t('global_go_back')" icon="fa fa-arrow-left" class="p-button-help" style="margin-right: 15px" @click="onReturnClick" />
+						<Button :label="$t('global_new')" icon="pi pi-plus" class="p-button-primary" style="margin-right: 10px" @click="onNewClick" :disabled="!userInfo" />
 						<!-- <Button label="编辑" icon="pi pi-upload" class="p-button-success" style="margin-right: 10px" />
 						<Button label="删除" icon="pi pi-upload" class="p-button-success" />
 						<i class="pi pi-bars p-toolbar-separator mr-2" />
@@ -22,8 +22,8 @@
 						<Button icon="pi pi-calendar" class="p-button-success mr-2" />
 						<Button icon="pi pi-times" class="p-button-danger" /> -->
 						<div class="p-inputgroup">
-							<Button label="重置" icon="pi pi-refresh" class="p-button-success p-button-sm" @click="resetSearch"/>
-							<InputText placeholder="&#128269;作者、标题、内容、附件" style="width: 20em" class="p-inputtext-sm" v-model="filters.search" @input="onSearchInput" />
+							<Button :label="$t('global_reset')" icon="pi pi-refresh" class="p-button-success p-button-sm" @click="resetSearch"/>
+							<InputText :placeholder="$t('logbook_search')" style="width: 20em" class="p-inputtext-sm" v-model="filters.search" @input="onSearchInput" />
 						</div>
 					</template>
 				</Toolbar>
@@ -36,13 +36,13 @@
 							:rowClass="rowClass" @row-click="onRowClick">
 					<template #empty>
 						<div style="color: darkorange">
-							暂无数据
+							{{ $t('global_no_data') }}
 						</div>
 					</template>
 
 					<Column header="" headerStyle="width: 6em; text-align: left">
 						<template #header>
-							<div style="white-space: nowrap;">序号</div>
+							<div style="white-space: nowrap;">{{ $t('global_index') }}</div>
 						</template>
 						<template #body="slotProps">
 							<span style="color: RGB(33,150,243)">{{currentPageFirstIndex + slotProps.index + 1}}</span>
@@ -51,9 +51,9 @@
 					<Column header="">
 						<template #header>
 							<div class="p-grid p-nogutter" style="width: 100%">
-								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">创建日期</div>
+								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_create_date') }}</div>
 								<div class="p-col-12">
-									<Dropdown style="width: 100%" class="p-inputtext-sm" placeholder="请选择" v-model="filters.year" :options="years" :showClear="true" @change="search()"></Dropdown>
+									<Dropdown style="width: 100%" class="p-inputtext-sm" :placeholder="$t('global_select')" v-model="filters.year" :options="years" :showClear="true" @change="search()"></Dropdown>
 								</div>
 							</div>
 						</template>
@@ -64,9 +64,9 @@
 					<Column header="">
 						<template #header>
 							<div class="p-grid p-nogutter" style="width: 100%">
-								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">作者</div>
+								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_author') }}</div>
 								<div class="p-col-12">
-									<InputText style="width: 100%" class="p-inputtext-sm" type="text" v-model="filters.author" placeholder="关键词" @input="onSearchInput" />
+									<InputText style="width: 100%" class="p-inputtext-sm" type="text" v-model="filters.author" :placeholder="$t('global_keyword')" @input="onSearchInput" />
 								</div>
 							</div>
 						</template>
@@ -77,9 +77,9 @@
 					<Column header="">
 						<template #header>
 							<div class="p-grid p-nogutter" style="width: 100%">
-								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">作者邮箱</div>
+								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_author_email') }}</div>
 								<div class="p-col-12">
-									<InputText style="width: 100%" class="p-inputtext-sm" type="text" v-model="filters.email" placeholder="关键词" @input="onSearchInput" />
+									<InputText style="width: 100%" class="p-inputtext-sm" type="text" v-model="filters.email" :placeholder="$t('global_keyword')" @input="onSearchInput" />
 								</div>
 							</div>
 						</template>
@@ -90,9 +90,9 @@
 					<Column header="">
 						<template #header>
 							<div class="p-grid p-nogutter" style="width: 100%">
-								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">类别</div>
+								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_category') }}</div>
 								<div class="p-col-12">
-									<Dropdown style="width: 100%" class="p-inputtext-sm" placeholder="请选择" v-model="filters.category" :options="categories" :showClear="true" @change="search()"></Dropdown>
+									<Dropdown style="width: 100%" class="p-inputtext-sm" :placeholder="$t('global_select')" v-model="filters.category" :options="categories" :showClear="true" @change="search()"></Dropdown>
 								</div>
 							</div>
 						</template>
@@ -105,9 +105,9 @@
 					<Column header="">
 						<template #header>
 							<div class="p-grid p-nogutter" style="width: 100%">
-								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">标签</div>
+								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_tag') }}</div>
 								<div class="p-col-12">
-									<Dropdown style="width: 100%" class="p-inputtext-sm" placeholder="请选择" v-model="filters.tags" :options="tags" optionLabel="name" optionValue="_id" :showClear="true" @change="search()"></Dropdown>
+									<Dropdown style="width: 100%" class="p-inputtext-sm" :placeholder="$t('global_select')" v-model="filters.tags" :options="tags" optionLabel="name" optionValue="_id" :showClear="true" @change="search()"></Dropdown>
 								</div>
 							</div>
 						</template>
@@ -125,23 +125,23 @@
 					<Column header="" headerStyle="width: 15%">
 						<template #header>
 							<div class="p-grid p-nogutter" style="width: 100%">
-								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">标题</div>
+								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_title') }}</div>
 								<div class="p-col-12">
-									<InputText style="width: 100%" class="p-inputtext-sm" type="text" v-model="filters.title" placeholder="关键词" @input="onSearchInput" />
+									<InputText style="width: 100%" class="p-inputtext-sm" type="text" v-model="filters.title" :placeholder="$t('global_keyword')" @input="onSearchInput" />
 								</div>
 							</div>
 						</template>
 						<template #body="slotProps">
 							<span class="logdetail-link" @click="onDetailClick(slotProps.data)">{{ slotProps.data.title }}</span>
-							<i v-if="slotProps.data.histories && slotProps.data.histories.length" style="color: orange; margin-left: .2em;" class="fa fa-clock-o fa-lg" v-tooltip.top="'修改历史'"></i>
+							<i v-if="slotProps.data.histories && slotProps.data.histories.length" style="color: orange; margin-left: .2em;" class="fa fa-clock-o fa-lg" v-tooltip.top="$t('global_modification_history')"></i>
 						</template>
 					</Column>
 					<Column header="" headerStyle="width: 35%">
 						<template #header>
 							<div class="p-grid p-nogutter" style="width: 100%">
-								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">内容</div>
+								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_description') }}</div>
 								<div class="p-col-12">
-									<InputText style="width: 100%" class="p-inputtext-sm" type="text" v-model="filters.description" placeholder="关键词" @input="onSearchInput" />
+									<InputText style="width: 100%" class="p-inputtext-sm" type="text" v-model="filters.description" :placeholder="$t('global_keyword')" @input="onSearchInput" />
 								</div>
 							</div>
 						</template>
@@ -151,7 +151,7 @@
 					</Column>
 					<Column header="">
 						<template #header>
-							<div style="white-space: nowrap;">附件</div>
+							<div style="white-space: nowrap;">{{ $t('global_log_attachment') }}</div>
 						</template>
 						<template #body="slotProps">
 							<div v-if="slotProps.data.attachments && slotProps.data.attachments.length" style="white-space: nowrap;">
@@ -255,9 +255,9 @@ export default {
 				this.totalRecords = data.count;
 			}).catch(error => {
 				if(error.response) {
-					this.$toast.add({ severity: 'error', summary: '日志加载失败', detail: error.response.data.message });
+					this.$toast.add({ severity: 'error', summary: this.$t('logbook_log_load_error'), detail: error.response.data.message });
 				} else {
-					this.$toast.add({ severity: 'error', summary: '日志加载失败', detail: error.message });
+					this.$toast.add({ severity: 'error', summary: this.$t('logbook_log_load_error'), detail: error.message });
 				}
 			}).finally(() => {
 				this.loading = false;

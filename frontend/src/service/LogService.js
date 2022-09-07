@@ -62,19 +62,19 @@ export default class LogService {
 		let validity = { valid: true, message: null };
 		
 		if(!log.logbook) {
-			validity = { valid: false, message: `logbook不能为空` };
+			validity = { valid: false, message: `Logbook cannot be empty` };
 			return validity;
 		}
 		if(!log.category) {
-			validity = { valid: false, message: `类别不能为空` };
+			validity = { valid: false, message: `Category cannot be empty` };
 			return validity;
 		}
 		if(!log.title) {
-			validity = { valid: false, message: `标题不能为空` };
+			validity = { valid: false, message: `Title cannot be empty` };
 			return validity;
 		}
 		if(!log.description) {
-			validity = { valid: false, message: `内容不能为空` };
+			validity = { valid: false, message: `Content cannot be empty` };
 			return validity;
 		}
 

@@ -98,6 +98,8 @@ import TriStateCheckbox from 'primevue/tristatecheckbox';
 import VueLoading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 
+import i18n from "./locale/index.js";
+
 
 router.beforeEach(function(to, from, next) {
     window.scrollTo(0, 0);
@@ -115,6 +117,7 @@ app.use(ToastService);
 app.use(router);
 app.use(store);
 app.use(VueLoading, { color: 'RGB(29,149,243)' });
+app.use(i18n);
 
 app.directive('tooltip', Tooltip);
 app.directive('ripple', Ripple);

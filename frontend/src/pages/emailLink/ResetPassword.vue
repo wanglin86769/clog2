@@ -3,16 +3,16 @@
         <br>
         <br>
         <div class="register">
-            <h1>找回密码</h1>
-            <p><input type="password" v-model="account.password" placeholder="密码"></p>
-            <p><input type="password" v-model="password2" placeholder="密码确认"></p>
-            <p class="submit"><input type="button" value="重置" @click="resetPassword"></p>
+            <h1>{{ $t('global_retrieve_password') }}</h1>
+            <p><input type="password" v-model="account.password" :placeholder="$t('global_password')"></p>
+            <p><input type="password" v-model="password2" :placeholder="$t('global_confirm_password')"></p>
+            <p class="submit"><input type="button" :value="$t('global_reset')" @click="resetPassword"></p>
         </div>
 
         <div class="register-help">
-            <a href="/login">登录页</a>
+            <a href="/login">{{ $t('global_login_page') }}</a>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="/reset">首页</a>
+            <a href="/reset">{{ $t('global_home_page') }}</a>
         </div>
     </div>
 </template>
@@ -34,20 +34,28 @@ export default {
 	},
     methods: {
         resetPassword() {
+            if(!this.account.password) {
+                this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: this.$t('global_password_cannot_empty') });
+                return;
+            }
+            if(!this.password2) {
+                this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: this.$t('global_confirm_password_cannot_empty') });
+                return;
+            }
             if(this.account.password !== this.password2) {
-                this.$toast.add({ severity: 'error', summary: '操作失败', detail: '两次输入的密码不一致！' });
+                this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: this.$t('global_two_passwords_different') });
                 return;
             }
 
             this.accountService.resetPassword(this.$route.params.random, this.account)
             .then(() => {
-                this.$toast.add({severity:'success', summary: '操作完成', detail:'密码已重置。'});
+                this.$toast.add({severity:'success', summary: this.$t('global_success'), detail: this.$t('resetpassword_password_has_reset') });
                 this.reset();
 			}).catch(error => {
 				if(error.response) {
-					this.$toast.add({ severity: 'error', summary: '操作失败', detail: error.response.data.message });
+					this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.response.data.message });
 				} else {
-					this.$toast.add({ severity: 'error', summary: '操作失败', detail: error.message });
+					this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.message });
 				}
 			});
         },

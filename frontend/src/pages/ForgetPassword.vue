@@ -3,15 +3,15 @@
         <br>
         <br>
         <div class="register">
-            <h1>找回密码</h1>
-            <p><input type="text" v-model="account.email" placeholder="邮箱"></p>
-            <p class="submit"><input type="button" value="确定" @click="forgetPassword"></p>
+            <h1>{{ $t('global_retrieve_password') }}</h1>
+            <p><input type="text" v-model="account.email" :placeholder="$t('global_email')"></p>
+            <p class="submit"><input type="button" :value="$t('global_ok')" @click="forgetPassword"></p>
         </div>
 
         <div class="register-help">
-            <a href="/login">登录页</a>
+            <a href="/login">{{ $t('global_login_page') }}</a>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <a href="/">首页</a>
+            <a href="/">{{ $t('global_home_page') }}</a>
         </div>
     </div>
 </template>
@@ -31,15 +31,20 @@ export default {
 	},
     methods: {
         forgetPassword() {
+            if(!this.account.email) {
+                this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: this.$t('global_email_cannot_empty') });
+                return;
+            }
+
             this.accountService.forgetPassword(this.account)
             .then(() => {
-                this.$toast.add({severity:'success', summary: '操作完成', detail:'请登录邮箱重置密码'});
+                this.$toast.add({severity:'success', summary: this.$t('global_success'), detail: this.$t('forgetpassword_login_email_reset')} );
                 this.reset();
 			}).catch(error => {
 				if(error.response) {
-					this.$toast.add({ severity: 'error', summary: '操作失败', detail: error.response.data.message });
+					this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.response.data.message });
 				} else {
-					this.$toast.add({ severity: 'error', summary: '操作失败', detail: error.message });
+					this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.message });
 				}
 			});
         },
