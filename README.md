@@ -1,6 +1,6 @@
 # Clog
 
-Clog (Compact Electronic Logbook System) is a web-based logbook system aimed to be used in accelerators. The goal is to design and implement a logbook system with modern web technology but in a very simple way.  
+**Clog (Compact Electronic Logbook System)** is a web-based logbook system aimed to be used in accelerators. The goal is to design and implement a logbook system with modern web technology but in a very simple way.  
 
 ## Features
 
