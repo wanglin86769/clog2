@@ -4,9 +4,9 @@ Clog (Compact Electronic Logbook System) is a web-based logbook system aimed to 
 
 ## Features
 
-* Compact: lightweight architecture with separate frontend and backend; high-efficiency frontend and backend framework; single programming language (JavaScript) finishing full-stack web development.
-* Multiple login method support: prior to deployment, the login method can be configured as local database, LDAP or OAuth.
-* Multiple language support: currently English and Chinese languages are supported, other languages can also be added in future.
+* **Compact**: lightweight architecture with separate frontend and backend; high-efficiency frontend and backend framework; single programming language (JavaScript) finishing full-stack web development.
+* **Multiple Login Method**: prior to deployment, the login method can be configured as local database, LDAP or OAuth.
+* **Multiple Language**: currently English and Chinese languages are supported, other languages can also be added in future.
 
 ## Software environment
 
@@ -14,6 +14,8 @@ Clog (Compact Electronic Logbook System) is a web-based logbook system aimed to 
 * Vue.js: 3.2.31
 * Node.js: 10.24.0
 * MongoDB: 4.2.0
+
+![Alt text](docs/screenshots/software_environment.png?raw=true "Title")
 
 ## Design
 
