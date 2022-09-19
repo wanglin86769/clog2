@@ -44,7 +44,7 @@
     "global_log_title": "标题",
     "global_log_description": "内容",
     "global_log_attachment": "附件",
-    "global_log_logbook": "Logbook",
+    "global_log_logbook": "记录本",
     "global_log_description_placeholder": "请输入日志内容",
     "global_log_discard_edit_prompt": "确定要放弃编辑当前日志吗?",
     "global_log_last_update": "最后更新",
@@ -110,26 +110,26 @@
     "groupmanagement_group_delete_success": "分组删除成功",
 
 
-    "home_logbook": "Logbook",
+    "home_logbook": "记录本",
     "home_log_count": "日志数量",
     "home_last_submit": "最后提交",
     "home_default_group": "默认分组",
-    "home_logbook_load_error": "Logbook信息加载失败",
+    "home_logbook_load_error": "记录本信息加载失败",
 
 
     "logbook_search": "&#128269;作者、标题、内容、附件",
     "logbook_log_load_error": "日志加载失败",
 
 
-    "logbookmanagement_title": "Logbook信息",
-    "logbookmanagement_create_logbook": "新建Logbook",
-    "logbookmanagement_edit_logbook": "编辑Logbook",
-    "logbookmanagement_delete_logbook_prompt": "确定要删除如下Logbook吗?",
-    "logbookmanagement_logbook_load_error": "Logbook信息加载失败",
+    "logbookmanagement_title": "记录本信息",
+    "logbookmanagement_create_logbook": "新建记录本",
+    "logbookmanagement_edit_logbook": "编辑记录本",
+    "logbookmanagement_delete_logbook_prompt": "确定要删除如下记录本吗?",
+    "logbookmanagement_logbook_load_error": "记录本信息加载失败",
     "logbookmanagement_group_load_error": "分组信息加载失败",
-    "logbookmanagement_logbook_create_success": "Logbook创建成功",
-    "logbookmanagement_logbook_modify_success": "Logbook修改成功",
-    "logbookmanagement_logbook_delete_success": "Logbook删除成功",
+    "logbookmanagement_logbook_create_success": "记录本创建成功",
+    "logbookmanagement_logbook_modify_success": "记录本修改成功",
+    "logbookmanagement_logbook_delete_success": "记录本删除成功",
 
 
     "tagmanagement_title": "Tag信息",
@@ -189,8 +189,8 @@
     "menu_manage": "管理",
     "menu_config": "设置",
     "menu_about": "关于",
-    "menu_logbook_grouping": "Logbook分组",
-    "menu_logbook": "Logbook",
+    "menu_logbook_grouping": "记录本分组",
+    "menu_logbook": "记录本",
     "menu_tag": "Tag",
     "menu_user_management": "用户权限",
     "menu_account_management": "账号管理",
