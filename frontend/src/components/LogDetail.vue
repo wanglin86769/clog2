@@ -4,7 +4,7 @@
 		<Button :label="$t('global_edit')" icon="fa fa-pencil" class="p-button-warning" style="margin-right: 15px" @click="onEditClick" :disabled="!canEdit" />
 		<Button :label="$t('global_delete')" icon="fa fa-trash" class="p-button-danger" style="margin-right: 15px" @click="onDeleteClick" :disabled="!canEdit" />
 		<Button :label="$t('global_history')" icon="fa fa-info" class="p-button-info" @click="onHistoryClick" :disabled="!log.histories || !log.histories.length" />
-		<Card class="p-shadow-2" style="margin-bottom: 2em;">
+		<Card class="shadow-2" style="margin-bottom: 2em;">
             <template #title>
                 {{ $t('logdetail_title') }}
             </template>
@@ -64,8 +64,8 @@
                     </tr>
                 </table>
 				<Panel v-if="log && log.attachments && log.attachments.length" :header="$t('global_log_attachment')" :toggleable="true">
-					<div class="p-grid" style="margin-top: 2em">
-						<div class="p-col-12 p-md-6 p-lg-4 p-xl-3" v-for="(attachment, index) in log.attachments" :key="index" style="padding: 1em;">
+					<div class="grid" style="margin-top: 2em">
+						<div class="col-12 md:col-6 lg:col-4 xl:col-3" v-for="(attachment, index) in log.attachments" :key="index" style="padding: 1em;">
 							<div v-if="['image/jpeg', 'image/png', 'image/bmp', 'image/gif'].includes(attachment.contentType)">
 								<Image :src="attachmentUrl(log._id, attachment._id)" alt="Attachment Image" width="200" preview />
 								<div id="attachmentLink" style="cursor: pointer;" @click="openAttachment(log._id, attachment._id)">
@@ -88,7 +88,7 @@
 
 		<Dialog v-model:visible="deleteLogDialog" :header="$t('global_message')" :modal="true" style="min-width: 40%">
 			<div>
-				<i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2em; color: orange; vertical-align: middle;" />
+				<i class="pi pi-exclamation-triangle mr-3" style="font-size: 2em; color: orange; vertical-align: middle;" />
 				<span style="color: orange; font-size: 1.2em;">{{ $t('logdetail_delete_log_prompt') }}</span>
 			</div>
 			<template #footer>

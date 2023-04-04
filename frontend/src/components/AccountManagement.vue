@@ -1,14 +1,14 @@
 <template>
-	<div class="p-grid">
-		<div class="p-col-12">
+	<div class="grid">
+		<div class="col-12">
 			<div class="card">
 				<div style="text-align: center; color: RGB(29,149,243); font-size: 1.8em; font-weight: bold; margin-bottom: .5em;">
 					{{ $t('accountmanagement_title') }}
 				</div>
 
-				<Toolbar class="p-mb-0">
+				<Toolbar class="mb-0">
 					<template v-slot:start>
-						<Button v-if="isAdmin" :label="$t('global_add')" icon="pi pi-plus" class="p-button-success p-button-sm p-mr-2" @click="onAddClick" />
+						<Button v-if="isAdmin" :label="$t('global_add')" icon="pi pi-plus" class="p-button-success p-button-sm mr-2" @click="onAddClick" />
 					</template>
 
 					<template v-slot:end>
@@ -81,19 +81,19 @@
 			</div>
 
 			<Dialog v-model:visible="accountDialog" :header="crudOperation==='create'?$t('accountmanagement_create_account'):crudOperation==='update'?$t('accountmanagement_edit_account'):''" :modal="true" class="p-fluid" style="min-width: 40%">
-				<div class="p-field">
+				<div class="field">
 					<span style="color: red">* </span><label>{{ $t('global_name') }}</label>
 					<InputText v-model.trim="account.name" class="p-inputtext-sm" autofocus />
 				</div>
-				<div class="p-field">
+				<div class="field">
 					<span style="color: red">* </span><label>{{ $t('global_email') }}</label>
 					<InputText v-model.trim="account.email" class="p-inputtext-sm" />
 				</div>
-				<div class="p-field">
+				<div class="field">
 					<span style="color: red">* </span><label>{{ $t('global_password') }}</label>
 					<Password v-model="account.password" class="p-inputtext-sm" :feedback="false" toggleMask />
 				</div>
-				<div class="p-field">
+				<div class="field">
 					<span style="color: red">* </span><label>{{ $t('global_confirm_password') }}</label>
 					<Password v-model="password2" class="p-inputtext-sm" :feedback="false" toggleMask />
 				</div>
@@ -112,7 +112,7 @@
 
 			<Dialog v-model:visible="deleteAccountDialog" :header="$t('global_message')" :modal="true" style="min-width: 40%">
 				<div>
-					<i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2em; color: orange; vertical-align: middle;" />
+					<i class="pi pi-exclamation-triangle mr-3" style="font-size: 2em; color: orange; vertical-align: middle;" />
 					<span style="color: orange; font-size: 1.2em;">{{ $t('accountmanagement_delete_account_prompt') }}</span>
 					<div style="text-indent: 3em;">{{ $t('global_name') }}: {{ account.name }}</div>
 					<div style="text-indent: 3em;">{{ $t('global_email') }}: {{ account.email }}</div>

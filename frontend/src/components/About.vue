@@ -1,7 +1,7 @@
 <template>
 <div>
-	<div class="p-grid">
-		<div class="p-col-12">
+	<div class="grid">
+		<div class="col-12">
 			<div class="card">
 				<h5 style="font-weight: bold; color: RGB(29,149,243);">Introduction</h5>
 				<p>Clog (Compact Electronic Logbook System) is a web-based application designed to be used for accelerator projects.</p>

@@ -1,12 +1,12 @@
 <template>
-	<div class="p-grid">
-		<div class="p-col-12">
+	<div class="grid">
+		<div class="col-12">
 			<div class="card">
 				<div style="text-align: center; color: RGB(29,149,243); font-size: 1.8em; font-weight: bold; margin-bottom: .5em;">
 					{{ $t('logbookmanagement_title') }}
 				</div>
 
-				<Button v-if="userInfo && isAdmin" :label="$t('global_add')" icon="pi pi-plus" style="margin-bottom: 5px" class="p-button-success p-button-sm p-mr-2" @click="onAddClick" />
+				<Button v-if="userInfo && isAdmin" :label="$t('global_add')" icon="pi pi-plus" style="margin-bottom: 5px" class="p-button-success p-button-sm mr-2" @click="onAddClick" />
 				
 				<DataTable :value="logbooks" dataKey="_id" :rowHover="true" showGridlines responsiveLayout="stack">
 					<Column field="name" :header="$t('global_index')">
@@ -47,16 +47,16 @@
 			</div>
 
 			<Dialog v-model:visible="logbookDialog" :header="crudOperation==='create'?$t('logbookmanagement_create_logbook'):crudOperation==='update'?$t('logbookmanagement_edit_logbook'):''" :modal="true" class="p-fluid" style="min-width: 40%">
-				<div class="p-field">
-					<span style="color: red">*</span><label> {{ $t('global_naming') }}</label>
+				<div class="field">
+					<span style="color: red">* </span><label>{{ $t('global_naming') }}</label>
 					<InputText v-model.trim="logbook.name" class="p-inputtext-sm" autofocus />
 				</div>
-				<div class="p-field">
-					<span style="color: red">*</span><label> {{ $t('global_grouping') }}</label>
+				<div class="field">
+					<span style="color: red">* </span><label>{{ $t('global_grouping') }}</label>
 					<Dropdown v-model="logbook.group" :options="groups" optionLabel="name" optionValue="_id" :placeholder="$t('global_select')" :showClear="true" />
 				</div>
-				<div class="p-field">
-					<span style="color: red">*</span><label> {{ $t('global_number') }}</label>
+				<div class="field">
+					<span style="color: red">* </span><label>{{ $t('global_number') }}</label>
 					<InputText v-model.trim="logbook.number" class="p-inputtext-sm" />
 				</div>
 
@@ -74,7 +74,7 @@
 
 			<Dialog v-model:visible="deleteLogbookDialog" :header="$t('global_message')" :modal="true" style="min-width: 40%">
 				<div>
-					<i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2em; color: orange; vertical-align: middle;" />
+					<i class="pi pi-exclamation-triangle mr-3" style="font-size: 2em; color: orange; vertical-align: middle;" />
 					<span style="color: orange">{{ $t('logbookmanagement_delete_logbook_prompt') }}</span>
 					<div style="text-indent: 3em;">{{ $t('global_naming') }}: {{ logbook.name }}</div>
 					<div style="text-indent: 3em;">{{ $t('global_grouping') }}: {{ logbook.group ? logbook.group.name : '' }}</div>

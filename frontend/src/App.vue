@@ -4,7 +4,7 @@
 
             <Menubar :model="menuitems">
                 <template #start>
-                    <img alt="logo" src="@/assets/images/clog.png" style="vertical-align: middle" height="40" class="p-mr-2">
+                    <img alt="logo" src="@/assets/images/clog.png" style="vertical-align: middle" height="40" class="mr-2">
                 </template>
                 <template #end>
                     <SplitButton v-if="userInfo" :label="userInfo.email ? userInfo.email.split('@')[0] : ''" icon="fa fa-user" :model="buttonItems"></SplitButton>
@@ -30,10 +30,10 @@
             <span class="footer-text">{{ softwareUser }}</span>
         </div>
 
-        <Dialog :header="$t('global_message')" v-model:visible="logoutDialogDisplay" style="min-width: 300px" :modal="true">
+        <Dialog :header="$t('global_message')" v-model:visible="logoutDialogDisplay" style="min-width: 800px" :modal="true">
             <div>
                 <i class="fa fa-exclamation-circle fa-2x" style="vertical-align: middle; color: orange"></i>
-                <span class="p-text-center p-ml-2" style="vertical-align: middle">{{ $t('app_logout_confirm_message') }}</span>
+                <span class="text-center ml-2" style="vertical-align: middle">{{ $t('app_logout_confirm_message') }}</span>
             </div>
 
             <template #footer>
@@ -60,7 +60,7 @@
         <Dialog :header="$t('global_message')" v-model:visible="sessionExpireDialogDisplay" :style="{width: '30vw'}" :modal="true" :closable="false">
             <div style="color: orange; font-weight: bold">
                 <i class="fa fa-exclamation-triangle fa-2x" style="vertical-align: middle; color: orange"></i>
-                <span class="p-text-center p-ml-2" style="vertical-align: middle">{{ $t('app_session_expire_message') }}</span>
+                <span class="text-center ml-2" style="vertical-align: middle">{{ $t('app_session_expire_message') }}</span>
             </div>
 
             <template #footer>

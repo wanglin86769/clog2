@@ -33,7 +33,7 @@ function generateQuery(query, filters) {
                     query[key] = value;
                     break;
                 case 'tags':
-                    query[key] = mongoose.Types.ObjectId(value);
+                    query[key] = new mongoose.Types.ObjectId(value);
                     break;
                 case 'title':
                     query[key] = { "$regex": value, "$options": "i" };
@@ -80,7 +80,7 @@ exports.findLastActive = async (req, res, next) => {
         let data = await Log.aggregate([
             { 
                 $match: {
-                    logbook: mongoose.Types.ObjectId(logbook),
+                    logbook: new mongoose.Types.ObjectId(logbook),
                     active: true
                 }
             },
@@ -135,7 +135,7 @@ exports.findLogs = async (req, res, next) => {
         return res.status(401).json({ message: 'Starting data and quantity are not specified.' });
     }
 
-    let query = { active: true, logbook: mongoose.Types.ObjectId(logbook) };
+    let query = { active: true, logbook: new mongoose.Types.ObjectId(logbook) };
     generateQuery(query, filters);
 
     let sort = {};
@@ -280,7 +280,7 @@ exports.findLogs = async (req, res, next) => {
 exports.findLog = async (req, res, next) => {
     let pipeline = [
         { 
-            $match: { _id: mongoose.Types.ObjectId(req.params.logId) }
+            $match: { _id: new mongoose.Types.ObjectId(req.params.logId) }
         },
         {
             $lookup: {
@@ -438,6 +438,13 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
     let attachments = [];
     if(Array.isArray(req.files) && req.files.length) {
         for(let file of req.files) {
+            /* 
+             * By default, 
+             * if all chars are latin1, then re-decoding
+             */
+            if (!/[^\u0000-\u00ff]/.test(file.originalname)) {
+                file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
+            }
             attachments.push({
                 'name': file.originalname,
                 'size': file.size,

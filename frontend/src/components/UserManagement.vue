@@ -1,14 +1,14 @@
 <template>
-	<div class="p-grid">
-		<div class="p-col-12">
+	<div class="grid">
+		<div class="col-12">
 			<div class="card">
 				<div style="text-align: center; color: RGB(29,149,243); font-size: 1.8em; font-weight: bold; margin-bottom: .5em;">
 					{{ $t('usermanagement_title') }}
 				</div>
 
-				<Toolbar class="p-mb-0">
+				<Toolbar class="mb-0">
 					<template v-slot:start>
-						<Button v-if="isAdmin" :label="$t('global_add')" icon="pi pi-plus" class="p-button-success p-button-sm p-mr-2" @click="onAddClick" />
+						<Button v-if="isAdmin" :label="$t('global_add')" icon="pi pi-plus" class="p-button-success p-button-sm mr-2" @click="onAddClick" />
 					</template>
 
 					<template v-slot:end>
@@ -63,15 +63,15 @@
 			</div>
 
 			<Dialog v-model:visible="userDialog" :header="crudOperation==='create'?$t('usermanagement_create_user'):crudOperation==='update'?$t('usermanagement_edit_user'):''" :modal="true" class="p-fluid" style="min-width: 40%">
-				<div class="p-field">
-					<span style="color: red">*</span><label> {{ $t('global_name') }}</label>
+				<div class="field">
+					<span style="color: red">* </span><label>{{ $t('global_name') }}</label>
 					<InputText v-model.trim="user.name" class="p-inputtext-sm" autofocus />
 				</div>
-				<div class="p-field">
-					<span style="color: red">*</span><label> {{ $t('global_email') }}</label>
+				<div class="field">
+					<span style="color: red">* </span><label>{{ $t('global_email') }}</label>
 					<InputText v-model.trim="user.email" class="p-inputtext-sm" />
 				</div>
-				<div class="p-field-checkbox">
+				<div class="field-checkbox">
 					<div>{{ $t('global_admin') }}</div>
 					<InputSwitch v-model="user.admin" style="margin-left: 10px" />
 				</div>
@@ -90,7 +90,7 @@
 
 			<Dialog v-model:visible="deleteUserDialog" :header="$t('global_message')" :modal="true" style="min-width: 40%">
 				<div>
-					<i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2em; color: orange; vertical-align: middle;" />
+					<i class="pi pi-exclamation-triangle mr-3" style="font-size: 2em; color: orange; vertical-align: middle;" />
 					<span style="color: orange">{{ $t('usermanagement_delete_user_prompt') }}</span>
 					<div style="text-indent: 3em;">{{ $t('global_name') }}: {{ user.name }}</div>
 					<div style="text-indent: 3em;">{{ $t('global_email') }}: {{ user.email }}</div>

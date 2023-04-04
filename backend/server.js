@@ -13,12 +13,8 @@ for (const key in globalConfig) {
 }
 
 // Connecting mongoDB
-mongoose.connect(databaseConfig.url, {
-    useNewUrlParser: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
-    useCreateIndex: true
-}).then(() => {
+mongoose.connect(databaseConfig.url)
+.then(() => {
         console.log('Database connected')
     },
     error => {

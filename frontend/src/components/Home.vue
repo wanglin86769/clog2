@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<div class="p-grid">
-			<div class="p-col-12">
+		<div class="grid">
+			<div class="col-12">
 				<div class="card">
 					<table border="1" width="100%" style="border-collapse: collapse;">
 						<tr height="50em" style="background-color: RGB(248, 249, 250); font-size: 1.1em;">

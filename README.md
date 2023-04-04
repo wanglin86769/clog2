@@ -10,10 +10,10 @@
 
 ## Software environment
 
-* PrimeVue: 3.15.0
-* Vue.js: 3.2.31
-* Node.js: 10.24.0
-* MongoDB: 4.2.0
+* PrimeVue: 3.26.1
+* Vue.js: 3.2.47
+* Node.js: 16.19.0
+* MongoDB: 6.0.3
 
 ![Alt text](docs/screenshots/software_environment.png?raw=true "Title")
 
@@ -136,15 +136,15 @@ npm run dev
 Go to frontend directory
 ```
 cd frontend
-npm install
+npm ci
 npm run build
-cp dist /var/www/html
+cp -r dist/* /var/www/html
 ```
 
 Go to backend directory
 ```
 cd backend
-npm install
+npm ci
 pm2 start server.js
 ```
 
@@ -158,5 +158,5 @@ Test users in the database are as follows:
 ```
 username: admin    password: 1    admin: true
 username: user1    password: 1    admin: false
-username: user2    password: 2    admin: false
+username: user2    password: 1    admin: false
 ```

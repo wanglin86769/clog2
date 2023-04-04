@@ -1,6 +1,6 @@
 <template>
 	<div style="margin-left: 1%; margin-right: 1%; margin-top: 20px;">
-		<Card class="p-shadow-2" style="margin-bottom: 2em;">
+		<Card class="shadow-2" style="margin-bottom: 2em;">
             <template #title>
                 {{ $t('logedit_title') }}
             </template>
@@ -38,8 +38,8 @@
                     </tr>
                 </table>
 				<Panel v-if="currentLog && currentLog.attachments && currentLog.attachments.length" :header="$t('logedit_existing_attachments')" :toggleable="true">
-					<div class="p-grid" style="margin-top: 2em">
-						<div class="p-col-12 p-md-6 p-lg-4 p-xl-3" v-for="(attachment, index) in currentLog.attachments" :key="index" style="padding: 1em;">
+					<div class="grid" style="margin-top: 2em">
+						<div class="col-12 md:col-6 lg:col-4 xl:col-3" v-for="(attachment, index) in currentLog.attachments" :key="index" style="padding: 1em;">
 							<div v-if="['image/jpeg', 'image/png', 'image/bmp', 'image/gif'].includes(attachment.contentType)">
 								<Image :src="attachmentUrl(log._id, attachment._id)" alt="Attachment Image" width="100" preview />
 							</div>
@@ -63,13 +63,13 @@
             </template>
             <template #footer>
 				<Button icon="pi pi-check" :label="$t('global_ok')" @click="editLog" />
-				<Button icon="pi pi-times" :label="$t('global_cancel')" class="p-button-secondary" style="margin-left: 1em" @click="onCancelClick" />
+				<Button icon="pi pi-times" :label="$t('global_cancel')" class="p-button-text" style="margin-left: 1em" @click="onCancelClick" />
 			</template>
         </Card>
 
 		<Dialog v-model:visible="discardLogDialog" :header="$t('global_message')" :modal="true" style="min-width: 40%">
 			<div>
-				<i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2em; color: orange; vertical-align: middle;" />
+				<i class="pi pi-exclamation-triangle mr-3" style="font-size: 2em; color: orange; vertical-align: middle;" />
 				<span style="color: orange; font-size: 1.2em;">{{ $t('global_log_discard_edit_prompt') }}</span>
 			</div>
 			<template #footer>

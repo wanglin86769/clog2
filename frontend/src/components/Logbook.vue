@@ -1,26 +1,18 @@
 <template>
-	<div class="p-grid">
-		<div class="p-col-12">
+	<div class="grid">
+		<div class="col-12">
 			<div class="card">
 				<div v-if="logbook" style="text-align: center; font-size: 1.8em; font-weight: bold; margin-bottom: .2em;">
 					<i class="fa fa-book" style="vertical-align: middle; color: mediumorchid;"></i>
 					<span style="vertical-align: middle; color: RGB(29,149,243); margin-left: .2em;">{{ logbook.name }}</span>
 				</div>
-				<Toolbar class="p-mb-0">
+				<Toolbar class="mb-0">
 					<template #start>
 						<Button :label="$t('global_go_back')" icon="fa fa-arrow-left" class="p-button-help" style="margin-right: 15px" @click="onReturnClick" />
 						<Button :label="$t('global_new')" icon="pi pi-plus" class="p-button-primary" style="margin-right: 10px" @click="onNewClick" :disabled="!userInfo" />
-						<!-- <Button label="编辑" icon="pi pi-upload" class="p-button-success" style="margin-right: 10px" />
-						<Button label="删除" icon="pi pi-upload" class="p-button-success" />
-						<i class="pi pi-bars p-toolbar-separator mr-2" />
-						<Button label="详情" icon="pi pi-upload" class="p-button-success" style="margin-right: 10px" />
-						<Button label="历史" icon="pi pi-upload" class="p-button-success" style="margin-right: 10px" /> -->
 					</template>
 
 					<template #end>
-						<!-- <Button icon="pi pi-search" class="mr-2" />
-						<Button icon="pi pi-calendar" class="p-button-success mr-2" />
-						<Button icon="pi pi-times" class="p-button-danger" /> -->
 						<div class="p-inputgroup">
 							<Button :label="$t('global_reset')" icon="pi pi-refresh" class="p-button-success p-button-sm" @click="resetSearch"/>
 							<InputText :placeholder="$t('logbook_search')" style="width: 20em" class="p-inputtext-sm" v-model="filters.search" @input="onSearchInput" />
@@ -50,9 +42,9 @@
 					</Column>
 					<Column header="">
 						<template #header>
-							<div class="p-grid p-nogutter" style="width: 100%">
-								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_create_date') }}</div>
-								<div class="p-col-12">
+							<div class="grid grid-nogutter" style="width: 100%">
+								<div class="col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_create_date') }}</div>
+								<div class="col-12">
 									<Dropdown style="width: 100%" class="p-inputtext-sm" :placeholder="$t('global_select')" v-model="filters.year" :options="years" :showClear="true" @change="search()"></Dropdown>
 								</div>
 							</div>
@@ -63,9 +55,9 @@
 					</Column>
 					<Column header="">
 						<template #header>
-							<div class="p-grid p-nogutter" style="width: 100%">
-								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_author') }}</div>
-								<div class="p-col-12">
+							<div class="grid grid-nogutter" style="width: 100%">
+								<div class="col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_author') }}</div>
+								<div class="col-12">
 									<InputText style="width: 100%" class="p-inputtext-sm" type="text" v-model="filters.author" :placeholder="$t('global_keyword')" @input="onSearchInput" />
 								</div>
 							</div>
@@ -76,9 +68,9 @@
 					</Column>
 					<Column header="">
 						<template #header>
-							<div class="p-grid p-nogutter" style="width: 100%">
-								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_author_email') }}</div>
-								<div class="p-col-12">
+							<div class="grid grid-nogutter" style="width: 100%">
+								<div class="col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_author_email') }}</div>
+								<div class="col-12">
 									<InputText style="width: 100%" class="p-inputtext-sm" type="text" v-model="filters.email" :placeholder="$t('global_keyword')" @input="onSearchInput" />
 								</div>
 							</div>
@@ -89,9 +81,9 @@
 					</Column>
 					<Column header="">
 						<template #header>
-							<div class="p-grid p-nogutter" style="width: 100%">
-								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_category') }}</div>
-								<div class="p-col-12">
+							<div class="grid grid-nogutter" style="width: 100%">
+								<div class="col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_category') }}</div>
+								<div class="col-12">
 									<Dropdown style="width: 100%" class="p-inputtext-sm" :placeholder="$t('global_select')" v-model="filters.category" :options="categories" :showClear="true" @change="search()"></Dropdown>
 								</div>
 							</div>
@@ -104,9 +96,9 @@
 					</Column>
 					<Column header="">
 						<template #header>
-							<div class="p-grid p-nogutter" style="width: 100%">
-								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_tag') }}</div>
-								<div class="p-col-12">
+							<div class="grid grid-nogutter" style="width: 100%">
+								<div class="col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_tag') }}</div>
+								<div class="col-12">
 									<Dropdown style="width: 100%" class="p-inputtext-sm" :placeholder="$t('global_select')" v-model="filters.tags" :options="tags" optionLabel="name" optionValue="_id" :showClear="true" @change="search()"></Dropdown>
 								</div>
 							</div>
@@ -124,9 +116,9 @@
 					</Column>
 					<Column header="" headerStyle="width: 15%">
 						<template #header>
-							<div class="p-grid p-nogutter" style="width: 100%">
-								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_title') }}</div>
-								<div class="p-col-12">
+							<div class="grid grid-nogutter" style="width: 100%">
+								<div class="col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_title') }}</div>
+								<div class="col-12">
 									<InputText style="width: 100%" class="p-inputtext-sm" type="text" v-model="filters.title" :placeholder="$t('global_keyword')" @input="onSearchInput" />
 								</div>
 							</div>
@@ -138,9 +130,9 @@
 					</Column>
 					<Column header="" headerStyle="width: 35%">
 						<template #header>
-							<div class="p-grid p-nogutter" style="width: 100%">
-								<div class="p-col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_description') }}</div>
-								<div class="p-col-12">
+							<div class="grid grid-nogutter" style="width: 100%">
+								<div class="col-12" style="margin-bottom: 5px; white-space: nowrap;">{{ $t('global_log_description') }}</div>
+								<div class="col-12">
 									<InputText style="width: 100%" class="p-inputtext-sm" type="text" v-model="filters.description" :placeholder="$t('global_keyword')" @input="onSearchInput" />
 								</div>
 							</div>

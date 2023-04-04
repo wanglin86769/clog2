@@ -95,8 +95,8 @@ import Tree from 'primevue/tree';
 import TreeTable from 'primevue/treetable';
 import TriStateCheckbox from 'primevue/tristatecheckbox';
 
-import VueLoading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
+import {LoadingPlugin} from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/css/index.css';
 
 import i18n from "./locale/index.js";
 
@@ -116,7 +116,7 @@ app.use(ConfirmationService);
 app.use(ToastService);
 app.use(router);
 app.use(store);
-app.use(VueLoading, { color: 'RGB(29,149,243)' });
+app.use(LoadingPlugin, { color: 'RGB(33, 150, 243)' });
 app.use(i18n);
 
 app.directive('tooltip', Tooltip);

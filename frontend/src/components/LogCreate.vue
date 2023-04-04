@@ -1,8 +1,8 @@
 <template>
 	<div style="margin-left: 1%; margin-right: 1%; margin-top: 20px;">
-		<Card class="p-shadow-2" style="margin-bottom: 2em;">
+		<Card class="shadow-2" style="margin-bottom: 2em;">
             <template #title>
-                {{ $t('logincreate_title') }}
+                {{ $t('logcreate_title') }}
             </template>
             <!-- <template #subtitle>
                 Subtitle
@@ -53,13 +53,13 @@
             </template>
             <template #footer>
 				<Button icon="pi pi-check" :label="$t('global_create')" @click="createLog" />
-				<Button icon="pi pi-times" :label="$t('global_cancel')" class="p-button-secondary" style="margin-left: 1em" @click="onCancelClick" />
+				<Button icon="pi pi-times" :label="$t('global_cancel')" class="p-button-text" style="margin-left: 1em" @click="onCancelClick" />
 			</template>
         </Card>
 
 		<Dialog v-model:visible="discardLogDialog" :header="$t('global_message')" :modal="true" style="min-width: 40%">
 			<div>
-				<i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2em; color: orange; vertical-align: middle;" />
+				<i class="pi pi-exclamation-triangle mr-3" style="font-size: 2em; color: orange; vertical-align: middle;" />
 				<span style="color: orange; font-size: 1.2em;">{{ $t('global_log_discard_edit_prompt') }}</span>
 			</div>
 			<template #footer>
