@@ -79,13 +79,37 @@
             </template>
         </Dialog>
 
+        <Dialog :header="'API token'" v-model:visible="showTokenDialogDisplay" style="min-width: 400px" :modal="true">
+            <div>
+                {{ $t('token_expiration') }}<span style="color: red; vertical-align: middle;"> *</span>
+            </div>
+            <Calendar v-model="endDate" :showIcon="true" dateFormat="yy-mm-dd" style="margin-top: 5px; width: 100%;" />
+
+            <div style="margin-top: 20px">API token</div>
+            <div style="margin-top: 5px; color: RGB(104,159,56);">
+                <div v-if="generatedToken">
+                    <span style="color: red">...... </span>
+                    {{ generatedToken.slice(-30) }}
+                    <i v-tooltip="$t('token_clipboard')" class="fa fa-clipboard" style="vertical-align: middle; color: orange; cursor: pointer; margin-left: 10px;" @click="copyToClipboard()"></i>
+                </div>
+                <div v-else>N/A</div>
+            </div>
+
+            <template #footer>
+                <Button :label="$t('token_generate')" icon="fa fa-paper-plane" @click="generateToken()" class="p-button-success" style="float: left"/>
+                <Button :label="$t('global_close')" icon="pi pi-times" @click="showTokenDialogDisplay=false" class="p-button-text"/>
+            </template>
+        </Dialog>
+
     </div>
 </template>
 
 
 <script>
+import { Clipboard } from "v-clipboard";
 import config from '@/config/configuration.js';
 import AuthenticationService from '@/service/AuthenticationService';
+import UserService from '@/service/UserService';
 const jwt = require('jsonwebtoken');
 
 export default {
@@ -101,6 +125,10 @@ export default {
             browserLanguagesDialogDisplay: false,
             browserLanguages: [],
 
+            showTokenDialogDisplay: false,
+            endDate: null,
+            generatedToken: null,
+
             menuitems: [],
 
             buttonItems: [
@@ -109,6 +137,13 @@ export default {
                     icon: 'pi pi-user',
                     command: () => {
                         this.onAccountInfoClick();
+                    }
+                },
+                {
+                    label: 'API Token',
+                    icon: 'pi pi-key',
+                    command: () => {
+                        this.onGenerateTokenClick();
                     }
                 },
                 {
@@ -123,6 +158,7 @@ export default {
     },
     created () {
         this.authenticationService = new AuthenticationService();
+        this.userService = new UserService();
 
         this.checkSessionStatus();
 		this.intervalId = setInterval(this.checkSessionStatus, 60000);
@@ -213,6 +249,11 @@ export default {
         onAccountInfoClick() {
             this.showAccountDialogDisplay = true;
         },
+        onGenerateTokenClick() {
+            this.generatedToken = null;
+            this.endDate = null;
+            this.showTokenDialogDisplay = true;
+        },
         onLoginClick() {
             // Save the page before login
             localStorage.setItem(config.localStoragePageBeforeLogin, this.$route.path);
@@ -265,6 +306,38 @@ export default {
             // this.$router.push('/login');
             let url = '/login';
             window.location = url;
+        },
+        generateToken() {
+			if(!this.endDate) {
+				this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: 'Expiration is required' });
+				return;
+			}
+
+            const one_second = 1000;
+            let dateNow = new Date();
+            let expiration = Math.round((this.endDate - dateNow) / one_second);
+
+            if(this.endDate <= dateNow) {
+				this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: 'Expiration date must be later then now' });
+				return;
+			}
+
+            this.loading = true;
+			this.userService.generateToken(expiration)
+			.then(data => {
+				this.generatedToken = data.token;
+			}).catch(error => {
+				if(error.response) {
+					this.$toast.add({ severity: 'error', summary: this.$t('token_generate_error'), detail: error.response.data.message });
+				} else {
+					this.$toast.add({ severity: 'error', summary: this.$t('token_generate_error'), detail: error.message });
+				}
+			}).finally(() => {
+				this.loading = false;
+			});
+        },
+        copyToClipboard() {
+            Clipboard.copy(this.generatedToken);
         },
     },
     computed: {

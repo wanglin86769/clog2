@@ -53,6 +53,7 @@ async function loggedIn(req, res, next) {
             decoded = jwt.verify(token, jwtConfig.secret);
             user = decoded;
         } catch(error) {
+            console.log(error);
             return res.status(401).json({ message: 'JWT token parsing error.' });
         }
     } else {

@@ -456,6 +456,20 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
     log.attachments = attachments;
 
     try {
+        if(req.query.append) {
+            let existingLog = await Log.findOne({ logbook: log.logbook, title: log.title }, null, { sort: { updatedAt: -1 } });
+            if(existingLog && log.description) {
+                existingLog.createdAt = timeNow;
+                existingLog.createdBy = user.email;
+                existingLog.updatedAt = timeNow;
+                existingLog.updatedBy = user.email;
+                existingLog.lastActiveAt = timeNow;
+                existingLog.description = existingLog.description + '\n' + log.description;
+                let result = await existingLog.save();
+                return res.json(result);
+            }
+        }
+
         let data = await Log.create(log);
         res.json(data);
     } catch(error) {

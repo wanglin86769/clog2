@@ -63,6 +63,12 @@
     "app_session_expire_message": "会话超时，即将退出登录！",
 
 
+    "token_generate": "生成",
+    "token_expiration": "过期时间",
+    "token_clipboard": "复制到剪切板",
+    "token_generate_error": "token生成失败",
+
+
     "verifyaccount_email_verify_sucdess": "邮箱验证成功",
     "verifyaccount_email_verify_fail": "邮箱验证失败",
     "verifyaccount_email_verifying": "邮箱验证中 ...",

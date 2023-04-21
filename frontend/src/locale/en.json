@@ -63,6 +63,12 @@
     "app_session_expire_message": "The session timed out and you are about to log out!",
 
 
+    "token_generate": "Generate",
+    "token_expiration": "Expiration",
+    "token_clipboard": "Copy to clipboard",
+    "token_generate_error": "Fail to generate token",
+
+
     "verifyaccount_email_verify_sucdess": "Email verification succeeded",
     "verifyaccount_email_verify_fail": "Email verification failed",
     "verifyaccount_email_verifying": "Email Verifying ...",

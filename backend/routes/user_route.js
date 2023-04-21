@@ -7,6 +7,9 @@ const authorize = require('../auth/authorize.js');
 // Get users
 router.get("/", authorize.loggedIn, users.findAll);
 
+// Generate a token
+router.get('/token', authorize.loggedIn, users.generateToken);
+
 // Create a user
 router.post('/', authorize.loggedIn, authorize.admin, users.addUser);
 

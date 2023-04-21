@@ -1,4 +1,6 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/user_model.js');
+const jwtConfig = require('../config/jwt.js');
 
 
 // Get all users using query
@@ -34,6 +36,34 @@ exports.findAll = async (req, res, next) => {
         let users = await User.find(query).sort({ email: 1 });
         res.json(users);
     } catch(error) {
+        res.status(500).json({message: error.message})
+    }
+};
+
+// Generate a token
+exports.generateToken = async (req, res, next) => {	
+    let expiration = req.query.expiration;
+    if(!expiration) {
+        return res.status(401).json({ message: 'Expiration is not specified.' });
+    }
+
+    let user = req.headers['user'];
+    if(!user) {
+        return res.status(401).json({ message: 'No user information is extracted.' });
+    }
+
+    let jwtUser = {};
+    jwtUser.name = user.name;
+    jwtUser.email = user.email;
+    jwtUser.admin = user.admin;
+
+    try {
+        let token = jwt.sign(jwtUser, jwtConfig.secret, {
+            expiresIn: Number(expiration) // in second
+        });
+        res.status(200).send({ token: token });
+    } catch(error) {
+        console.log(error);
         res.status(500).json({message: error.message})
     }
 };

@@ -30,6 +30,11 @@ export default class UserService {
 		return axios.get(url, {headers: authenticationService.authHeader()}).then(res => res.data);
 	}
 
+	generateToken(expiration) {
+		let url = `${config.serverPath}/users/token?expiration=${expiration}`;
+		return axios.get(url, {headers: authenticationService.authHeader()}).then(res => res.data);
+	}
+
 	addUser(user) {
 		let url = `${config.serverPath}/users`;
 		return axios.post(url, user, {headers: authenticationService.authHeader()}).then(res => res.data);
