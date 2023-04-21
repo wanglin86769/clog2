@@ -105,6 +105,27 @@ Login page for CSNS OAuth2 authentication
 
 ![Alt text](docs/screenshots/post.png?raw=true "Title")
 
+### Use the API token to create logs using Python
+
+The `append=true` query parameter will append the text to the end of a log instead of creating a new one if the log with the title exists.
+
+```python
+import requests
+
+headers = {
+        'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWNjLW1zIiwiZW1haWwiOiJjc25zLWFjY29AaWhlcC5hYy5jbiIsImFkbWluIjpmYWxzZSwiaWF0IjoxNjgyMDQ1OTk5LCJleHAiOjE2ODIwOTI4MDN9.AgXSTsVgVp2ifbvpY_bI3Nu15h4Tj5HFuwv1v7G8pP8'
+        }
+
+data={
+        'log':'{"logbook":"6423a38977784806a220b058","category":"Info","title":"API test","description":"send from python"}'
+        }
+
+response = requests.post('http://10.1.236.131:3000/api/logs?append=true',
+        headers=headers, data=data)
+
+print(response.text)
+```
+
 ## Project structure
 
 * Frontend: provides web pages using Vue.js
