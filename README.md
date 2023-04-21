@@ -89,6 +89,22 @@ Login page for CSNS OAuth2 authentication
 
 ![Alt text](docs/screenshots/attachment_viewing.png?raw=true "Title")
 
+## API token
+
+### Generate API token
+
+![Alt text](docs/screenshots/API_token.png?raw=true "Title")
+
+![Alt text](docs/screenshots/generate_token.png?raw=true "Title")
+
+### Use the API token to create logs using Postman
+
+![Alt text](docs/screenshots/http_request.png?raw=true "Title")
+
+![Alt text](docs/screenshots/authorization.png?raw=true "Title")
+
+![Alt text](docs/screenshots/post.png?raw=true "Title")
+
 ## Project structure
 
 * Frontend: provides web pages using Vue.js
