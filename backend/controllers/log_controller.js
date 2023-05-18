@@ -5,6 +5,15 @@ const User = require('../models/user_model.js');
 const Log = require('../models/log_model.js');
 
 
+function removeAttachmentContent(data) {
+    if(data && data.attachments) {
+        for(let attachment of data.attachments) {
+            attachment.content = undefined;
+        }
+    }
+}
+
+
 function generateQuery(query, filters) {
     if(filters) {
         for (const [key, value] of Object.entries(filters)) {
@@ -458,19 +467,27 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
     try {
         if(req.query.append) {
             let existingLog = await Log.findOne({ logbook: log.logbook, title: log.title }, null, { sort: { updatedAt: -1 } });
-            if(existingLog && log.description) {
+            if(existingLog && (log.description || (log.attachments && log.attachments.length))) {
                 existingLog.createdAt = timeNow;
                 existingLog.createdBy = user.email;
                 existingLog.updatedAt = timeNow;
                 existingLog.updatedBy = user.email;
                 existingLog.lastActiveAt = timeNow;
-                existingLog.description = existingLog.description + '\n' + log.description;
+                if(log.description) {
+                    existingLog.description = existingLog.description + '\n' + log.description;
+                }
+                if(log.attachments && log.attachments.length) {
+                    if(!existingLog.attachments)  existingLog.attachments = [];
+                    existingLog.attachments = existingLog.attachments.concat(log.attachments);
+                }
                 let result = await existingLog.save();
+                removeAttachmentContent(result);
                 return res.json(result);
             }
         }
 
         let data = await Log.create(log);
+        removeAttachmentContent(data);
         res.json(data);
     } catch(error) {
         res.status(500).json({message: error.message})
@@ -496,6 +513,13 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
         let increaseAttachments = [];
         if(Array.isArray(req.files) && req.files.length) {
             for(let file of req.files) {
+                /* 
+                 * By default, 
+                 * if all chars are latin1, then re-decoding
+                 */
+                if (!/[^\u0000-\u00ff]/.test(file.originalname)) {
+                    file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
+                }
                 increaseAttachments.push({
                     'name': file.originalname,
                     'size': file.size,
@@ -545,6 +569,7 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
         let push = { histories: historyItem };
 
         let data = await Log.findByIdAndUpdate(req.params.logId, { $set: log, $push: push }, { new: true });
+        removeAttachmentContent(data);
         res.json(data);
     } catch(error) {
         res.status(500).json({message: error.message})
@@ -563,6 +588,7 @@ exports.deleteLog = async (req, res, next) => {
 
     try {
         let data = await Log.findByIdAndUpdate(req.params.logId, { $set: req.body }, { new: true });
+        removeAttachmentContent(data);
         res.json(data);
     } catch(error) {
         res.status(500).json({message: error.message})
