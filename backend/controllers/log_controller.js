@@ -172,94 +172,74 @@ exports.findLogs = async (req, res, next) => {
             $match: query 
         },
         {
-            $facet: {
-                totalCount: [
-                    {
-                        $count: 'count'
-                    }
-                ],
-                paginatedResults: [
-                    {
-                        $sort: sort
-                    },
-                    { 
-                        $skip: first
-                    },
-                    { 
-                        $limit: rows
-                    },
-                    {
-                        $lookup: {
-                            from:"user",
-                            localField: "updatedBy",
-                            foreignField: "email",
-                            as: "updatedBy"
-                        }
-                    },
-                    {
-                        $unwind: {
-                            path: '$updatedBy',
-                            preserveNullAndEmptyArrays: true
-                        }
-                    },
-                    {
-                        $lookup: {
-                            from:"logbook",
-                            localField: "logbook",
-                            foreignField: "_id",
-                            as: "logbook"
-                        }
-                    },
-                    {
-                        $unwind: {
-                            path: '$logbook',
-                            preserveNullAndEmptyArrays: true
-                        }
-                    },
-                    {
-                        $lookup: {
-                            from:"tag",
-                            localField: "tags",
-                            foreignField: "_id",
-                            as: "tags"
-                        }
-                    },
-                    { 
-                        $project: { 
-                            'attachments.content': 0
-                        } 
-                    }
-                ]
+            $sort: sort
+        },
+        { 
+            $skip: first
+        },
+        { 
+            $limit: rows
+        },
+        {
+            $lookup: {
+                from:"user",
+                localField: "updatedBy",
+                foreignField: "email",
+                as: "updatedBy"
             }
+        },
+        {
+            $unwind: {
+                path: '$updatedBy',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from:"logbook",
+                localField: "logbook",
+                foreignField: "_id",
+                as: "logbook"
+            }
+        },
+        {
+            $unwind: {
+                path: '$logbook',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from:"tag",
+                localField: "tags",
+                foreignField: "_id",
+                as: "tags"
+            }
+        },
+        { 
+            $project: { 
+                'attachments.content': 0
+            } 
         }
     ];
 
     // console.log(pipeline);
 
     try {
+        // Retrieve data
         let results = await Log.aggregate(pipeline);
+        // Calculate count
+        let count = await Log.countDocuments(query).exec();
+
+        if(!results) results = [];
+        if(!count) count = 0;
 
         // console.log(results);
+        // console.log(count);
 
         let finalData = {};
-
-        if(results && results.length === 0) {
-            finalData.entries = [];
-            finalData.count = 0;
-            return res.json(finalData);
-        }
-
-        let data = results[0];
-
-        if(!data.paginatedResults || data.paginatedResults.length === 0 || !data.totalCount || data.totalCount.length === 0) {
-            finalData.entries = [];
-            finalData.count = 0;
-        } else {
-            finalData.entries = data.paginatedResults;
-            finalData.count = data.totalCount[0].count;
-        }
-
-        // console.log(finalData.entries);
+        finalData.entries = results;
+        finalData.count = count;
 
         // Post process for history authors
         for(let log of finalData.entries) {
