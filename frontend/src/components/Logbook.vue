@@ -37,7 +37,8 @@
 							<div style="white-space: nowrap;">{{ $t('global_index') }}</div>
 						</template>
 						<template #body="slotProps">
-							<span style="color: RGB(33,150,243)">{{currentPageFirstIndex + slotProps.index + 1}}</span>
+							<!-- <span style="color: RGB(33,150,243)">{{currentPageFirstIndex + slotProps.index + 1}}</span> -->
+							<span style="color: RGB(33,150,243)">{{ slotProps.index + 1 }}</span>
 						</template>
 					</Column>
 					<Column header="">
