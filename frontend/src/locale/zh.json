@@ -123,7 +123,7 @@
     "home_logbook_load_error": "记录本信息加载失败",
 
 
-    "logbook_search": "&#128269;作者、标题、内容、附件",
+    "logbook_search": "作者、标题、内容、附件",
     "logbook_log_load_error": "日志加载失败",
 
 
@@ -138,14 +138,14 @@
     "logbookmanagement_logbook_delete_success": "记录本删除成功",
 
 
-    "tagmanagement_title": "Tag信息",
-    "tagmanagement_create_tag": "新建Tag",
-    "tagmanagement_edit_tag": "编辑Tag",
-    "tagmanagement_delete_tag_prompt": "确定要删除如下Tag吗?",
-    "tagmanagement_tag_load_error": "Tag信息加载失败",
-    "tagmanagement_tag_create_success": "Tag创建成功",
-    "tagmanagement_tag_modify_success": "Tag修改成功",
-    "tagmanagement_tag_delete_success": "Tag删除成功",
+    "tagmanagement_title": "标签信息",
+    "tagmanagement_create_tag": "新建标签",
+    "tagmanagement_edit_tag": "编辑标签",
+    "tagmanagement_delete_tag_prompt": "确定要删除如下标签吗?",
+    "tagmanagement_tag_load_error": "标签信息加载失败",
+    "tagmanagement_tag_create_success": "标签创建成功",
+    "tagmanagement_tag_modify_success": "标签修改成功",
+    "tagmanagement_tag_delete_success": "标签删除成功",
 
 
     "usermanagement_title": "用户权限",
@@ -171,7 +171,7 @@
     "logedit_existing_attachments": "已有附件",
     "logedit_new_attachments": "新增附件",
     "logedit_log_load_error": "当前日志加载失败",
-    "logedit_tag_load_error": "Tag加载失败",
+    "logedit_tag_load_error": "标签加载失败",
 
 
     "login_title": "Clog用户登录",
@@ -197,7 +197,7 @@
     "menu_about": "关于",
     "menu_logbook_grouping": "记录本分组",
     "menu_logbook": "记录本",
-    "menu_tag": "Tag",
+    "menu_tag": "标签",
     "menu_user_management": "用户权限",
     "menu_account_management": "账号管理",
     "menu_browser_languages": "浏览器语言",
