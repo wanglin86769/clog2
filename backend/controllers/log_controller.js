@@ -75,7 +75,7 @@ function generateSort(sort, sortField, sortOrder) {
         sort[sortField] = sortOrder;
     }
 
-    if(!sort['updatedAt'])  sort['updatedAt'] = -1;
+    if(!sort['createdAt'])  sort['createdAt'] = -1;
 }
 
 
