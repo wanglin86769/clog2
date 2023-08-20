@@ -513,6 +513,14 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
         let reduceAttachments = JSON.parse(req.body.reduceAttachments);
         // console.log(reduceAttachments);
         let currentAttachments = JSON.parse(JSON.stringify(currentLog.attachments));
+
+        // Convert buffer types, otherwise the speed of findByIdAndUpdate() will be very slow
+        for(let current of currentAttachments) {
+            if(current.content) {
+                current.content = Buffer.from(current.content);
+            }
+        }
+
         for(let reduceAttachment of reduceAttachments) {
             for(let i = currentAttachments.length - 1; i >= 0 ; i--) {
                 // console.log(currentAttachments[i]._id);
