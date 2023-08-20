@@ -139,7 +139,10 @@
 							</div>
 						</template>
 						<template #body="slotProps">
-							<div style="white-space: pre-wrap" class="logdetail-link" @click="onDetailClick(slotProps.data)">{{ slotProps.data.description }}</div>
+							<div style="white-space: pre-wrap" class="logdetail-link" @click="onDetailClick(slotProps.data)">
+								<span v-if="slotProps.data.description && slotProps.data.description.length > 50">{{slotProps.data.description.slice(0, 50)}} <span style="color: RGB(29,149,243); font-size: 1.5em;">......</span></span>
+								<span v-else>{{ slotProps.data.description }}</span>
+							</div>
 						</template>
 					</Column>
 					<Column header="">
