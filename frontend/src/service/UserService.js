@@ -30,6 +30,11 @@ export default class UserService {
 		return axios.get(url, {headers: authenticationService.authHeader()}).then(res => res.data);
 	}
 
+	findUserByEmail(email) {
+        let url = `${config.serverPath}/users/email/${email}`;
+		return axios.get(url, {headers: authenticationService.authHeader()}).then(res => res.data);
+	}
+
 	generateToken(expiration) {
 		let url = `${config.serverPath}/users/token?expiration=${expiration}`;
 		return axios.get(url, {headers: authenticationService.authHeader()}).then(res => res.data);

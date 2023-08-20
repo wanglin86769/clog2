@@ -88,6 +88,16 @@ exports.findUser = async (req, res, next) => {
     }
 };
 
+// Get single user by email
+exports.findUserByEmail = async (req, res, next) => {	
+    try {
+        let user = await User.findOne({email: req.params.email});
+        res.json(user);
+    } catch(error) {
+        res.status(500).json({message: error.message})
+    }
+};
+
 // Update a user
 exports.updateUser = async (req, res, next) => {	
     try {

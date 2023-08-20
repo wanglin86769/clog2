@@ -258,10 +258,16 @@ export default {
 			return this.$store.state.authentication.user && this.$store.state.authentication.user.admin === true;
         },
 		canEdit() {
+			// Clog admin can edit the log
 			if(this.isAdmin) {
 				return true;
 			}
-			if(this.log && this.log.createdBy && this.userInfo &&  this.log.createdBy.email === this.userInfo.email) {
+			// Log author can edit the log
+			if(this.log && this.log.createdBy && this.userInfo && this.log.createdBy.email === this.userInfo.email) {
+				return true;
+			}
+			// Logbook admin can edit the log
+			if(this.log && this.log.logbook && this.log.logbook.admins && this.userInfo && this.log.logbook.admins.includes(this.userInfo.email)) {
 				return true;
 			}
 			return false;

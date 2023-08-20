@@ -4,6 +4,7 @@ const loginConfig = require('../config/login.js');
 const authenticate = require('../helpers/authenticate.js');
 const User = require('../models/user_model.js');
 const Log = require('../models/log_model.js');
+const Logbook = require('../models/logbook_model.js');
 
 
 // Supporting basic base64-encoded and bearer token authentications, either one can be used.
@@ -81,13 +82,28 @@ async function canEditLog(req, res, next) {
         return res.status(401).json({ message: 'No log with specified id was found.' });
     }
 
-    // Only log author or admin can edit the log
-    if(log.createdBy !== user.email && user.admin !== true) {
-        return res.status(401).json({ message: 'Insufficient permission, only author or admin can edit / delete the log.' });
+    // Clog admin can edit the log
+    if(user.admin === true) {
+        return next();
     }
 
-    // authentication and authorization successful
-    next();
+    // Log author can edit the log
+    if(log.createdBy === user.email) {
+        return next();
+    }
+
+    // Logbook admin can edit the log
+    let logbookId = log.logbook;
+    let logbook = await Logbook.findById(logbookId);
+    if(logbook) {
+        let admins = logbook.admins;
+        if(admins && admins.includes(user.email)) {
+            return next();
+        }
+    }
+
+    // authentication and authorization unsuccessful
+    return res.status(401).json({ message: 'Insufficient permission, only log author, Clog admin and logbook admin can edit / delete the log.' });
 }
 
 

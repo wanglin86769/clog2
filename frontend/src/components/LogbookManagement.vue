@@ -29,6 +29,14 @@
 							{{ slotProps.data.number }}
 						</template>
 					</Column>
+					<Column field="number" :header="$t('global_admin')">
+						<template #body="slotProps">
+							<span v-for="(item, index) in slotProps.data.admins" :key="index">
+								<span v-if="index > 0">, </span>
+								<span style="text-decoration: underline; color: RGB(29,149,243); cursor: pointer;" @click="toggle($event, item)">{{ item }}</span>
+							</span>
+						</template>
+					</Column>
 					<Column headerStyle="width: 8em">
 						<template #header>
 							<i class="pi pi-cog" style="fontSize: 1.2rem" v-tooltip.top="$t('global_operate')"></i>
@@ -59,6 +67,10 @@
 					<span style="color: red">* </span><label>{{ $t('global_number') }}</label>
 					<InputText v-model.trim="logbook.number" class="p-inputtext-sm" />
 				</div>
+				<div class="field">
+					<label>{{ $t('global_admin') }} <span style="color: RGB(29,149,243)">({{ $t('global_email') }})</span></label>
+					<Chips v-model="logbook.admins" separator=","  />
+				</div>
 
 				<template #footer>
 					<div v-if="crudOperation==='create'">
@@ -85,6 +97,14 @@
 					<Button :label="$t('global_ok')" icon="pi pi-check" class="p-button-primary" @click="deleteLogbook" />
 				</template>
 			</Dialog>
+
+			<OverlayPanel ref="detail">
+				<div v-if="user">
+					<div>{{ user.name }}</div>
+					<div>{{ user.email }}</div>
+				</div>
+				<div v-else>Unknown user</div>
+			</OverlayPanel>
 		</div>
 	</div>
 
@@ -93,6 +113,7 @@
 <script>
 import LogbookService from '@/service/LogbookService';
 import GroupService from '@/service/GroupService';
+import UserService from '@/service/UserService';
 
 export default {
 	data() {
@@ -103,13 +124,16 @@ export default {
 			deleteLogbookDialog: false,
 			logbook: {},
 			groups: [],
+			user: null,
 		}
 	},
 	logbookService: null,
 	groupService: null,
+	userService: null,
 	created() {
 		this.logbookService = new LogbookService();
 		this.groupService = new GroupService();
+		this.userService = new UserService();
 	},
 	mounted() {
 		this.loadData();
@@ -150,6 +174,7 @@ export default {
 			this.logbook.name = logbook.name;
 			if(logbook.group) this.logbook.group = logbook.group._id;
 			this.logbook.number = logbook.number;
+			this.logbook.admins = logbook.admins;
 			this.logbookDialog = true;
 		},
 		onDeleteClick(logbook) {
@@ -209,6 +234,19 @@ export default {
 			}).finally(() => {
 				loader.hide();
 			});
+		},
+		toggle(event, email) {
+			this.userService.findUserByEmail(email)
+			.then((user) => {
+				this.user = user;
+			}).catch(error => {
+				if(error.response) {
+					this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.response.data.message });
+				} else {
+                    this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.message });
+				}
+			});
+			this.$refs.detail.toggle(event);
 		},
 	},
 	computed: {

@@ -10,6 +10,9 @@ router.get("/", authorize.loggedIn, users.findAll);
 // Generate a token
 router.get('/token', authorize.loggedIn, users.generateToken);
 
+// Get user by email
+router.get('/email/:email', authorize.loggedIn, users.findUserByEmail);
+
 // Create a user
 router.post('/', authorize.loggedIn, authorize.admin, users.addUser);
 
