@@ -74,7 +74,7 @@
 								</div>
 							</div>
 							<div v-else>
-								<img alt="Attachment File" src="@/assets/images/fileIcon.png" width="150" style="cursor: pointer;" @click="downloadAttachment(log._id, attachment.name)" />
+								<img alt="Attachment File" :src="attachmentIcon(attachment.name)" width="150" style="cursor: pointer;" @click="downloadAttachment(log._id, attachment.name)" />
 								<div id="attachmentLink" style="cursor: pointer;" @click="downloadAttachment(log._id, attachment.name)">
 									<span style="margin-right: 1em; color: rgb(59,130,246);">{{ attachment.name }}</span>
 									<span>{{ Math.round(attachment.size/1000) }} KB</span>
@@ -227,6 +227,9 @@ export default {
 		},
 		attachmentUrl(logId, fileName) {
             return this.logService.attachmentUrl(logId, fileName);
+        },
+		attachmentIcon(fileName) {
+            return this.logService.attachmentIcon(fileName);
         },
         openAttachment(logId, fileName) {
             window.open(this.attachmentUrl(logId, fileName));

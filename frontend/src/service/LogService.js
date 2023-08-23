@@ -53,6 +53,35 @@ export default class LogService {
 		return url;
 	}
 
+	attachmentIcon(fileName) {
+		let icon;
+		let extension = fileName.split('.').pop();
+		switch(extension) {
+			case 'doc':
+			case 'docx':
+				icon = require('@/assets/images/word.png');
+				break;
+			case 'xls':
+			case 'xlsx':
+				icon = require('@/assets/images/excel.png');
+				break;
+			case 'ppt':
+			case 'pptx':
+				icon = require('@/assets/images/powerpoint.png');
+				break;
+			case 'pdf':
+				icon = require('@/assets/images/pdf.png');
+				break;
+			case 'mp4':
+				icon = require('@/assets/images/mp4.png');
+				break;
+			default:
+				icon = require('@/assets/images/fileIcon.png');
+				break;
+		}
+		return icon;
+	}
+
 	findAttachment(logId, fileName) {
 		let url = `${config.serverPath}/logs/attachments/${logId}/${fileName}`;
 		return axios.get(url, {headers: authenticationService.authHeader(), responseType: 'blob'}).then(res => res.data);

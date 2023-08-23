@@ -44,7 +44,7 @@
 								<Image :src="attachmentUrl(log._id, attachment.name)" alt="Attachment Image" width="100" preview />
 							</div>
 							<div v-else>
-								<img alt="Attachment File" src="@/assets/images/fileIcon.png" width="60" style="cursor: pointer;" @click="downloadAttachment(log._id, attachment.name)" />
+								<img alt="Attachment File" :src="attachmentIcon(attachment.name)" width="60" style="cursor: pointer;" @click="downloadAttachment(log._id, attachment.name)" />
 							</div>
 							<div>
 								<span style="margin-right: 1em; color: rgb(59,130,246);">{{ attachment.name }}</span>
@@ -211,6 +211,9 @@ export default {
 		attachmentUrl(logId, fileName) {
             // console.log(this.logService.attachmentUrl(logId, fileName));
             return this.logService.attachmentUrl(logId, fileName);
+        },
+		attachmentIcon(fileName) {
+            return this.logService.attachmentIcon(fileName);
         },
         openAttachment(logId, fileName) {
             window.open(this.attachmentUrl(logId, fileName));
