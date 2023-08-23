@@ -27,7 +27,8 @@
 
 					<Column field="name" :header="$t('global_index')">
 						<template #body="slotProps">
-							{{currentPageFirstIndex + slotProps.index + 1}}
+							<!-- {{currentPageFirstIndex + slotProps.index + 1}} -->
+							{{slotProps.index + 1}}
 						</template>
 					</Column>
 					<Column field="name" :header="$t('global_name')">
