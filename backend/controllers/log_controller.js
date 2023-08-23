@@ -3,15 +3,10 @@ const upload = multer();
 const mongoose = require('mongoose');
 const User = require('../models/user_model.js');
 const Log = require('../models/log_model.js');
-
-
-function removeAttachmentContent(data) {
-    if(data && data.attachments) {
-        for(let attachment of data.attachments) {
-            attachment.content = undefined;
-        }
-    }
-}
+const path = require('path');
+const fs = require('fs-extra');
+const mime = require('mime');
+const rootdir = path.normalize(require('../config/attachment').rootdir);
 
 
 function generateQuery(query, filters) {
@@ -67,6 +62,41 @@ function generateQuery(query, filters) {
             }
         }
     }
+}
+
+
+exports.runScript = async (req, res, next) => {
+    /**** Convert attachments from MongoDB to file system ****/
+    // let logs = await Log.find();
+    // for(let log of logs) {
+    //     if(log.attachments && log.attachments.length) {
+    //         let createdAt = new Date(log.createdAt);
+    //         let month = createdAt.getUTCMonth() + 1; //months from 1-12
+    //         let day = createdAt.getUTCDate();
+    //         let year = createdAt.getUTCFullYear();
+    //         let fileDir = path.join(rootdir, year.toString(), month.toString(), day.toString(), log._id.toString());
+    //         await fs.mkdir(fileDir, { recursive: true });
+    //         for(let attachment of log.attachments) {
+    //             let fileName = attachment.name;
+    //             if(fileName.includes(':')) {
+    //                 // Replace all appearances of ':' to '_'
+    //                 fileName = fileName.replace(/:/g, '_');
+    //             }
+    //             let content = attachment.content;
+    //             let fileFullPath = path.join(fileDir, fileName);
+    //             await fs.writeFile(fileFullPath, content, "binary");
+    //         }
+    //     }
+    // }
+    // res.json({ result: 'Done' });
+
+    /**** Remove attachments from MongoDB ****/
+    // let logs = await Log.find();
+    // for(let log of logs) {
+    //     log.attachments = undefined;
+    //     await log.save();
+    // }
+    // res.json({ result: 'Done' });
 }
 
 
@@ -218,7 +248,7 @@ exports.findLogs = async (req, res, next) => {
         },
         { 
             $project: { 
-                'attachments.content': 0
+                'attachments': 0
             } 
         }
     ];
@@ -236,6 +266,29 @@ exports.findLogs = async (req, res, next) => {
 
         // console.log(results);
         // console.log(count);
+
+        // Post process for attachments
+        for(let log of results) {
+            let date = new Date(log.createdAt);
+            let month = date.getUTCMonth() + 1; //months from 1-12
+            let day = date.getUTCDate();
+            let year = date.getUTCFullYear();
+
+            let fileDir = path.join(rootdir, year.toString(), month.toString(), day.toString(), log._id.toString());
+
+            if(fs.existsSync(fileDir)) {
+                let files = await fs.readdir(fileDir);
+                if(files && files.length) {
+                    let attachments = [];
+                    for (const file of files){
+                        let fileFullPath = path.join(fileDir, file);
+                        let stats = await fs.stat(fileFullPath);
+                        attachments.push({name: file, size: stats.size, contentType: mime.getType(file)});
+                    }
+                    log.attachments = attachments;
+                }
+            }
+        }
 
         let finalData = {};
         finalData.entries = results;
@@ -323,7 +376,7 @@ exports.findLog = async (req, res, next) => {
         },
         { 
             $project: { 
-                'attachments.content': 0
+                'attachments': 0
             } 
         },
     ]
@@ -332,8 +385,30 @@ exports.findLog = async (req, res, next) => {
         let data = await Log.aggregate(pipeline);
         if(!data || !data[0])  return res.json(null);
             
-        // Post process for history authors
         let log = data[0];
+
+        // Post process for attachments
+        let date = new Date(log.createdAt);
+        let month = date.getUTCMonth() + 1; //months from 1-12
+        let day = date.getUTCDate();
+        let year = date.getUTCFullYear();
+
+        let fileDir = path.join(rootdir, year.toString(), month.toString(), day.toString(), log._id.toString());
+
+        if(fs.existsSync(fileDir)) {
+            let files = await fs.readdir(fileDir);
+            if(files && files.length) {
+                let attachments = [];
+                for (const file of files){
+                    let fileFullPath = path.join(fileDir, file);
+                    let stats = await fs.stat(fileFullPath);
+                    attachments.push({name: file, size: stats.size, contentType: mime.getType(file)});
+                }
+                log.attachments = attachments;
+            }
+        }
+
+        // Post process for history authors
         if(Array.isArray(log.histories) && log.histories.length) {
             for(let history of log.histories) {
                 let user;
@@ -348,7 +423,7 @@ exports.findLog = async (req, res, next) => {
             }
         }
 
-        let result = data[0];
+        let result = log;
         res.json(result);
     } catch(error) {
         res.status(500).json({message: error.message})
@@ -424,50 +499,57 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
     log.updatedBy = user.email;
     log.lastActiveAt = timeNow;
 
-    let attachments = [];
-    if(Array.isArray(req.files) && req.files.length) {
-        for(let file of req.files) {
-            /* 
-             * By default, 
-             * if all chars are latin1, then re-decoding
-             */
-            if (!/[^\u0000-\u00ff]/.test(file.originalname)) {
-                file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
-            }
-            attachments.push({
-                'name': file.originalname,
-                'size': file.size,
-                'contentType': file.mimetype,
-                'content': file.buffer,
-            });
-        }
-    }
-    log.attachments = attachments;
-
     try {
-        if(req.query.append) {
+        let data;
+        if(req.query.append) {  // Process append request
             let existingLog = await Log.findOne({ logbook: log.logbook, title: log.title, active: true }, null, { sort: { updatedAt: -1 } });
-            if(existingLog && (log.description || (log.attachments && log.attachments.length))) {
-                existingLog.createdAt = timeNow;
-                existingLog.createdBy = user.email;
-                existingLog.updatedAt = timeNow;
-                existingLog.updatedBy = user.email;
-                existingLog.lastActiveAt = timeNow;
+            if(existingLog) {
                 if(log.description) {
+                    existingLog.createdAt = timeNow;
+                    existingLog.createdBy = user.email;
+                    existingLog.updatedAt = timeNow;
+                    existingLog.updatedBy = user.email;
+                    existingLog.lastActiveAt = timeNow;
                     existingLog.description = existingLog.description + '\n' + log.description;
+                    // Append the log
+                    data = await existingLog.save();
+                } else {
+                    data = existingLog;
                 }
-                if(log.attachments && log.attachments.length) {
-                    if(!existingLog.attachments)  existingLog.attachments = [];
-                    existingLog.attachments = existingLog.attachments.concat(log.attachments);
+            } else {
+                // Create the log
+                data = await Log.create(log);
+            }
+        } else {  // Process normal create request
+            // Create the log
+            data = await Log.create(log);
+        }
+
+        // Process attachments
+        if(Array.isArray(req.files) && req.files.length) {
+            // Create the directory for attachments
+            let createdAt = new Date(data.createdAt);
+            let month = createdAt.getUTCMonth() + 1; //months from 1-12
+            let day = createdAt.getUTCDate();
+            let year = createdAt.getUTCFullYear();
+            let fileDir = path.join(rootdir, year.toString(), month.toString(), day.toString(), data._id.toString());
+            await fs.mkdir(fileDir, { recursive: true });
+
+            // Create attachments in the directory
+            for(let file of req.files) {
+                /* 
+                 * By default, 
+                 * if all chars are latin1, then re-decoding
+                 */
+                if (!/[^\u0000-\u00ff]/.test(file.originalname)) {
+                    file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
                 }
-                let result = await existingLog.save();
-                removeAttachmentContent(result);
-                return res.json(result);
+                
+                let fileFullPath = path.join(fileDir, file.originalname);
+                await fs.writeFile(fileFullPath, file.buffer, "binary");
             }
         }
 
-        let data = await Log.create(log);
-        removeAttachmentContent(data);
         res.json(data);
     } catch(error) {
         res.status(500).json({message: error.message})
@@ -490,53 +572,27 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
         let currentLog = await Log.findById(req.params.logId);
         if(!currentLog) return res.status(400).json({message: "CurrentLog not found."});
 
-        let increaseAttachments = [];
-        if(Array.isArray(req.files) && req.files.length) {
-            for(let file of req.files) {
-                /* 
-                 * By default, 
-                 * if all chars are latin1, then re-decoding
-                 */
-                if (!/[^\u0000-\u00ff]/.test(file.originalname)) {
-                    file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
-                }
-                increaseAttachments.push({
-                    'name': file.originalname,
-                    'size': file.size,
-                    'contentType': file.mimetype,
-                    'content': file.buffer,
-                });
-            }
-        }
-        // console.log(increaseAttachments);
+        // Locate current attachments
+        let date = new Date(currentLog.createdAt);
+        let month = date.getUTCMonth() + 1; //months from 1-12
+        let day = date.getUTCDate();
+        let year = date.getUTCFullYear();
 
-        let reduceAttachments = JSON.parse(req.body.reduceAttachments);
-        // console.log(reduceAttachments);
-        let currentAttachments = JSON.parse(JSON.stringify(currentLog.attachments));
+        let fileDir = path.join(rootdir, year.toString(), month.toString(), day.toString(), currentLog._id.toString());
 
-        // Convert buffer types, otherwise the speed of findByIdAndUpdate() will be very slow
-        for(let current of currentAttachments) {
-            if(current.content) {
-                current.content = Buffer.from(current.content);
-            }
-        }
-
-        for(let reduceAttachment of reduceAttachments) {
-            for(let i = currentAttachments.length - 1; i >= 0 ; i--) {
-                // console.log(currentAttachments[i]._id);
-                // console.log(reduceAttachment);
-                
-                // if(currentAttachments[i]._id.equals(reduceAttachment)) {
-                if(currentAttachments[i]._id === reduceAttachment) {
-                    currentAttachments.splice(i, 1);
-                    // console.log(i);
+        let currentAttachments = [];
+        if(fs.existsSync(fileDir)) {
+            let files = await fs.readdir(fileDir);
+            if(files && files.length) {
+                for (const file of files){
+                    let fileFullPath = path.join(fileDir, file);
+                    let stats = await fs.stat(fileFullPath);
+                    currentAttachments.push({name: file, size: stats.size, contentType: mime.getType(file)});
                 }
             }
         }
-           
-        let newAttachments = currentAttachments.concat(increaseAttachments);
-        log.attachments = newAttachments;
 
+        // Build the log histories
         historyItem = {};
         historyItem.active = currentLog.active;
         historyItem.createdAt = currentLog.createdAt;
@@ -549,15 +605,42 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
         historyItem.category = currentLog.category;
         historyItem.title = currentLog.title;
         historyItem.description = currentLog.description;
-        historyItem.attachments = JSON.parse(JSON.stringify(currentLog.attachments));
-        for(let attachment of historyItem.attachments) {
-            attachment.content = undefined;
+        if(currentAttachments && currentAttachments.length) {
+            historyItem.attachments = currentAttachments;
         }
 
         let push = { histories: historyItem };
 
+        // Update the log
         let data = await Log.findByIdAndUpdate(req.params.logId, { $set: log, $push: push }, { new: true });
-        removeAttachmentContent(data);
+
+        // Increase attachments
+        if(Array.isArray(req.files) && req.files.length) {
+            await fs.mkdir(fileDir, { recursive: true });
+
+            for(let file of req.files) {
+                /* 
+                 * By default, 
+                 * if all chars are latin1, then re-decoding
+                 */
+                if (!/[^\u0000-\u00ff]/.test(file.originalname)) {
+                    file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
+                }
+                
+                let fileFullPath = path.join(fileDir, file.originalname);
+                await fs.writeFile(fileFullPath, file.buffer, "binary");
+            }
+        }
+
+        // Reduce attachments
+        let reduceAttachments = JSON.parse(req.body.reduceAttachments);
+        for(let fileName of reduceAttachments) {
+            let fileFullPath = path.join(fileDir, fileName);
+            if(fs.existsSync(fileFullPath)) {
+                await fs.unlink(fileFullPath);
+            }
+        }
+
         res.json(data);
     } catch(error) {
         res.status(500).json({message: error.message})
@@ -566,17 +649,17 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
 
 
 exports.deleteLog = async (req, res, next) => {
-    if(!req.headers['user']) return res.status(500).json({message: 'No user information is extracted.'});
+    let user = req.headers['user'];
+    if(!user) return res.status(500).json({message: 'No user information is extracted.'});
 
     let timeNow = new Date();
     req.body.updatedAt = timeNow;
-    req.body.updatedBy = req.headers['user'].email;
+    req.body.updatedBy = user.email;
     req.body.active = false;
     req.body.lastActiveAt = timeNow;
 
     try {
         let data = await Log.findByIdAndUpdate(req.params.logId, { $set: req.body }, { new: true });
-        removeAttachmentContent(data);
         res.json(data);
     } catch(error) {
         res.status(500).json({message: error.message})
@@ -586,35 +669,33 @@ exports.deleteLog = async (req, res, next) => {
 
 exports.findAttachment = async (req, res, next) => {
     let logId = req.params.logId;
-    let attachmentId = req.params.attachmentId;
-
-    // console.log(logId);
-    // console.log(attachmentId);
+    let fileName = req.params.fileName;
 
     if(!logId) return res.status(400).json({message: "No logId is specified."});
-    if(!attachmentId) return res.status(400).json({message: "No attachmentId is specified."});
+    if(!fileName) return res.status(400).json({message: "No fileName is specified."});
 
     try {
         let log = await Log.findOne({ _id: logId });
         if(!log) return res.status(204).json({message: "Log not found."});
 
-        // console.log(log);
+        let date = new Date(log.createdAt);
+        let month = date.getUTCMonth() + 1; //months from 1-12
+        let day = date.getUTCDate();
+        let year = date.getUTCFullYear();
+        let fileFullPath = path.join(rootdir, year.toString(), month.toString(), day.toString(), logId, fileName);
 
-        if(!Array.isArray(log.attachments) || log.attachments.length === 0) return res.status(204).json({message: "No attachments found for this log."});
-        let attachment = null;
-        for(let item of log.attachments) {
-            if(item._id.equals(attachmentId)) {
-                attachment = item;
-                break;
-            }
+        if(!fs.existsSync(fileFullPath)) {
+            return res.status(204).json({message: "Attachment for the specified name is not found."});
         }
-        if(!attachment) return res.status(204).json({message: "Attachment for specified id is not found."});
 
-        // console.log(attachment);
+        // Another implementation
+        // let content = await fs.readFile(fileFullPath, 'binary');
+        // res.write(content, 'binary');
+        // res.end();
 
-        res.contentType(attachment.contentType);
-        // res.send(attachment.content.buffer);
-        res.send(attachment.content);
+        let content = await fs.readFile(fileFullPath, 'binary');
+        res.send(new Buffer.from(content, 'binary'))
+
     } catch(error) {
         console.log(error);
         return res.status(500).json({ message: error.message });

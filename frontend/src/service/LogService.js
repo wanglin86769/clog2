@@ -48,13 +48,13 @@ export default class LogService {
 		return axios.delete(url, {headers: authenticationService.authHeader()}).then(res => res.data);
 	}
 
-	attachmentUrl(logId, attachmentId) {
-		let url = `${config.serverPath}/logs/attachments/${logId}/${attachmentId}`;
+	attachmentUrl(logId, fileName) {
+		let url = `${config.serverPath}/logs/attachments/${logId}/${fileName}`;
 		return url;
 	}
 
-	findAttachment(logId, attachmentId) {
-		let url = `${config.serverPath}/logs/attachments/${logId}/${attachmentId}`;
+	findAttachment(logId, fileName) {
+		let url = `${config.serverPath}/logs/attachments/${logId}/${fileName}`;
 		return axios.get(url, {headers: authenticationService.authHeader(), responseType: 'blob'}).then(res => res.data);
 	}
 

@@ -6,7 +6,7 @@ let Attachment = new Schema({
     name: String,
     size: Number,
     contentType: String,
-    content: Buffer,
+    // content: Buffer,  // Attachment content is stored in file system
 });
 
 
@@ -82,10 +82,11 @@ let LogSchema = new Schema({
         type: String,
         required: true
     },
-    attachments: {
-        type: [Attachment],
-        default: void 0
-    }
+    // Attachments are stored in file system
+    // attachments: {
+    //     type: [Attachment],
+    //     default: void 0
+    // }
 }, {
     collection: 'log'
 });

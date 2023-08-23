@@ -67,15 +67,15 @@
 					<div class="grid" style="margin-top: 2em">
 						<div class="col-12 md:col-6 lg:col-4 xl:col-3" v-for="(attachment, index) in log.attachments" :key="index" style="padding: 1em;">
 							<div v-if="['image/jpeg', 'image/png', 'image/bmp', 'image/gif'].includes(attachment.contentType)">
-								<Image :src="attachmentUrl(log._id, attachment._id)" alt="Attachment Image" width="200" preview />
-								<div id="attachmentLink" style="cursor: pointer;" @click="openAttachment(log._id, attachment._id)">
+								<Image :src="attachmentUrl(log._id, attachment.name)" alt="Attachment Image" width="200" preview />
+								<div id="attachmentLink" style="cursor: pointer;" @click="openAttachment(log._id, attachment.name)">
 									<span style="margin-right: 1em; color: rgb(59,130,246);">{{ attachment.name }}</span>
 									<span>{{ Math.round(attachment.size/1000) }} KB</span>
 								</div>
 							</div>
 							<div v-else>
-								<img alt="Attachment File" src="@/assets/images/fileIcon.png" width="150" style="cursor: pointer;" @click="downloadAttachment(log._id, attachment._id, attachment.name)" />
-								<div id="attachmentLink" style="cursor: pointer;" @click="downloadAttachment(log._id, attachment._id, attachment.name)">
+								<img alt="Attachment File" src="@/assets/images/fileIcon.png" width="150" style="cursor: pointer;" @click="downloadAttachment(log._id, attachment.name)" />
+								<div id="attachmentLink" style="cursor: pointer;" @click="downloadAttachment(log._id, attachment.name)">
 									<span style="margin-right: 1em; color: rgb(59,130,246);">{{ attachment.name }}</span>
 									<span>{{ Math.round(attachment.size/1000) }} KB</span>
 								</div>
@@ -225,14 +225,14 @@ export default {
 
 			this.logHistoryDialog = true;
 		},
-		attachmentUrl(logId, attachmentId) {
-            return this.logService.attachmentUrl(logId, attachmentId);
+		attachmentUrl(logId, fileName) {
+            return this.logService.attachmentUrl(logId, fileName);
         },
-        openAttachment(logId, attachmentId) {
-            window.open(this.attachmentUrl(logId, attachmentId));
+        openAttachment(logId, fileName) {
+            window.open(this.attachmentUrl(logId, fileName));
         },
-        downloadAttachment(logId, attachmentId, fileName) {
-            this.logService.findAttachment(logId, attachmentId)
+        downloadAttachment(logId, fileName) {
+            this.logService.findAttachment(logId, fileName)
             .then((attachment) => {
                 fileDownload(attachment, fileName);
             }).catch(error => {

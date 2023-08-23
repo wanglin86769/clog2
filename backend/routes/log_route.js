@@ -4,6 +4,9 @@ const logs = require('../controllers/log_controller.js');
 const authorize = require('../auth/authorize.js');
 
 
+// Run script for test or data conversion
+// router.get('/script', logs.runScript);
+
 // Get maximum timestamp of logs in a logbook
 router.get('/lastactive', logs.findLastActive);
 
@@ -23,7 +26,7 @@ router.put('/:logId', authorize.loggedIn, authorize.canEditLog, logs.updateLogFo
 router.delete('/:logId', authorize.loggedIn, authorize.canEditLog, logs.deleteLog);
 
 // Get single attachment
-router.get('/attachments/:logId/:attachmentId', logs.findAttachment);
+router.get('/attachments/:logId/:fileName', logs.findAttachment);
 
 
 module.exports = router;

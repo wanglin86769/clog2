@@ -41,10 +41,10 @@
 					<div class="grid" style="margin-top: 2em">
 						<div class="col-12 md:col-6 lg:col-4 xl:col-3" v-for="(attachment, index) in currentLog.attachments" :key="index" style="padding: 1em;">
 							<div v-if="['image/jpeg', 'image/png', 'image/bmp', 'image/gif'].includes(attachment.contentType)">
-								<Image :src="attachmentUrl(log._id, attachment._id)" alt="Attachment Image" width="100" preview />
+								<Image :src="attachmentUrl(log._id, attachment.name)" alt="Attachment Image" width="100" preview />
 							</div>
 							<div v-else>
-								<img alt="Attachment File" src="@/assets/images/fileIcon.png" width="60" style="cursor: pointer;" @click="downloadAttachment(log._id, attachment._id, attachment.name)" />
+								<img alt="Attachment File" src="@/assets/images/fileIcon.png" width="60" style="cursor: pointer;" @click="downloadAttachment(log._id, attachment.name)" />
 							</div>
 							<div>
 								<span style="margin-right: 1em; color: rgb(59,130,246);">{{ attachment.name }}</span>
@@ -176,7 +176,7 @@ export default {
 			let reduceAttachments = [];
             for(let item of this.currentLog.attachments) {
                 if(item.deleting) {
-                    reduceAttachments.push(item._id);
+                    reduceAttachments.push(item.name);
                 }
             }
             formData.append('reduceAttachments', JSON.stringify(reduceAttachments));
@@ -208,15 +208,15 @@ export default {
             this.increaseAttachments = this.$refs.increasefile.files;
             // console.log(this.submittingAttachments);
         },
-		attachmentUrl(logId, attachmentId) {
-            // console.log(this.logService.attachmentUrl(logId, attachmentId));
-            return this.logService.attachmentUrl(logId, attachmentId);
+		attachmentUrl(logId, fileName) {
+            // console.log(this.logService.attachmentUrl(logId, fileName));
+            return this.logService.attachmentUrl(logId, fileName);
         },
-        openAttachment(logId, attachmentId) {
-            window.open(this.attachmentUrl(logId, attachmentId));
+        openAttachment(logId, fileName) {
+            window.open(this.attachmentUrl(logId, fileName));
         },
-        downloadAttachment(logId, attachmentId, fileName) {
-            this.logService.findAttachment(logId, attachmentId)
+        downloadAttachment(logId, fileName) {
+            this.logService.findAttachment(logId, fileName)
             .then((attachment) => {
                 fileDownload(attachment, fileName);
             }).catch(error => {
