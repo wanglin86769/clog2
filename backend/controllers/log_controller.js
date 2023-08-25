@@ -294,22 +294,23 @@ exports.findLogs = async (req, res, next) => {
         finalData.entries = results;
         finalData.count = count;
 
+        /**** This part is commented since it is not necessary and seriously affect the performance ****/
         // Post process for history authors
-        for(let log of finalData.entries) {
-            if(Array.isArray(log.histories) && log.histories.length) {
-                for(let history of log.histories) {
-                    let user;
-                    if(history.createdBy) {
-                        user = await User.findOne({ email: history.createdBy });
-                        history.createdBy = user ? { email: user.email, name: user.name } : { email: '', name: '' };
-                    }
-                    if(history.updatedBy) {
-                        user = await User.findOne({ email: history.updatedBy });
-                        history.updatedBy = user ? { email: user.email, name: user.name } : { email: '', name: '' };
-                    }
-                }
-            }
-        }
+        // for(let log of finalData.entries) {
+        //     if(Array.isArray(log.histories) && log.histories.length) {
+        //         for(let history of log.histories) {
+        //             let user;
+        //             if(history.createdBy) {
+        //                 user = await User.findOne({ email: history.createdBy });
+        //                 history.createdBy = user ? { email: user.email, name: user.name } : { email: '', name: '' };
+        //             }
+        //             if(history.updatedBy) {
+        //                 user = await User.findOne({ email: history.updatedBy });
+        //                 history.updatedBy = user ? { email: user.email, name: user.name } : { email: '', name: '' };
+        //             }
+        //         }
+        //     }
+        // }
 
         // console.log(finalData);
         res.json(finalData);
