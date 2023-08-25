@@ -174,11 +174,13 @@ export default {
 			// }
 			
 			let reduceAttachments = [];
-            for(let item of this.currentLog.attachments) {
-                if(item.deleting) {
-                    reduceAttachments.push(item.name);
-                }
-            }
+			if(this.currentLog && this.currentLog.attachments && this.currentLog.attachments.length) {
+				for(let item of this.currentLog.attachments) {
+					if(item.deleting) {
+						reduceAttachments.push(item.name);
+					}
+				}
+			}
             formData.append('reduceAttachments', JSON.stringify(reduceAttachments));
             // console.log(reduceAttachments);
 
