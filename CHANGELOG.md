@@ -2,6 +2,20 @@
 
 ### v2.0
 
+#### v2.1.0
+
+- Significant change: move attachment storage from MongoDB to file system due to 16MB limitation and performance issue
+- Added attachment icons for word, excel, powerpoint and mp4 files
+- Fixed the issue that logs cannot be edited when attachments is empty
+- Fixed the issue that image toolbar is hidden behind large image in preview mode
+- Removed the history author expansion part for findLogs() since it seriously affect the performance
+
+#### v2.0.5
+
+- Add logbook admin function
+- Truncate log description at 50 characters on logbook page
+- Sort logs by createdAt instead of updatedAt
+
 #### v2.0.4
 
 - Fixed the issue that log data appends to inactive logs

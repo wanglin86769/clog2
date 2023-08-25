@@ -2,6 +2,11 @@
 
 **Clog (Compact Electronic Logbook System)** is a web-based logbook system aimed to be used in accelerators. The goal is to design and implement a logbook system with modern web technology but in a very simple way.  
 
+## Significant change
+
+* From v2.1.0, attachment storage is moved from MongoDB to file system due to 16MB limitation and performance issue
+* The attachment directory is `/srv/clog2`
+
 ## Features
 
 * **Compact**: lightweight architecture with separate frontend and backend; high-efficiency frontend and backend framework; single programming language (JavaScript) finishing full-stack web development.
