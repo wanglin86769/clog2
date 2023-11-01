@@ -66,8 +66,19 @@
 				<Panel v-if="log && log.attachments && log.attachments.length" :header="$t('global_log_attachment')" :toggleable="true">
 					<div class="grid" style="margin-top: 2em">
 						<div class="col-12 md:col-6 lg:col-4 xl:col-3" v-for="(attachment, index) in log.attachments" :key="index" style="padding: 1em;">
-							<div v-if="['image/jpeg', 'image/png', 'image/bmp', 'image/gif'].includes(attachment.contentType)">
-								<Image :src="attachmentUrl(log._id, attachment.name)" alt="Attachment Image" width="200" preview />
+							<div v-if="imageMimeTypes.includes(attachment.contentType)">
+								<!-- <Image :src="attachmentUrl(log._id, attachment.name)" alt="Attachment Image" width="200" preview /> -->
+								<el-image
+									style="width: 200px"
+									:src="attachmentUrl(log._id, attachment.name)"
+									:zoom-rate="1.2"
+									:max-scale="7"
+									:min-scale="0.2"
+									:preview-src-list="previewSrcList"
+									:initial-index="attachment.index"
+									:infinite="false"
+									fit="cover"
+								/>
 								<div id="attachmentLink" style="cursor: pointer;" @click="openAttachment(log._id, attachment.name)">
 									<span style="margin-right: 1em; color: rgb(59,130,246);">{{ attachment.name }}</span>
 									<span>{{ Math.round(attachment.size/1000) }} KB</span>
@@ -159,6 +170,9 @@ export default {
 
 			histories: [],
 			logHistoryDialog: false,
+
+			imageMimeTypes: ['image/jpeg', 'image/png', 'image/bmp', 'image/gif'],
+			previewSrcList: [],
 		}
 	},
 
@@ -173,6 +187,23 @@ export default {
 	},
 
 	methods: {
+		processAttachments(log) {
+			let attachments = log.attachments;
+			if(!attachments || !attachments.length)  return;
+			
+			this.previewSrcList = [];
+			let index = 0;
+
+			for(let attachment of attachments) {
+				if(this.imageMimeTypes.includes(attachment.contentType)) {
+					// Add image index
+					attachment.index = index++;
+					// Build preview source list
+					let url = this.attachmentUrl(log._id, attachment.name);
+					this.previewSrcList.push(url);
+				}
+			}
+		},
 		fetchLog() {
 			if(!this.$route.params.id) {
 				console.log('Log id not found.');
@@ -182,6 +213,7 @@ export default {
             this.logService.findLog(this.$route.params.id)
             .then(log => {
                 this.log = log;
+				this.processAttachments(log);
             }).catch((error) => {
                 if(error.response) {
 					this.$toast.add({ severity: 'error', summary: this.$t('logdetail_log_load_error'), detail: error.response.data.message });

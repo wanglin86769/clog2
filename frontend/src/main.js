@@ -100,6 +100,9 @@ import 'vue-loading-overlay/dist/css/index.css';
 
 import i18n from "./locale/index.js";
 
+// Element Plus
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 
 router.beforeEach(function(to, from, next) {
     window.scrollTo(0, 0);
@@ -112,6 +115,7 @@ const app = createApp(AppWrapper);
 app.config.globalProperties.$appState = reactive({ inputStyle: 'outlined' });
 
 app.use(PrimeVue, { ripple: true });
+app.use(ElementPlus);
 app.use(ConfirmationService);
 app.use(ToastService);
 app.use(router);

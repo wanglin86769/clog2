@@ -40,7 +40,7 @@
 				<Panel v-if="currentLog && currentLog.attachments && currentLog.attachments.length" :header="$t('logedit_existing_attachments')" :toggleable="true">
 					<div class="grid" style="margin-top: 2em">
 						<div class="col-12 md:col-6 lg:col-4 xl:col-3" v-for="(attachment, index) in currentLog.attachments" :key="index" style="padding: 1em;">
-							<div v-if="['image/jpeg', 'image/png', 'image/bmp', 'image/gif'].includes(attachment.contentType)">
+							<div v-if="imageMimeTypes.includes(attachment.contentType)">
 								<Image :src="attachmentUrl(log._id, attachment.name)" alt="Attachment Image" width="100" preview />
 							</div>
 							<div v-else>
@@ -97,6 +97,8 @@ export default {
 
 			submittingAttachments: [],
 			increaseAttachments: [],
+
+			imageMimeTypes: ['image/jpeg', 'image/png', 'image/bmp', 'image/gif'],
 		}
 	},
 
