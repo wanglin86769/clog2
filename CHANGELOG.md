@@ -2,6 +2,10 @@
 
 ### v2.0
 
+#### v2.1.1
+
+- In order to provide image left/right navigation function, Replaced PrimeVue "Image" component with Element Plus "el-image" component on LogDetail page, which is shared by Xiaokang Sun from HALF project.
+
 #### v2.1.0
 
 - Significant change: move attachment storage from MongoDB to file system due to 16MB limitation and performance issue
