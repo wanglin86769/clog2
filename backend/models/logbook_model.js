@@ -17,6 +17,11 @@ let LogbookSchema = new Schema({
         default: undefined,
         ref: 'User',
     },
+    members: {
+        type: [String],
+        default: undefined,
+        ref: 'User',
+    },
 }, {
     collection: 'logbook'
 })

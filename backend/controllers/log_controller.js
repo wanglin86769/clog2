@@ -7,6 +7,8 @@ const path = require('path');
 const fs = require('fs-extra');
 const mime = require('mime');
 const rootdir = path.normalize(require('../config/attachment').rootdir);
+const authorize = require('../auth/authorize.js');
+const Logbook = require('../models/logbook_model.js');
 
 
 function generateQuery(query, filters) {
@@ -157,6 +159,21 @@ exports.findLogs = async (req, res, next) => {
 
     if(!req.query.lazyEvent) {
         return res.status(401).json({ message: 'No lazy loading parameter is specified.' });
+    }
+
+    let l = await Logbook.findById(req.query.logbook);
+    if(!l) {
+        return res.status(401).json({ message: 'The specified logbook cannot be found.' });
+    }
+
+    // If the logbook is private, check if the current user have sufficient permission.
+    if(l.members && l.members.length) {
+        let u = authorize.getUserFromRequest(req);
+        // Only super admins, logbook admins and logbook members can access logs in the logbook.
+        // If the current user does not have sufficient permission, return 403 status code.
+        if(!u || (!u.admin && !l.admins.includes(u.email) && !l.members.includes(u.email))) {
+            return res.status(403).json({ message: 'Permission denied.' });
+        }
     }
 
     let lazyEvent = JSON.parse(req.query.lazyEvent);
@@ -387,6 +404,18 @@ exports.findLog = async (req, res, next) => {
         if(!data || !data[0])  return res.json(null);
             
         let log = data[0];
+
+        // Retrieve the logbook info
+        let l = log.logbook;
+        // If the logbook is private, check if the current user have sufficient permission.
+        if(l && l.members && l.members.length) {
+            let u = authorize.getUserFromRequest(req);
+            // Only super admins, logbook admins and logbook members can access logs in the logbook.
+            // If the current user does not have sufficient permission, return 403 status code.
+            if(!u || (!u.admin && !l.admins.includes(u.email) && !l.members.includes(u.email))) {
+                return res.status(403).json({ message: 'Permission denied.' });
+            }
+        }
 
         // Post process for attachments
         let date = new Date(log.createdAt);

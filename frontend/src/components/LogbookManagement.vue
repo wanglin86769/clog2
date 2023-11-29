@@ -29,10 +29,20 @@
 							{{ slotProps.data.number }}
 						</template>
 					</Column>
-					<Column field="number" :header="$t('global_admin')">
+					<Column field="admins" :header="$t('global_admin')">
 						<template #body="slotProps">
 							<span v-for="(item, index) in slotProps.data.admins" :key="index">
 								<span v-if="index > 0">, </span>
+								<br v-if="index % 3 === 0">
+								<span style="text-decoration: underline; color: RGB(29,149,243); cursor: pointer;" @click="toggle($event, item)">{{ item }}</span>
+							</span>
+						</template>
+					</Column>
+					<Column field="members" :header="$t('global_members')">
+						<template #body="slotProps">
+							<span v-for="(item, index) in slotProps.data.members" :key="index">
+								<span v-if="index > 0">, </span>
+								<br v-if="index % 3 === 0">
 								<span style="text-decoration: underline; color: RGB(29,149,243); cursor: pointer;" @click="toggle($event, item)">{{ item }}</span>
 							</span>
 						</template>
@@ -54,7 +64,7 @@
 				</DataTable>
 			</div>
 
-			<Dialog v-model:visible="logbookDialog" :header="crudOperation==='create'?$t('logbookmanagement_create_logbook'):crudOperation==='update'?$t('logbookmanagement_edit_logbook'):''" :modal="true" class="p-fluid" style="min-width: 40%">
+			<Dialog v-model:visible="logbookDialog" :header="crudOperation==='create'?$t('logbookmanagement_create_logbook'):crudOperation==='update'?$t('logbookmanagement_edit_logbook'):''" :modal="true" class="p-fluid" style="min-width: 40%; max-width: 80%;">
 				<div class="field">
 					<span style="color: red">* </span><label>{{ $t('global_naming') }}</label>
 					<InputText v-model.trim="logbook.name" class="p-inputtext-sm" autofocus />
@@ -70,6 +80,10 @@
 				<div class="field">
 					<label>{{ $t('global_admin') }} <span style="color: RGB(29,149,243)">({{ $t('global_email') }})</span></label>
 					<Chips v-model="logbook.admins" separator=","  />
+				</div>
+				<div class="field">
+					<label v-tooltip.right="$t('global_members_hint')">{{ $t('global_members') }} <span style="color: RGB(29,149,243)">({{ $t('global_email') }})</span></label>
+					<Chips v-model="logbook.members" separator=","  />
 				</div>
 
 				<template #footer>
@@ -175,6 +189,7 @@ export default {
 			if(logbook.group) this.logbook.group = logbook.group._id;
 			this.logbook.number = logbook.number;
 			this.logbook.admins = logbook.admins;
+			this.logbook.members = logbook.members;
 			this.logbookDialog = true;
 		},
 		onDeleteClick(logbook) {

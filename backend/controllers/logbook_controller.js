@@ -2,6 +2,21 @@ const Logbook = require('../models/logbook_model.js');
 const Log = require('../models/log_model.js');
 const User = require('../models/user_model.js');
 const Group = require('../models/group_model.js');
+const authorize = require('../auth/authorize.js');
+
+
+function filterPrivateLogbooks(logbooks, user) {
+    if(!logbooks || !logbooks.length)  return;
+
+    for(let i = logbooks.length - 1; i >= 0; i--) {
+        let logbook = logbooks[i];
+        if(logbook.members && logbook.members.length) {
+            if(!user || (!user.admin && !logbook.admins.includes(user.email) && !logbook.members.includes(user.email))) {
+                logbooks.splice(i, 1);
+            }
+        }
+    }
+}
 
 
 async function finishLogbooksInfo(logbooks) {
@@ -42,6 +57,7 @@ exports.findAll = async (req, res, next) => {
 
 // Get all logbooks with detail information
 exports.findAllDetail = async (req, res, next) => {	
+    let user = authorize.getUserFromRequest(req);
     let sort = { number: 1 };
 
     try {
@@ -49,12 +65,14 @@ exports.findAllDetail = async (req, res, next) => {
         let groups = await Group.find().sort(sort).lean();
         for(let group of groups) {
             let logbooks = await Logbook.find({ group: group._id }).sort(sort).lean();
-            group.logbooks = logbooks;
+            filterPrivateLogbooks(logbooks, user);
             await finishLogbooksInfo(logbooks);
+            group.logbooks = logbooks;
         }
         // Logbooks without group
         let query = { $or: [{ group: null }, { group: { $exists: false } }] };
         let logbooks = await Logbook.find(query).sort(sort).lean();
+        filterPrivateLogbooks(logbooks, user);
         await finishLogbooksInfo(logbooks);
         if(logbooks && logbooks.length) {
             groups.push({ logbooks: logbooks });

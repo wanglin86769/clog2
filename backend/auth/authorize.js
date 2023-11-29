@@ -120,8 +120,29 @@ function admin(req, res, next) {
 }
 
 
+function getUserFromRequest(req) {
+    let authHeader = req.headers['authorization'];
+    if(!authHeader)  return null;
+    if(!authHeader.includes('Bearer'))  return null;
+
+    let token = authHeader.replace('Bearer ', '');
+    let user;
+    try {
+        // Verifies secret and checks expiration
+        let decoded = jwt.verify(token, jwtConfig.secret);
+        user = decoded;
+    } catch(error) {
+        console.log(error);
+        user = null;
+    }
+  
+    return user;
+}
+
+
 module.exports = {
     loggedIn,
     canEditLog,
     admin,
+    getUserFromRequest,
 }

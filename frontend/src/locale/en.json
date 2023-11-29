@@ -9,6 +9,8 @@
     "global_email": "Email",
     "global_name": "Name",
     "global_admin": "Admin",
+    "global_members": "Access Member",
+    "global_members_hint": "If access member is not empty, other users cannot access this logbook.",
     "global_home_page": "Home",
     "global_login_page": "Login",
     "global_register_page": "Register",

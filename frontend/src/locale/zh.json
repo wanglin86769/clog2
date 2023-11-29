@@ -9,6 +9,8 @@
     "global_email": "邮箱",
     "global_name": "姓名",
     "global_admin": "管理员",
+    "global_members": "访问成员",
+    "global_members_hint": "如果访问成员为非空，其他人员将无法访问这个记录本",
     "global_home_page": "首页",
     "global_login_page": "登录页",
     "global_register_page": "注册页",
