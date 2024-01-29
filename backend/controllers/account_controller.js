@@ -141,7 +141,7 @@ exports.resetPassword = async (req, res, next) => {
 
 // Get all accounts using query
 exports.findAll = async (req, res, next) => {	
-    let query = {};
+    let query = { active: true };
 
     for (const [key, value] of Object.entries(req.query)) {
         switch(key) {
@@ -189,7 +189,7 @@ exports.addAccount = async (req, res, next) => {
 // Get single account
 exports.findAccount = async (req, res, next) => {	
     try {
-        let account = await Account.findById(req.params.id).populate({ path: 'system'})
+        let account = await Account.findById(req.params.id);
         res.json(account);
     } catch(error) {
         res.status(500).json({message: error.message})
