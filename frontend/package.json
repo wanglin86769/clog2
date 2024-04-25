@@ -36,7 +36,7 @@
 		"element-plus": "^2.4.1",
 		"font-awesome": "^4.7.0",
 		"js-file-download": "^0.4.12",
-		"jsonwebtoken": "^8.5.1",
+		"jsonwebtoken": "^9.0.2",
 		"moment": "^2.29.4",
 		"node-polyfill-webpack-plugin": "^2.0.1",
 		"primeflex": "3.3.0",
