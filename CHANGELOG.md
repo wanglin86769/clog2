@@ -2,6 +2,12 @@
 
 ### v2.0
 
+#### v2.1.2
+
+- Update some dependencies on frontend to remove vulnerabilities
+- Update some dependencies on backend to remove vulnerabilities
+- Replace "localhost" in MongoDB URL which does not work in Node.js 18 with "127.0.0.1"
+
 #### v2.1.1
 
 - In order to provide image left/right navigation function, Replaced PrimeVue "Image" component with Element Plus "el-image" component on LogDetail page, which is shared by Xiaokang Sun from HALF project.
