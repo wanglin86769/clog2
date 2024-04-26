@@ -190,6 +190,11 @@ npm ci
 pm2 start server.js
 ```
 
+### Apache http configuration
+
+* Enable Apache Rewrite (mod_rewrite) Module
+* Copy frontend/deployment/apache/.htaccess to /var/www/html or /usr/local/apache2/htdocs/
+
 ### Visit web pages
 
 ```
