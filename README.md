@@ -207,3 +207,31 @@ username: admin    password: 1    admin: true
 username: user1    password: 1    admin: false
 username: user2    password: 1    admin: false
 ```
+
+## Deployment with Docker
+
+One compose.yaml and two Dockerfiles (one for frontend and one for backend) are provided to create the following three containers,
+
+* frontend: Vue.js web pages
+* backend: Node.js REST API
+* database: MongoDB with sample data
+
+Prior to building images and running containers, the values of `serverPath` in `frontend/src/config/configuration` and `url` in `backend/config/database.js` need to be consistent with the host IP address, because `localhost` or `127.0.0.1` of the host is not accessible from inside containers by default.
+
+The following commands can be used to build images and run containers,
+
+```
+docker compose build --no-cache
+docker compose up
+```
+
+If building and running succeed, the following page can be accessed,
+
+```
+http://ip_address:8080/
+```
+
+Docker deployment has been tested in the following environment,
+
+* Debian 10 Linux
+* Docker version 26.1.0

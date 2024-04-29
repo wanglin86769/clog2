@@ -1,0 +1,29 @@
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+    ports:
+      - '8080:80'
+  backend:
+    container_name: backend 
+    build:
+      context: ./backend
+    depends_on:
+      - database
+    volumes:
+      - ./attachment:/srv/clog2
+    ports: 
+      - 3000:3000 
+  database:
+    container_name: database
+    image: mongo:7.0
+    volumes:
+      - ./mongo_data:/data/db
+      - ./backend/db_dump/database:/db_dump
+      - ./backend/db_dump/mongorestore.sh:/docker-entrypoint-initdb.d/mongorestore.sh
+    ports:
+      - '27017:27017'
+
+
+      
