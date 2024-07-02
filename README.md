@@ -163,7 +163,7 @@ Go to frontend directory
 ```
 cd frontend
 npm install
-npm run serve
+npm run dev
 ```
 
 Go to backend directory
