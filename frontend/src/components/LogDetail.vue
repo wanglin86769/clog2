@@ -332,7 +332,7 @@ table, th, td {
 }
 
 /* Does not take effect yet */ 
-.p-tooltip ::v-deep .p-tooltip-text {
+:deep(.p-tooltip) .p-tooltip-text {
 	width: 500px !important;
 	background: #3f4b5b;
 	color: rgba(255, 255, 255, 0.87);

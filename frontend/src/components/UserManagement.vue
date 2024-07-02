@@ -257,7 +257,7 @@ export default {
 </script>
 
 <style scoped>
-::v-deep .p-datatable thead th {
+:deep(.p-datatable) thead th {
 	background-color: RGB(245,245,245);
 	color: RGB(29,149,243);
 }

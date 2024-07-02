@@ -398,7 +398,7 @@ export default {
 		color: RGB(29,149,243);
 	}
 
-	::v-deep .updated-row {
+	:deep(.updated-row) {
 		background-color: powderblue !important;
 	}
 </style>
