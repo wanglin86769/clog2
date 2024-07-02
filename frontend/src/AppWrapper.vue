@@ -14,12 +14,12 @@
 
 <script>
     import App from './App.vue';
-    import Login from './pages/Login';
-    import RegisterAccount from './pages/RegisterAccount';
-    import VerifyAccount from './pages/emailLink/VerifyAccount';
-    import UpdatePassword from './pages/UpdatePassword';
-    import ForgetPassword from './pages/ForgetPassword';
-    import ResetPassword from './pages/emailLink/ResetPassword';
+    import Login from './pages/Login.vue';
+    import RegisterAccount from './pages/RegisterAccount.vue';
+    import VerifyAccount from './pages/emailLink/VerifyAccount.vue';
+    import UpdatePassword from './pages/UpdatePassword.vue';
+    import ForgetPassword from './pages/ForgetPassword.vue';
+    import ResetPassword from './pages/emailLink/ResetPassword.vue';
     
 
 	export default {
