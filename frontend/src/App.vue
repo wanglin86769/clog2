@@ -110,7 +110,7 @@ import { Clipboard } from "v-clipboard";
 import config from '@/config/configuration.js';
 import AuthenticationService from '@/service/AuthenticationService';
 import UserService from '@/service/UserService';
-const jwt = require('jsonwebtoken');
+import { jwtDecode } from "jwt-decode";
 
 export default {
     data() {
@@ -274,12 +274,12 @@ export default {
 
             let token = user.token;
             // get the decoded payload and header
-            let decoded = jwt.decode(token, {complete: true});
+            const decoded = jwtDecode(token);
 
             let dateNow = new Date();
             // console.log(decoded.payload.exp);
             // console.log(dateNow / 1000);
-            if(decoded.payload.exp < dateNow / 1000) {
+            if(decoded.exp < dateNow / 1000) {
                 console.log("JWT token expired!!!");
                 this.sessionExpireDialogDisplay = true;
             }
