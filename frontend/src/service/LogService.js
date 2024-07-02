@@ -59,24 +59,30 @@ export default class LogService {
 		switch(extension) {
 			case 'doc':
 			case 'docx':
-				icon = require('@/assets/images/word.png');
+				// icon = require('@/assets/images/word.png');
+				icon = new URL('@/assets/images/word.png', import.meta.url).href
 				break;
 			case 'xls':
 			case 'xlsx':
-				icon = require('@/assets/images/excel.png');
+				// icon = require('@/assets/images/excel.png');
+				icon = new URL('@/assets/images/excel.png', import.meta.url).href
 				break;
 			case 'ppt':
 			case 'pptx':
-				icon = require('@/assets/images/powerpoint.png');
+				// icon = require('@/assets/images/powerpoint.png');
+				icon = new URL('@/assets/images/powerpoint.png', import.meta.url).href
 				break;
 			case 'pdf':
-				icon = require('@/assets/images/pdf.png');
+				// icon = require('@/assets/images/pdf.png');
+				icon = new URL('@/assets/images/pdf.png', import.meta.url).href
 				break;
 			case 'mp4':
-				icon = require('@/assets/images/mp4.png');
+				// icon = require('@/assets/images/mp4.png');
+				icon = new URL('@/assets/images/mp4.png', import.meta.url).href
 				break;
 			default:
-				icon = require('@/assets/images/fileIcon.png');
+				// icon = require('@/assets/images/fileIcon.png');
+				icon = new URL('@/assets/images/fileIcon.png', import.meta.url).href
 				break;
 		}
 		return icon;
