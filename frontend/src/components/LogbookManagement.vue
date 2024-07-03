@@ -47,6 +47,15 @@
 							</span>
 						</template>
 					</Column>
+					<Column field="observers" :header="$t('global_observers')">
+						<template #body="slotProps">
+							<span v-for="(item, index) in slotProps.data.observers" :key="index">
+								<span v-if="index > 0">, </span>
+								<br v-if="index % 3 === 0">
+								<span style="text-decoration: underline; color: RGB(29,149,243); cursor: pointer;" @click="toggle($event, item)">{{ item }}</span>
+							</span>
+						</template>
+					</Column>
 					<Column headerStyle="width: 8em">
 						<template #header>
 							<i class="pi pi-cog" style="fontSize: 1.2rem" v-tooltip.top="$t('global_operate')"></i>
@@ -84,6 +93,10 @@
 				<div class="field">
 					<label v-tooltip.right="$t('global_members_hint')">{{ $t('global_members') }} <span style="color: RGB(29,149,243)">({{ $t('global_email') }})</span></label>
 					<Chips v-model="logbook.members" separator=","  />
+				</div>
+				<div class="field">
+					<label v-tooltip.right="$t('global_observers_hint')">{{ $t('global_observers') }} <span style="color: RGB(29,149,243)">({{ $t('global_email') }})</span></label>
+					<Chips v-model="logbook.observers" separator=","  />
 				</div>
 
 				<template #footer>
@@ -190,6 +203,7 @@ export default {
 			this.logbook.number = logbook.number;
 			this.logbook.admins = logbook.admins;
 			this.logbook.members = logbook.members;
+			this.logbook.observers = logbook.observers;
 			this.logbookDialog = true;
 		},
 		onDeleteClick(logbook) {

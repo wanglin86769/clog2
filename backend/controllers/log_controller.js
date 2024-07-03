@@ -9,6 +9,7 @@ const mime = require('mime');
 const rootdir = path.normalize(require('../config/attachment').rootdir);
 const authorize = require('../auth/authorize.js');
 const Logbook = require('../models/logbook_model.js');
+const notifier = require('../helpers/notifier.js');
 
 
 function generateQuery(query, filters) {
@@ -529,8 +530,8 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
     log.updatedBy = user.email;
     log.lastActiveAt = timeNow;
 
+    let data;
     try {
-        let data;
         if(req.query.append) {  // Process append request
             let existingLog = await Log.findOne({ logbook: log.logbook, title: log.title, active: true }, null, { sort: { updatedAt: -1 } });
             if(existingLog) {
@@ -584,6 +585,10 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
     } catch(error) {
         res.status(500).json({message: error.message})
     }
+
+    if(data && data._id) {
+        notifier.notifyLogUpdate('create', data._id);
+    }
 }];
 
 
@@ -598,6 +603,7 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
     log.updatedBy = user.email;
     log.lastActiveAt = timeNow;
 
+    let data;
     try {
         let currentLog = await Log.findById(req.params.logId);
         if(!currentLog) return res.status(400).json({message: "CurrentLog not found."});
@@ -642,7 +648,7 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
         let push = { histories: historyItem };
 
         // Update the log
-        let data = await Log.findByIdAndUpdate(req.params.logId, { $set: log, $push: push }, { new: true });
+        data = await Log.findByIdAndUpdate(req.params.logId, { $set: log, $push: push }, { new: true });
 
         // Increase attachments
         if(Array.isArray(req.files) && req.files.length) {
@@ -675,6 +681,10 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
     } catch(error) {
         res.status(500).json({message: error.message})
     }
+
+    if(data && data._id) {
+        notifier.notifyLogUpdate('update', data._id);
+    }
 }];
 
 
@@ -688,11 +698,16 @@ exports.deleteLog = async (req, res, next) => {
     req.body.active = false;
     req.body.lastActiveAt = timeNow;
 
+    let data;
     try {
-        let data = await Log.findByIdAndUpdate(req.params.logId, { $set: req.body }, { new: true });
+        data = await Log.findByIdAndUpdate(req.params.logId, { $set: req.body }, { new: true });
         res.json(data);
     } catch(error) {
         res.status(500).json({message: error.message})
+    }
+
+    if(data && data._id) {
+        notifier.notifyLogUpdate('delete', data._id);
     }
 }
 

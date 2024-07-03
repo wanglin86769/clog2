@@ -22,6 +22,11 @@ let LogbookSchema = new Schema({
         default: undefined,
         ref: 'User',
     },
+    observers: {
+        type: [String],
+        default: undefined,
+        ref: 'User',
+    },
 }, {
     collection: 'logbook'
 })
