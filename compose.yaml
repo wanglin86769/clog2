@@ -12,7 +12,7 @@ services:
     depends_on:
       - database
     volumes:
-      - ./attachment:/srv/clog2
+      - ./binary_data:/srv/clog2
     ports: 
       - 3000:3000 
   database:
