@@ -33,7 +33,20 @@
                     </tr>
 					<tr height="40em">
                         <td align="left" colspan="2" style="padding: 10px;">
-							<Textarea v-model="log.description" :placeholder="$t('global_log_description_placeholder')" :autoResize="true" rows="5" style="width: 100%;" />
+							<!-- <Textarea v-model="log.description" :placeholder="$t('global_log_description_placeholder')" :autoResize="true" rows="5" style="width: 100%;" /> -->
+							<div v-if="log.encoding === 'HTML'">
+								<ckeditor :editor="editor" v-model="log.description" :config="editorConfig"></ckeditor>
+							</div>
+							<div v-else>
+								<Textarea v-model="log.description" :placeholder="$t('global_log_description_placeholder')" :autoResize="true" rows="10" style="width: 100%;" />
+							</div>
+							<div style="margin-top: .8em;">
+								<span style="font-weight: bold; margin-right: 1em;">Encoding:</span>
+								<span v-for="(item, index) in encodings" :key="index">
+									<RadioButton v-model="log.encoding" :inputId="item" :value="item" />
+									<label :for="item" class="ml-2">{{ item }}</label>
+								</span>
+							</div>
 						</td>
                     </tr>
                 </table>
@@ -81,6 +94,7 @@
 	
 </template>
 <script>
+import { ClassicEditor } from 'ckeditor5';
 import fileDownload from 'js-file-download';
 import LogService from '../service/LogService';
 import TagService from '../service/TagService';
@@ -95,6 +109,9 @@ export default {
 			log: {},
 			discardLogDialog: false,
 
+			editor: ClassicEditor,
+			editorConfig: {},
+
 			submittingAttachments: [],
 			increaseAttachments: [],
 
@@ -108,12 +125,16 @@ export default {
 	created() {
 		this.logService = new LogService();
 		this.tagService = new TagService();
+
+		// Load configuration for the rich text editor
+		this.editorConfig = this.logService.generateRichTextConfig(true);
 	},
 
 	mounted() {
 		this.fetchLog();
 		this.fetchTags();
 		this.fetchCategories();
+		this.fetchEncodings();
 	},
 
 	methods: {
@@ -135,6 +156,7 @@ export default {
 				this.log.category = log.category;
 				this.log.title = log.title;
 				this.log.description = log.description;
+				this.log.encoding = log.encoding;
 				// console.log(this.log);
             }).catch((error) => {
                 if(error.response) {
@@ -158,6 +180,9 @@ export default {
         },
 		fetchCategories() {
             this.categories = LogService.categories;
+        },
+		fetchEncodings() {
+            this.encodings = LogService.encodings;
         },
 		editLog() {
 			let validity = this.logService.validate(this.log);

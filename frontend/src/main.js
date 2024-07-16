@@ -104,6 +104,10 @@ import i18n from "./locale/index.js";
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 
+// CKEditor
+import CKEditor from '@ckeditor/ckeditor5-vue'
+import 'ckeditor5/ckeditor5.css';
+
 router.beforeEach(function(to, from, next) {
     window.scrollTo(0, 0);
     next();
@@ -122,6 +126,7 @@ app.use(router);
 app.use(store);
 app.use(LoadingPlugin, { color: 'RGB(33, 150, 243)' });
 app.use(i18n);
+app.use(CKEditor);
 
 app.directive('tooltip', Tooltip);
 app.directive('ripple', Ripple);

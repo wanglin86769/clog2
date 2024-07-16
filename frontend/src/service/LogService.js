@@ -1,12 +1,39 @@
 import axios from 'axios';
 import config from '@/config/configuration.js';
 import AuthenticationService from '@/service/AuthenticationService';
+import {
+    Bold,
+    Essentials,
+    Heading,
+    Indent,
+    IndentBlock,
+    Italic,
+    Link,
+    List,
+    MediaEmbed,
+    Paragraph,
+    Table,
+	TableCellProperties,
+	TableProperties,
+	TableToolbar,
+    Undo,
+    Image,
+	ImageStyle,
+	ImageTextAlternative,
+    ImageCaption,
+    ImageInsert,
+    ImageResize,
+    LinkImage,
+    SimpleUploadAdapter,
+	SourceEditing,
+} from 'ckeditor5';
 
 const authenticationService = new AuthenticationService();
 
 export default class LogService {
 
 	static categories = [ 'Info', 'Problem', 'Request', 'Suggestion', 'Urgent' ];
+	static encodings = [ 'HTML', 'plain' ];
 
 	findLastActive(logbook) {
         let url = `${config.serverPath}/logs/lastactive?logbook=${logbook}`;
@@ -91,6 +118,83 @@ export default class LogService {
 	findAttachment(logId, fileName) {
 		let url = `${config.serverPath}/logs/attachments/${logId}/${fileName}`;
 		return axios.get(url, {headers: authenticationService.authHeader(), responseType: 'blob'}).then(res => res.data);
+	}
+
+	generateRichTextConfig(showToolbar) {
+		return {
+			toolbar: showToolbar ? [
+				'undo', 'redo', '|', 'sourceEditing', '|',
+				'heading', '|', 'bold', 'italic', '|',
+				'link', 'insertTable', 'mediaEmbed', '|',
+				'bulletedList', 'numberedList', 'indent', 'outdent', '|',
+				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|',
+				'insertImage', 'toggleImageCaption', 'imageTextAlternative'
+			] : null,
+			plugins: [
+				Bold,
+				Essentials,
+				Heading,
+				Indent,
+				IndentBlock,
+				Italic,
+				Link,
+				List,
+				MediaEmbed,
+				Paragraph,
+				Table,
+				TableCellProperties,
+				TableProperties,
+				TableToolbar,
+				Undo,
+				Image,	
+				ImageStyle,
+				ImageTextAlternative,
+
+				ImageCaption, // adds ability to caption image via the toolbar
+				ImageInsert,
+				ImageResize, // this will cause resize handles to appear in the editor, operates by applying CSS to the enclosing <figure> tag
+				LinkImage,
+				SimpleUploadAdapter,
+
+				SourceEditing,
+			],
+			table: {
+				contentToolbar: [
+					'tableColumn', 'tableRow', 'mergeTableCells',
+					'tableProperties', 'tableCellProperties'
+				],
+				tableProperties: {
+					// The configuration of the TableProperties plugin.
+					// ...
+				},
+				tableCellProperties: {
+					// The configuration of the TableCellProperties plugin.
+					// ...
+				},
+			},
+			image: {
+				styles: {
+					options: [
+						'inline', 'alignLeft', 'alignRight',
+						'alignCenter', 'alignBlockLeft', 'alignBlockRight',
+						'block', 'side'
+					]
+				}
+			},
+			simpleUpload: {
+				// The URL that the images are uploaded to.
+				uploadUrl: `${config.serverPath}/logs/richtext`,
+
+				// Enable the XMLHttpRequest.withCredentials property.
+				// withCredentials: true,
+
+				// Headers sent along with the XMLHttpRequest to the upload server.
+				headers: {
+					'X-CSRF-TOKEN': 'CSRF-Token',
+					...authenticationService.authHeader(),
+				}
+			}
+		}
 	}
 
 	validate(log) {

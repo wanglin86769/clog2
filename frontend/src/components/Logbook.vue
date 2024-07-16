@@ -249,6 +249,7 @@ export default {
 			.then(data => {
 				this.logs = data.entries;
 				this.totalRecords = data.count;
+				this.removeHTMLTags(this.logs);
 			}).catch(error => {
 				if(error.response) {
 					this.$toast.add({ severity: 'error', summary: this.$t('logbook_log_load_error'), detail: error.response.data.message });
@@ -258,6 +259,14 @@ export default {
 			}).finally(() => {
 				this.loading = false;
 			});
+		},
+		removeHTMLTags(logs) {
+			if(!logs || !logs.length) return;
+			for(let log of logs) {
+				if(!log.description) continue;
+				if(log.encoding === 'HTML')
+					log.description = log.description.replace(/(<([^>]+)>)/ig, '');
+			}
 		},
 		onNewClick() {
 			this.$router.push({ name: 'logcreate', params: { logbookid: this.$route.params.id } });

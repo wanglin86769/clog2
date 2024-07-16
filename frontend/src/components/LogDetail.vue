@@ -57,8 +57,16 @@
                     </tr>
 					<tr height="40em">
                         <td align="left" colspan="2">
-							<div class="descriptionBox" >
+							<!-- <div v-if="log.encoding === 'HTML'" v-html="log.description" class="descriptionBox" ></div> -->
+							<div v-if="log.encoding === 'HTML'">
+								<ckeditor :editor="editor" v-model="log.description" :config="editorConfig" :disabled="true"></ckeditor>
+							</div>
+							<div v-else class="descriptionBox" >
 								{{ log.description }}
+							</div>
+							<div style="margin-top: .8em; margin-bottom: .8em; padding: 10px;">
+								<span style="font-weight: bold; margin-right: 1em;">Encoding:</span>
+								<span>{{ log.encoding ? log.encoding : 'plain' }}</span>
 							</div>
 						</td>
                     </tr>
@@ -156,6 +164,7 @@
 </template>
 
 <script>
+import { ClassicEditor } from 'ckeditor5';
 import fileDownload from 'js-file-download';
 import LogService from '../service/LogService';
 import dateFormat from "dateformat";
@@ -167,6 +176,9 @@ export default {
 			categories: [],
 			log: {},
 			deleteLogDialog: false,
+
+			editor: ClassicEditor,
+			editorConfig: {},
 
 			histories: [],
 			logHistoryDialog: false,
@@ -180,6 +192,9 @@ export default {
 
 	created() {
 		this.logService = new LogService();
+
+		// Load configuration for the rich text editor
+		this.editorConfig = this.logService.generateRichTextConfig(false);
 	},
 
 	mounted() {
@@ -336,6 +351,11 @@ table, th, td {
 	width: 500px !important;
 	background: #3f4b5b;
 	color: rgba(255, 255, 255, 0.87);
+}
+
+/* Remove border of ckeditor */
+:deep(.ck) {
+    border:0px !important;
 }
 
 </style>
