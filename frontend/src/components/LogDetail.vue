@@ -27,7 +27,7 @@
             <template #content>
 				<table border="1" width="100%">
                     <tr height="40em">
-                        <td width="20%" align="left"><span style="margin-left: 0.8em; font-weight: bold;">Logbook</span></td>
+                        <td width="20%" align="left"><span style="margin-left: 0.8em; font-weight: bold;">{{ $t('global_log_logbook') }}</span></td>
                         <td width="80%" align="left"><span v-if="log && log.logbook" style="margin-left: 0.8em;">{{ log.logbook.name }}</span></td>
                     </tr>
 					<tr height="40em">
