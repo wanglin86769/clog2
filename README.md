@@ -6,6 +6,7 @@
 
 * From v2.1.0, attachment storage is moved from MongoDB to file system due to 16MB limitation and performance issue
 * The attachment directory is `/srv/clog2`
+* The attachment directory is migrated to `/srv/clog2/attachments`
 
 ## Features
 
@@ -93,6 +94,10 @@ Login page for CSNS OAuth2 authentication
 ### Attachment viewing page
 
 ![Alt text](docs/screenshots/attachment_viewing.png?raw=true "Title")
+
+### Rich-text editor
+
+![Alt text](docs/screenshots/rich_text.png?raw=true "Title")
 
 ## API token
 
