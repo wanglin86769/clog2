@@ -28,5 +28,11 @@ router.delete('/:logId', authorize.loggedIn, authorize.canEditLog, logs.deleteLo
 // Get single attachment
 router.get('/attachments/:logId/:fileName', logs.findAttachment);
 
+// Create a rich text image
+router.post('/richtext', authorize.loggedInRichText, logs.createRichTextImage);
+
+// Get a rich text image
+router.get('/richtext/:year/:month/:day/:fileName', logs.findRichTextImage);
+
 
 module.exports = router;

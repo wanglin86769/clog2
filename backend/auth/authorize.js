@@ -66,6 +66,50 @@ async function loggedIn(req, res, next) {
 }
 
 
+// Supporting bearer token authentication for rich-text images uploading.
+async function loggedInRichText(req, res, next) {
+    let errMessage;
+
+    // Check authentication header for token
+    let authHeader = req.headers['authorization'];
+    if(!authHeader) {
+        errMessage = {
+            error: {
+                message: "Authentication header is not detected."
+            }
+        };
+        return res.status(401).json(errMessage);
+    }
+
+    if(!authHeader.includes('Bearer')) { // Bearer token
+        errMessage = {
+            error: {
+                message: "Unknown authentication header."
+            }
+        };
+        return res.status(401).json(errMessage);
+    }
+
+    let user;
+    let token = authHeader.replace('Bearer ', '');
+    try {
+        // Verifies secret and checks expiration
+        let decoded = jwt.verify(token, jwtConfig.secret);
+        user = decoded;
+    } catch(error) {
+        errMessage = {
+            error: {
+                message: "JWT token parsing error."
+            }
+        };
+        return res.status(401).json(errMessage);
+    }
+
+    req.headers['user'] = user;
+    next();
+}
+
+
 async function canEditLog(req, res, next) {
     let user = req.headers['user'];
     if(!user) {
@@ -142,6 +186,7 @@ function getUserFromRequest(req) {
 
 module.exports = {
     loggedIn,
+    loggedInRichText,
     canEditLog,
     admin,
     getUserFromRequest,

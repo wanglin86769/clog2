@@ -6,10 +6,13 @@ const Log = require('../models/log_model.js');
 const path = require('path');
 const fs = require('fs-extra');
 const mime = require('mime');
-const rootdir = path.normalize(require('../config/attachment').rootdir);
 const authorize = require('../auth/authorize.js');
 const Logbook = require('../models/logbook_model.js');
 const notifier = require('../helpers/notifier.js');
+const backendConfig = require('../config/backend.js');
+const rootdir = path.normalize(require('../config/attachment').rootdir);
+const attachmentdir = path.join(rootdir, require('../config/attachment').attachments_path);
+const richtextdir = path.join(rootdir, require('../config/attachment').rich_text_images_path);
 
 
 function generateQuery(query, filters) {
@@ -77,7 +80,7 @@ exports.runScript = async (req, res, next) => {
     //         let month = createdAt.getUTCMonth() + 1; //months from 1-12
     //         let day = createdAt.getUTCDate();
     //         let year = createdAt.getUTCFullYear();
-    //         let fileDir = path.join(rootdir, year.toString(), month.toString(), day.toString(), log._id.toString());
+    //         let fileDir = path.join(attachmentdir, year.toString(), month.toString(), day.toString(), log._id.toString());
     //         await fs.mkdir(fileDir, { recursive: true });
     //         for(let attachment of log.attachments) {
     //             let fileName = attachment.name;
@@ -292,7 +295,7 @@ exports.findLogs = async (req, res, next) => {
             let day = date.getUTCDate();
             let year = date.getUTCFullYear();
 
-            let fileDir = path.join(rootdir, year.toString(), month.toString(), day.toString(), log._id.toString());
+            let fileDir = path.join(attachmentdir, year.toString(), month.toString(), day.toString(), log._id.toString());
 
             if(fs.existsSync(fileDir)) {
                 let files = await fs.readdir(fileDir);
@@ -424,7 +427,7 @@ exports.findLog = async (req, res, next) => {
         let day = date.getUTCDate();
         let year = date.getUTCFullYear();
 
-        let fileDir = path.join(rootdir, year.toString(), month.toString(), day.toString(), log._id.toString());
+        let fileDir = path.join(attachmentdir, year.toString(), month.toString(), day.toString(), log._id.toString());
 
         if(fs.existsSync(fileDir)) {
             let files = await fs.readdir(fileDir);
@@ -563,7 +566,7 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
             let month = createdAt.getUTCMonth() + 1; //months from 1-12
             let day = createdAt.getUTCDate();
             let year = createdAt.getUTCFullYear();
-            let fileDir = path.join(rootdir, year.toString(), month.toString(), day.toString(), data._id.toString());
+            let fileDir = path.join(attachmentdir, year.toString(), month.toString(), day.toString(), data._id.toString());
             await fs.mkdir(fileDir, { recursive: true });
 
             // Create attachments in the directory
@@ -614,7 +617,7 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
         let day = date.getUTCDate();
         let year = date.getUTCFullYear();
 
-        let fileDir = path.join(rootdir, year.toString(), month.toString(), day.toString(), currentLog._id.toString());
+        let fileDir = path.join(attachmentdir, year.toString(), month.toString(), day.toString(), currentLog._id.toString());
 
         let currentAttachments = [];
         if(fs.existsSync(fileDir)) {
@@ -724,10 +727,10 @@ exports.findAttachment = async (req, res, next) => {
         if(!log) return res.status(204).json({message: "Log not found."});
 
         let date = new Date(log.createdAt);
-        let month = date.getUTCMonth() + 1; //months from 1-12
+        let month = date.getUTCMonth() + 1; // months from 1-12
         let day = date.getUTCDate();
         let year = date.getUTCFullYear();
-        let fileFullPath = path.join(rootdir, year.toString(), month.toString(), day.toString(), logId, fileName);
+        let fileFullPath = path.join(attachmentdir, year.toString(), month.toString(), day.toString(), logId, fileName);
 
         if(!fs.existsSync(fileFullPath)) {
             return res.status(204).json({message: "Attachment for the specified name is not found."});
@@ -737,6 +740,85 @@ exports.findAttachment = async (req, res, next) => {
         // let content = await fs.readFile(fileFullPath, 'binary');
         // res.write(content, 'binary');
         // res.end();
+
+        let content = await fs.readFile(fileFullPath, 'binary');
+        res.send(new Buffer.from(content, 'binary'))
+
+    } catch(error) {
+        console.log(error);
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+
+exports.createRichTextImage = [upload.single('upload'), async (req, res, next) => {	
+    let user = req.headers['user'];
+    if(!user) {
+        let errMessage = {
+            error: {
+                message: "Only logged in users can upload rich-text images."
+            }
+        }        
+        return res.status(400).json(errMessage);
+    }
+
+    let file = req.file;
+    if(!file) return res.status(400).json({ message: "No image information is extracted." });
+
+    // Create the directory for attachments
+    let createdAt = new Date();
+    let month = createdAt.getUTCMonth() + 1; // months from 1-12
+    let day = createdAt.getUTCDate();
+    let year = createdAt.getUTCFullYear();
+    let fileDir = path.join(richtextdir, year.toString(), month.toString(), day.toString());
+    await fs.mkdir(fileDir, { recursive: true });
+
+    /* Create the image in the directory */
+
+    /* 
+     * By default, 
+     * if all chars are latin1, then re-decoding
+     */
+    if (!/[^\u0000-\u00ff]/.test(file.originalname)) {
+        file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
+    }
+    
+    let fileFullPath = path.join(fileDir, file.originalname);
+    let fileName;
+    if(fs.existsSync(fileFullPath)) { // If filename already exists, append timestamp to avoid duplication
+        let name = file.originalname.substring(0, file.originalname.lastIndexOf('.'));
+        let extension = file.originalname.substring(file.originalname.lastIndexOf('.') + 1);
+        fileName = `${name}_${String(Date.now())}.${extension}`;
+    } else {
+        fileName = file.originalname;
+    }
+    
+    fileFullPath = path.join(fileDir, fileName);
+    await fs.writeFile(fileFullPath, file.buffer, "binary");
+
+    // Return the available URL to the rich-text editor
+    let url = `${backendConfig.url}/logs/richtext/${year}/${month}/${day}/${fileName}`;
+    res.json({ url: url });
+}];
+
+
+exports.findRichTextImage = async (req, res, next) => {
+    let year = req.params.year;
+    let month = req.params.month;
+    let day = req.params.day;
+    let fileName = req.params.fileName;
+
+    if(!year) return res.status(400).json({message: "No year is specified."});
+    if(!month) return res.status(400).json({message: "No month is specified."});
+    if(!day) return res.status(400).json({message: "No day is specified."});
+    if(!fileName) return res.status(400).json({message: "No fileName is specified."});
+
+    try {
+        let fileFullPath = path.join(richtextdir, year.toString(), month.toString(), day.toString(), fileName);
+
+        if(!fs.existsSync(fileFullPath)) {
+            return res.status(204).json({message: "Rich text image for the specified date and name is not found."});
+        }
 
         let content = await fs.readFile(fileFullPath, 'binary');
         res.send(new Buffer.from(content, 'binary'))

@@ -82,6 +82,10 @@ let LogSchema = new Schema({
         type: String,
         required: true
     },
+    encoding: {
+        type: String,
+        required: true
+    },
     // Attachments are stored in file system
     // attachments: {
     //     type: [Attachment],
