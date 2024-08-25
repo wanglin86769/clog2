@@ -265,7 +265,8 @@ export default {
 			for(let log of logs) {
 				if(!log.description) continue;
 				if(log.encoding === 'HTML')
-					log.description = log.description.replace(/(<([^>]+)>)/ig, '');
+					log.description = log.description.replace(/(<([^>]+)>)/ig, ''); // Remove HTML tags
+					log.description = log.description.replace(/&nbsp;/ig, ' '); // Remove the "&nbsp;" HTML entity
 			}
 		},
 		onNewClick() {
