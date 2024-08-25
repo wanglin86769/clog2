@@ -3,6 +3,7 @@
 		<Card class="shadow-2" style="margin-bottom: 2em;">
             <template #title>
                 {{ $t('logcreate_title') }}
+				<Button style="margin-left: 1em" :label="$t('templatemanagement_import_template')" icon="fa fa-file-text-o" size="small" severity="success" @click="onImportLogTemplateClick" />
             </template>
             <!-- <template #subtitle>
                 Subtitle
@@ -79,6 +80,37 @@
 				<Button :label="$t('global_ok')" icon="pi pi-check" class="p-button-primary" @click="discardLog" />
 			</template>
 		</Dialog>
+
+		<Dialog v-model:visible="importLogTemplateDialog" :header="$t('templatemanagement_template_selection')" :modal="true" style="min-width: 60%">
+			<DataTable :value="templates" dataKey="_id" :rowHover="true" showGridlines responsiveLayout="stack">
+				<Column field="name" :header="$t('global_index')">
+					<template #body="slotProps">
+						{{slotProps.index + 1}}
+					</template>
+				</Column>
+				<Column field="name" :header="$t('global_naming')">
+					<template #body="slotProps">
+						{{slotProps.data.name}}
+					</template>
+				</Column>
+				<Column headerStyle="width: 8em">
+					<template #header>
+						<i class="pi pi-cog" style="fontSize: 1.2rem" v-tooltip.top="$t('global_operate')"></i>
+					</template>
+					<template #body="slotProps">
+						<i class="fa fa-check-circle-o fa-lg" v-tooltip.top="$t('templatemanagement_select')" style="cursor: pointer; color: RGB(29,149,243); margin-right: .75em" @click="onSelectTemplateClick(slotProps.data)"></i>
+					</template>
+				</Column>
+				<template #empty>
+					<div style="color: darkorange">
+						{{ $t('global_no_data') }}
+					</div>
+				</template>
+			</DataTable>
+			<template #footer>
+				<Button :label="$t('global_cancel')" icon="pi pi-times" class="p-button-text" @click="importLogTemplateDialog = false"/>
+			</template>
+		</Dialog>
 	</div>
 	
 </template>
@@ -87,6 +119,7 @@ import { ClassicEditor } from 'ckeditor5';
 import LogService from '../service/LogService';
 import LogbookService from '../service/LogbookService';
 import TagService from '../service/TagService';
+import TemplateService from '../service/TemplateService';
 
 export default {
 	data() {
@@ -99,6 +132,9 @@ export default {
 			submittingAttachments: [],
 			discardLogDialog: false,
 
+			templates: [],
+			importLogTemplateDialog: false,
+
 			editor: ClassicEditor,
 			editorConfig: {},
 		}
@@ -107,11 +143,13 @@ export default {
 	logService: null,
 	logbookService: null,
 	tagService: null,
+	templateService: null,
 
 	created() {
 		this.logService = new LogService();
 		this.logbookService = new LogbookService();
 		this.tagService = new TagService();
+		this.templateService = new TemplateService();
 
 		this.log.logbook = this.$route.params.logbookid;
 
@@ -130,6 +168,7 @@ export default {
 		this.fetchTags();
 		this.fetchCategories();
 		this.fetchEncodings();
+		this.fetchTemplates();
 
 		if(this.categories && this.categories.length) {
 			this.log.category = this.categories[0];
@@ -158,6 +197,17 @@ export default {
                 this.tags = tags;
             });
         },
+		fetchTemplates() {
+			this.templateService.findTemplates()
+			.then(templates => this.templates = templates)
+			.catch(error => {
+				if(error.response) {
+					this.$toast.add({ severity: 'error', summary: this.$t('templatemanagement_template_load_error'), detail: error.response.data.message });
+				} else {
+                    this.$toast.add({ severity: 'error', summary: this.$t('templatemanagement_template_load_error'), detail: error.message });
+				}
+			});
+		},
 		fetchCategories() {
             this.categories = LogService.categories;
         },
@@ -166,6 +216,13 @@ export default {
         },
 		onCancelClick() {
 			this.discardLogDialog = true;
+		},
+		onImportLogTemplateClick() {
+			this.importLogTemplateDialog = true;
+		},
+		onSelectTemplateClick(template) {
+			this.log.description = template.content;
+			this.importLogTemplateDialog = false;
 		},
 		createLog() {
 			let validity = this.logService.validate(this.log);
