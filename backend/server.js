@@ -38,6 +38,7 @@ const logbookRoute = require('./routes/logbook_route.js');
 const tagRoute = require('./routes/tag_route.js');
 const groupRoute = require('./routes/group_route.js');
 const logRoute = require('./routes/log_route.js');
+const templateRoute = require('./routes/template_route.js');
 app.use('/api/authenticate', authenticateRoute);
 app.use('/api/accounts', accountRoute);
 app.use('/api/users', userRoute);
@@ -45,6 +46,7 @@ app.use('/api/logbooks', logbookRoute);
 app.use('/api/tags', tagRoute);
 app.use('/api/groups', groupRoute);
 app.use('/api/logs', logRoute);
+app.use('/api/templates', templateRoute);
 
 // Create port
 const port = process.env.PORT || 3000;

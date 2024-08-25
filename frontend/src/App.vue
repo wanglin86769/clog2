@@ -198,6 +198,11 @@ export default {
                             to: '/tagmanagement'
                         },
                         {
+                            label: this.$t('menu_template'),
+                            icon: 'fa fa-fw fa-clone',
+                            to: '/templatemanagement'
+                        },
+                        {
                             label: this.$t('menu_user_management'),
                             icon: 'fa fa-fw fa-lock',
                             to: '/usermanagement',

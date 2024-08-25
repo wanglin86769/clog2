@@ -28,6 +28,7 @@
     "global_two_passwords_different": "Two passwords are different!",
     "global_email_cannot_empty": "Email cannot be empty!",
     "global_name_cannot_empty": "Name cannot be empty!",
+    "global_detail": "Detail",
     "global_create": "Create",
     "global_modify": "Modify",
     "global_add": "Add",
@@ -152,6 +153,21 @@
     "tagmanagement_tag_delete_success": "Tag deleted successfully",
 
 
+    "templatemanagement_title": "Template Management",
+    "templatemanagement_create_template": "New Template",
+    "templatemanagement_edit_template": "Edit Template",
+    "templatemanagement_import_template": "Template",
+    "templatemanagement_template_selection": "Template Selection",
+    "templatemanagement_content": "Content",
+    "templatemanagement_select": "Select",
+    "templatemanagement_delete_template_prompt": "Are you sure you want to delete the following template?",
+    "templatemanagement_discard_template_prompt": "Are you sure you want to abandon editing the current template?",
+    "templatemanagement_template_load_error": "Fail to load template information",
+    "templatemanagement_template_create_success": "Template created successfully",
+    "templatemanagement_template_modify_success": "Template modified successfully",
+    "templatemanagement_template_delete_success": "Template deleted successfully",
+
+
     "usermanagement_title": "User Management",
     "usermanagement_search": "Keyword",
     "usermanagement_create_user": "Create User",
@@ -202,6 +218,7 @@
     "menu_logbook_grouping": "Grouping",
     "menu_logbook": "Logbook",
     "menu_tag": "Tag",
+    "menu_template": "Template",
     "menu_user_management": "Permission",
     "menu_account_management": "Account",
     "menu_browser_languages": "Browser Langs",

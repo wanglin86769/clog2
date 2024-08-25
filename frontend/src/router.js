@@ -62,6 +62,16 @@ const routes = [
         component: () => import('./components/TagManagement.vue'),
     },
     {
+        path: '/templatemanagement',
+        name: 'templatemanagement',
+        component: () => import('./components/TemplateManagement.vue'),
+    },
+    {
+        path: '/templateedit/:id',
+        name: 'templateedit',
+        component: () => import('./components/TemplateEdit.vue'),
+    },
+    {
         path: '/groupmanagement',
         name: 'groupmanagement',
         component: () => import('./components/GroupManagement.vue'),
