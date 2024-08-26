@@ -120,6 +120,7 @@ import LogService from '../service/LogService';
 import LogbookService from '../service/LogbookService';
 import TagService from '../service/TagService';
 import TemplateService from '../service/TemplateService';
+import config from '@/config/configuration.js';
 
 export default {
 	data() {
@@ -137,6 +138,8 @@ export default {
 
 			editor: ClassicEditor,
 			editorConfig: {},
+
+			intervalId: null,
 		}
 	},
 
@@ -155,6 +158,8 @@ export default {
 
 		// Load configuration for the rich text editor
 		this.editorConfig = this.logService.generateRichTextConfig(true);
+
+		this.intervalId = setInterval(this.saveLogToCache, 30000); // 30 seconds
 	},
 
 	mounted() {
@@ -177,6 +182,15 @@ export default {
 			this.log.encoding = this.encodings[0];
 		}
 		// console.log(this.log);
+
+		this.restoreCacheToLog();
+	},
+
+	beforeUnmount(){
+		if(this.intervalId) {
+			clearInterval(this.intervalId);
+			this.intervalId = null;
+		}
 	},
 
 	methods: {
@@ -241,6 +255,7 @@ export default {
 
             this.logService.addLogFormData(formData)
 			.then(() => {
+				this.clearLogCache();
                 this.$router.push({name: 'logbook', params: { id: this.$route.params.logbookid }});
             }).catch((error) => {
                 if(error.response) {
@@ -253,12 +268,41 @@ export default {
 			});
         },
 		discardLog() {
+			this.clearLogCache();
 			this.$router.push({name: 'logbook', params: { id: this.$route.params.logbookid }});
 		},
 		handleFileUpload(){
             this.submittingAttachments = this.$refs.file.files;
             // console.log(this.submittingAttachments);
         },
+		saveLogToCache() {
+			if(!this.userInfo || !this.userInfo.email) {
+				return;
+			}
+			if(this.log.title || this.log.description) {
+				let log = { title: this.log.title, description: this.log.description, encoding: this.log.encoding };
+				localStorage.setItem(`${config.localStorageLogCachePrefix}:${this.userInfo.email}`, JSON.stringify(log));
+			}
+        },
+		restoreCacheToLog() {
+			if(!this.userInfo || !this.userInfo.email) {
+				return;
+			}
+			let log = JSON.parse(localStorage.getItem(`${config.localStorageLogCachePrefix}:${this.userInfo.email}`));
+            if(!log) return;
+			if(log.title || log.description) {
+				this.log.title = log.title;
+				this.log.description = log.description;
+				this.log.encoding = log.encoding;
+			}
+			this.clearLogCache();
+		},
+		clearLogCache() {
+			if(!this.userInfo || !this.userInfo.email) {
+				return;
+			}
+			localStorage.removeItem(`${config.localStorageLogCachePrefix}:${this.userInfo.email}`);
+		},
 	},
 
 	computed: {
