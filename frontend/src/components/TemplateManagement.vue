@@ -51,8 +51,15 @@
 					<label>{{ $t('global_number') }}</label>
 					<InputText v-model.trim="template.number" class="p-inputtext-sm" :disabled="true" />
 				</div>
-				<div style="border: solid 1px RGB(232,234,238)">
-					<ckeditor :editor="editor" v-model="template.content" :config="editorConfig" :disabled="true"></ckeditor>
+				<div class="field">
+					<label>{{ $t('templatemanagement_content') }}</label>
+					<table border="1" width="100%" bordercolor="#e9ecef" style="border-collapse: collapse">
+						<tr>
+							<td align="left">
+								<div v-html="template.content" class="ck-content" style="padding: 10px" ></div>
+							</td>
+						</tr>
+					</table>
 				</div>
 
 				<template #footer>
@@ -78,9 +85,7 @@
 </template>
 
 <script>
-import { ClassicEditor } from 'ckeditor5';
 import TemplateService from '../service/TemplateService';
-import LogService from '../service/LogService';
 
 export default {
 	data() {
@@ -89,19 +94,11 @@ export default {
 			template: {},
 			templateDialog: false,
 			deleteTemplateDialog: false,
-
-			editor: ClassicEditor,
-			editorConfig: {},
 		}
 	},
 	templateService: null,
-	logService: null,
 	created() {
 		this.templateService = new TemplateService();
-		this.logService = new LogService();
-
-		// Load configuration for the rich text editor
-		this.editorConfig = this.logService.generateRichTextConfig(false);
 	},
 	mounted() {
 		this.loadData();

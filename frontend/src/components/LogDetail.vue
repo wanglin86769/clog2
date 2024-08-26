@@ -57,10 +57,7 @@
                     </tr>
 					<tr height="40em">
                         <td align="left" colspan="2">
-							<!-- <div v-if="log.encoding === 'HTML'" v-html="log.description" class="descriptionBox" ></div> -->
-							<div v-if="log.encoding === 'HTML'">
-								<ckeditor :editor="editor" v-model="log.description" :config="editorConfig" :disabled="true"></ckeditor>
-							</div>
+							<div v-if="log.encoding === 'HTML'" v-html="log.description" class="ck-content" style="padding: 10px" ></div>
 							<div v-else class="descriptionBox" >
 								{{ log.description }}
 							</div>
@@ -164,7 +161,6 @@
 </template>
 
 <script>
-import { ClassicEditor } from 'ckeditor5';
 import fileDownload from 'js-file-download';
 import LogService from '../service/LogService';
 import dateFormat from "dateformat";
@@ -176,9 +172,6 @@ export default {
 			categories: [],
 			log: {},
 			deleteLogDialog: false,
-
-			editor: ClassicEditor,
-			editorConfig: {},
 
 			histories: [],
 			logHistoryDialog: false,
@@ -192,9 +185,6 @@ export default {
 
 	created() {
 		this.logService = new LogService();
-
-		// Load configuration for the rich text editor
-		this.editorConfig = this.logService.generateRichTextConfig(false);
 	},
 
 	mounted() {
