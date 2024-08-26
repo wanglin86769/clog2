@@ -99,6 +99,18 @@ Login page for CSNS OAuth2 authentication
 
 ![Alt text](docs/screenshots/rich_text.png?raw=true "Title")
 
+### Rich-text display
+
+![Alt text](docs/screenshots/rich_text_display.png?raw=true "Title")
+
+### Template management
+
+![Alt text](docs/screenshots/template_management.png?raw=true "Title")
+
+### Template import
+
+![Alt text](docs/screenshots/template_import.png?raw=true "Title")
+
 ## API token
 
 ### Generate API token
