@@ -1,6 +1,6 @@
 {
   "name": "clog-backend",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "Backend for Compact Electronic Logbook System (Clog)",
   "main": "server.js",
   "scripts": {

@@ -2,6 +2,16 @@
 
 ### v2.0
 
+#### v2.2.0
+
+- Add Docker deployment support
+- Change the build tool from Vue CLI to Vite
+- Add email notification support
+- Add rich text support with ckeditor5
+- Add log template design function
+- Add log template import function
+- Add log cache function with the Browser localStorage
+
 #### v2.1.2
 
 - Update some dependencies on frontend to remove vulnerabilities
