@@ -175,7 +175,7 @@ exports.findLogs = async (req, res, next) => {
         let u = authorize.getUserFromRequest(req);
         // Only super admins, logbook admins and logbook members can access logs in the logbook.
         // If the current user does not have sufficient permission, return 403 status code.
-        if(!u || (!u.admin && !l.admins.includes(u.email) && !l.members.includes(u.email))) {
+        if(!u || !(u.admin || (l.admins && l.admins.includes(u.email)) || l.members.includes(u.email))) {
             return res.status(403).json({ message: 'Permission denied.' });
         }
     }
@@ -416,7 +416,7 @@ exports.findLog = async (req, res, next) => {
             let u = authorize.getUserFromRequest(req);
             // Only super admins, logbook admins and logbook members can access logs in the logbook.
             // If the current user does not have sufficient permission, return 403 status code.
-            if(!u || (!u.admin && !l.admins.includes(u.email) && !l.members.includes(u.email))) {
+            if(!u || !(u.admin || (l.admins && l.admins.includes(u.email)) || l.members.includes(u.email))) {
                 return res.status(403).json({ message: 'Permission denied.' });
             }
         }

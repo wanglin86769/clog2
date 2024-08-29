@@ -11,7 +11,7 @@ function filterPrivateLogbooks(logbooks, user) {
     for(let i = logbooks.length - 1; i >= 0; i--) {
         let logbook = logbooks[i];
         if(logbook.members && logbook.members.length) {
-            if(!user || (!user.admin && !logbook.admins.includes(user.email) && !logbook.members.includes(user.email))) {
+            if(!user || !(user.admin || (logbook.admins && logbook.admins.includes(user.email)) || logbook.members.includes(user.email))) {
                 logbooks.splice(i, 1);
             }
         }
