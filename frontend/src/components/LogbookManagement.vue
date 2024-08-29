@@ -83,7 +83,7 @@
 					<Dropdown v-model="logbook.group" :options="groups" optionLabel="name" optionValue="_id" :placeholder="$t('global_select')" :showClear="true" />
 				</div>
 				<div class="field">
-					<span style="color: red">* </span><label>{{ $t('global_number') }}</label>
+					<label>{{ $t('global_number') }}</label>
 					<InputText v-model.trim="logbook.number" class="p-inputtext-sm" />
 				</div>
 				<div class="field">
