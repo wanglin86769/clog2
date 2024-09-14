@@ -26,6 +26,8 @@ import {
     LinkImage,
     SimpleUploadAdapter,
 	SourceEditing,
+	Font,
+	Underline,
 } from 'ckeditor5';
 
 const authenticationService = new AuthenticationService();
@@ -122,14 +124,17 @@ export default class LogService {
 
 	generateRichTextConfig(showToolbar) {
 		return {
-			toolbar: showToolbar ? [
-				'undo', 'redo', '|', 'sourceEditing', '|',
-				'heading', '|', 'bold', 'italic', '|',
-				'link', 'insertTable', 'mediaEmbed', '|',
-				'bulletedList', 'numberedList', 'indent', 'outdent', '|',
-				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|',
-				'insertImage', 'toggleImageCaption', 'imageTextAlternative'
-			] : null,
+			toolbar: {
+				items: showToolbar ? [
+					'undo', 'redo', '|', 'sourceEditing', '|', 'heading', '|', 
+					'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor', 'bold', 'italic', 'underline', '|',
+					'link', 'insertTable', 'mediaEmbed', '|',
+					'bulletedList', 'numberedList', 'indent', 'outdent', '|',
+					'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|',
+					'insertImage', 'toggleImageCaption', 'imageTextAlternative'
+				] : null,
+				shouldNotGroupWhenFull: true, // Make the toolbar responsive
+			},
 			plugins: [
 				Bold,
 				Essentials,
@@ -157,6 +162,8 @@ export default class LogService {
 				SimpleUploadAdapter,
 
 				SourceEditing,
+				Font,
+				Underline,
 			],
 			table: {
 				contentToolbar: [
