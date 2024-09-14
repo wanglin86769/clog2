@@ -42,7 +42,7 @@
                     </tr>
 					<tr height="40em">
                         <td align="left" colspan="2" style="padding: 10px;">
-							<div v-if="log.encoding === 'HTML'">
+							<div v-if="log.encoding === 'HTML'" spellcheck="false">
 								<ckeditor :editor="editor" v-model="log.description" :config="editorConfig"></ckeditor>
 							</div>
 							<div v-else>

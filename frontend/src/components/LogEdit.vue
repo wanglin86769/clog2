@@ -34,7 +34,7 @@
 					<tr height="40em">
                         <td align="left" colspan="2" style="padding: 10px;">
 							<!-- <Textarea v-model="log.description" :placeholder="$t('global_log_description_placeholder')" :autoResize="true" rows="5" style="width: 100%;" /> -->
-							<div v-if="log.encoding === 'HTML'">
+							<div v-if="log.encoding === 'HTML'" spellcheck="false">
 								<ckeditor :editor="editor" v-model="log.description" :config="editorConfig"></ckeditor>
 							</div>
 							<div v-else>
