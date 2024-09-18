@@ -821,7 +821,13 @@ exports.findRichTextImage = async (req, res, next) => {
         }
 
         let content = await fs.readFile(fileFullPath, 'binary');
-        res.send(new Buffer.from(content, 'binary'))
+
+        // Download the image
+        // res.send(new Buffer.from(content, 'binary'));
+
+        // Display the image in the browser
+        res.write(content,'binary');
+        res.end();
 
     } catch(error) {
         console.log(error);
