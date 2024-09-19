@@ -192,6 +192,7 @@
     "logedit_new_attachments": "新增附件",
     "logedit_log_load_error": "当前日志加载失败",
     "logedit_tag_load_error": "标签加载失败",
+    "logedit_catetory_options": "[\"信息\", \"难题\", \"请求\", \"建议\", \"紧急\", \"值班总结\", \"汇报\", \"回复\", \"故障\", \"问题\", \"解决\", \"维护\", \"手册\", \"参数\"]",
 
 
     "login_title": "Clog用户登录",

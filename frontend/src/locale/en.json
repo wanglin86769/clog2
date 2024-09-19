@@ -192,6 +192,7 @@
     "logedit_new_attachments": "New Attachments",
     "logedit_log_load_error": "Fail to load the current log",
     "logedit_tag_load_error": "Fail to load tag information",
+    "logedit_catetory_options": "[\"Info\", \"Problem\", \"Request\", \"Suggestion\", \"Urgent\", \"Shift Summary\", \"Report\", \"Reply\", \"Fault\", \"Issue\", \"Resolved\", \"Maintenance\", \"Manual\", \"Parameter\"]",
 
 
     "login_title": "Clog User Login",

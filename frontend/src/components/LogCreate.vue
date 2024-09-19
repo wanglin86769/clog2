@@ -183,12 +183,6 @@ export default {
 		this.fetchEncodings();
 		this.fetchTemplates();
 
-		if(this.categories && this.categories.length) {
-			this.log.category = this.categories[0];
-		}
-		if(this.encodings && this.encodings.length) {
-			this.log.encoding = this.encodings[0];
-		}
 		// console.log(this.log);
 
 		this.restoreCacheToLog();
@@ -231,10 +225,16 @@ export default {
 			});
 		},
 		fetchCategories() {
-            this.categories = LogService.categories;
+            this.categories = JSON.parse(this.$t('logedit_catetory_options'));
+			if(this.categories && this.categories.length) {
+				this.log.category = this.categories[0];
+			}
         },
 		fetchEncodings() {
             this.encodings = LogService.encodings;
+			if(this.encodings && this.encodings.length) {
+				this.log.encoding = this.encodings[0];
+			}
         },
 		onCancelClick() {
 			this.discardLogDialog = true;
@@ -328,7 +328,10 @@ export default {
 			if(!this.userInfo) {
 				this.$router.push({path: '/access'});
 			}
-		}
+		},
+		'$i18n.locale'() {
+            this.fetchCategories();
+        },
 	},
 }
 </script>

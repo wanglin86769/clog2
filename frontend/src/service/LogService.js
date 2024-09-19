@@ -34,7 +34,7 @@ const authenticationService = new AuthenticationService();
 
 export default class LogService {
 
-	static categories = [ 'Info', 'Problem', 'Request', 'Suggestion', 'Urgent' ];
+	// static categories = [ 'Info', 'Problem', 'Request', 'Suggestion', 'Urgent' ];
 	static encodings = [ 'HTML', 'plain' ];
 
 	findLastActive(logbook) {

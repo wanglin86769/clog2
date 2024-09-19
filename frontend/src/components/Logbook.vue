@@ -241,7 +241,7 @@ export default {
             });
         },
 		fetchCategories() {
-            this.categories = LogService.categories;
+            this.categories = JSON.parse(this.$t('logedit_catetory_options'));
         },
 		loadLazyData() {
 			this.loading = true;
@@ -397,7 +397,12 @@ export default {
         userInfo() {
             return this.$store.state.authentication.user;
 		},
-    }
+    },
+	watch: {
+		'$i18n.locale'() {
+            this.fetchCategories();
+        },
+	},
 }
 </script>
 

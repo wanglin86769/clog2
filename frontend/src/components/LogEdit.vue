@@ -186,7 +186,7 @@ export default {
             });
         },
 		fetchCategories() {
-            this.categories = LogService.categories;
+            this.categories = JSON.parse(this.$t('logedit_catetory_options'));
         },
 		fetchEncodings() {
             this.encodings = LogService.encodings;
@@ -273,6 +273,17 @@ export default {
             return this.$store.state.authentication.user;
         }
     },
+
+	watch: {
+		userInfo() {
+			if(!this.userInfo) {
+				this.$router.push({path: '/access'});
+			}
+		},
+		'$i18n.locale'() {
+            this.fetchCategories();
+        },
+	},
 }
 </script>
 
