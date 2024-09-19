@@ -10,7 +10,7 @@
             <template #content>
 				<table border="1" width="100%">
                     <tr height="40em">
-                        <td width="20%" align="left"><span style="margin-left: 0.8em; font-weight: bold;">{{ $t('global_log_logbook') }}</span></td>
+                        <td width="20%" align="left"><span style="margin-left: 0.8em; font-weight: bold;">{{ $t('global_log_logbook') }}</span><span style="color: red"> *</span></td>
                         <td width="80%" align="left"><span v-if="currentLog && currentLog.logbook" style="margin-left: 0.8em;">{{ currentLog.logbook.name }}</span></td>
                     </tr>
 					<tr height="40em">
@@ -20,13 +20,13 @@
 						</td>
                     </tr>
 					<tr height="40em">
-                        <td align="left"><span style="margin-left: 0.8em; font-weight: bold;">{{ $t('global_log_category') }}</span></td>
+                        <td align="left"><span style="margin-left: 0.8em; font-weight: bold;">{{ $t('global_log_category') }}</span><span style="color: red"> *</span></td>
                         <td align="left">
 							<Dropdown style="min-width: 200px; margin-left: 0.4em;" v-model="log.category" :options="categories" :placeholder="$t('global_select')" />
 						</td>
                     </tr>
 					<tr height="40em">
-                        <td align="left"><span style="margin-left: 0.8em; font-weight: bold;">{{ $t('global_log_title') }}</span></td>
+                        <td align="left"><span style="margin-left: 0.8em; font-weight: bold;">{{ $t('global_log_title') }}</span><span style="color: red"> *</span></td>
                         <td align="left">
 							<InputText style="min-width: 500px; margin-left: 0.4em;" type="text" v-model="log.title" placeholder=""/>
 						</td>
