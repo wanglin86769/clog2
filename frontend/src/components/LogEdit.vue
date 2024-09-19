@@ -72,6 +72,14 @@
 					<div>
 						<input type="file" id="file" ref="increasefile" multiple v-on:change="handleIncreaseFileUpload()"/>
 					</div>
+					<div style="margin-top: .8em;">
+						<div v-for="(item, index) in increaseAttachments" :key="index" style="font-size: 1em; margin-top: .2em;">
+							<i style="margin-right: .5em" class="fa fa-file-o"></i>
+							<span style="margin-right: 2em">{{ item.name }}</span>
+							<span style="margin-right: 4em">{{ Math.round(item.size/1000) }}KB</span>
+							<i style="color: red; cursor: pointer;" class="fa fa-times" v-tooltip.top="'删除'" @click="deleteAttachment(index)"></i>
+						</div>
+					</div>
 				</Panel>
             </template>
             <template #footer>
@@ -112,7 +120,6 @@ export default {
 			editor: ClassicEditor,
 			editorConfig: {},
 
-			submittingAttachments: [],
 			increaseAttachments: [],
 
 			imageMimeTypes: ['image/jpeg', 'image/png', 'image/bmp', 'image/gif'],
@@ -233,10 +240,14 @@ export default {
 		onCancelClick() {
 			this.discardLogDialog = true;
 		},
-		handleIncreaseFileUpload(){
-            this.increaseAttachments = this.$refs.increasefile.files;
-            // console.log(this.submittingAttachments);
+		handleIncreaseFileUpload() {
+            this.increaseAttachments.push(...Array.from(this.$refs.increasefile.files));
+            // console.log(this.increaseAttachments);
         },
+		deleteAttachment(index) {
+			if(!this.increaseAttachments || !this.increaseAttachments.length) return;
+			this.increaseAttachments.splice(index, 1);
+		},
 		attachmentUrl(logId, fileName) {
             // console.log(this.logService.attachmentUrl(logId, fileName));
             return this.logService.attachmentUrl(logId, fileName);

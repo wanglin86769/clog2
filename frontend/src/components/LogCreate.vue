@@ -62,6 +62,14 @@
 					<div>
 						<input type="file" id="file" ref="file" multiple v-on:change="handleFileUpload()"/>
 					</div>
+					<div style="margin-top: .8em;">
+						<div v-for="(item, index) in submittingAttachments" :key="index" style="font-size: 1em; margin-top: .2em;">
+							<i style="margin-right: .5em" class="fa fa-file-o"></i>
+							<span style="margin-right: 2em">{{ item.name }}</span>
+							<span style="margin-right: 4em">{{ Math.round(item.size/1000) }}KB</span>
+							<i style="color: red; cursor: pointer;" class="fa fa-times" v-tooltip.top="'删除'" @click="deleteAttachment(index)"></i>
+						</div>
+					</div>
 				</Panel>
             </template>
             <template #footer>
@@ -272,9 +280,13 @@ export default {
 			this.$router.push({name: 'logbook', params: { id: this.$route.params.logbookid }});
 		},
 		handleFileUpload(){
-            this.submittingAttachments = this.$refs.file.files;
+            this.submittingAttachments.push(...Array.from(this.$refs.file.files));
             // console.log(this.submittingAttachments);
         },
+		deleteAttachment(index) {
+			if(!this.submittingAttachments || !this.submittingAttachments.length) return;
+			this.submittingAttachments.splice(index, 1);
+		},
 		saveLogToCache() {
 			if(!this.userInfo || !this.userInfo.email) {
 				return;
