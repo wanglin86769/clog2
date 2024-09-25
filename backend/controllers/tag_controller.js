@@ -6,8 +6,16 @@ exports.findAll = async (req, res, next) => {
     let query = {};
     let sort = { number: 1 };
 
+    if(req.query.logbook) {
+        query = { 
+            logbook: {
+                $in: [ req.query.logbook, null ] // Tags for current logbook or global tags
+            }
+        };
+    }
+
     try {
-        let tags = await Tag.find(query).sort(sort);
+        let tags = await Tag.find(query).sort(sort).populate('logbook');
         res.json(tags);
     } catch(error) {
         res.status(500).json({message: error.message})

@@ -24,6 +24,11 @@
 							{{slotProps.data.number}}
 						</template>
 					</Column>
+					<Column field="logbook" :header="$t('global_log_logbook')">
+						<template #body="slotProps">
+							<div v-if="slotProps.data.logbook">{{ slotProps.data.logbook.name }}</div>
+						</template>
+					</Column>
 					<Column headerStyle="width: 8em">
 						<template #header>
 							<i class="pi pi-cog" style="fontSize: 1.2rem" v-tooltip.top="$t('global_operate')"></i>
@@ -49,6 +54,10 @@
 				<div class="field">
 					<label>{{ $t('global_number') }}</label>
 					<InputText v-model.trim="tag.number" class="p-inputtext-sm" />
+				</div>
+				<div class="field">
+					<label>{{ $t('global_log_logbook') }}</label>
+					<Dropdown v-model.trim="tag.logbook" :options="logbooks" optionLabel="name" optionValue="_id" :placeholder="$t('global_select')" :showClear="true" />
 				</div>
 
 				<template #footer>
@@ -82,6 +91,7 @@
 
 <script>
 import TagService from '@/service/TagService';
+import LogbookService from '@/service/LogbookService';
 
 export default {
 	data() {
@@ -91,14 +101,18 @@ export default {
 			tagDialog: false,
 			deleteTagDialog: false,
 			tag: {},
+			logbooks: null,
 		}
 	},
 	tagService: null,
+	logbookService: null,
 	created() {
 		this.tagService = new TagService();
+		this.logbookService = new LogbookService();
 	},
 	mounted() {
 		this.loadData();
+		this.getLogbooks();
 	},
 	methods: {
 		loadData() {
@@ -109,6 +123,17 @@ export default {
 					this.$toast.add({ severity: 'error', summary: this.$t('tagmanagement_tag_load_error'), detail: error.response.data.message });
 				} else {
                     this.$toast.add({ severity: 'error', summary: this.$t('tagmanagement_tag_load_error'), detail: error.message });
+				}
+			});
+		},
+		getLogbooks() {
+			this.logbookService.findLogbooks()
+			.then(logbooks => this.logbooks = logbooks)
+			.catch(error => {
+				if(error.response) {
+					this.$toast.add({ severity: 'error', summary: this.$t('logbookmanagement_logbook_load_error'), detail: error.response.data.message });
+				} else {
+                    this.$toast.add({ severity: 'error', summary: this.$t('logbookmanagement_logbook_load_error'), detail: error.message });
 				}
 			});
 		},
@@ -123,6 +148,7 @@ export default {
 			this.tag._id = tag._id;
 			this.tag.name = tag.name;
 			this.tag.number = tag.number;
+			if(tag.logbook) this.tag.logbook = tag.logbook._id;
 			this.tagDialog = true;
 		},
 		onDeleteClick(tag) {

@@ -2,6 +2,10 @@ let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let TagSchema = new Schema({
+    logbook: {
+        type: Schema.Types.ObjectId,
+        ref: 'Logbook',
+    },
     name: {
         type: String,
         required: true

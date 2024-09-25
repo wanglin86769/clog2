@@ -139,7 +139,7 @@ export default {
 
 	mounted() {
 		this.fetchLog();
-		this.fetchTags();
+		// this.fetchTags();
 		this.fetchCategories();
 		this.fetchEncodings();
 	},
@@ -165,6 +165,9 @@ export default {
 				this.log.description = log.description;
 				this.log.encoding = log.encoding;
 				// console.log(this.log);
+
+				// Fetch tags for the logbook
+				this.fetchTags(log.logbook._id);
             }).catch((error) => {
                 if(error.response) {
 					this.$toast.add({ severity: 'error', summary: this.$t('logedit_log_load_error'), detail: error.response.data.message });
@@ -173,8 +176,8 @@ export default {
 				}
             })
         },
-		fetchTags() {
-            this.tagService.findTags()
+		fetchTags(logbook) {
+            this.tagService.findTags(logbook)
             .then(tags => {
                 this.tags = tags;
             }).catch((error) => {

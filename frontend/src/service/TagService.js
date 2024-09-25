@@ -6,8 +6,8 @@ const authenticationService = new AuthenticationService();
 
 export default class TagService {
 
-	findTags() {
-		let url = `${config.serverPath}/tags`;
+	findTags(logbook) {
+		let url = logbook ? `${config.serverPath}/tags?logbook=${logbook}` : `${config.serverPath}/tags`;
 		return axios.get(url, {headers: authenticationService.authHeader()}).then(res => res.data);
 	}
 

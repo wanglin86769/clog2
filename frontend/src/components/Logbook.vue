@@ -235,7 +235,7 @@ export default {
             });
         },
 		fetchTags() {
-            this.tagService.findTags()
+            this.tagService.findTags(this.$route.params.id)
             .then(tags => {
                 this.tags = tags;
             });
