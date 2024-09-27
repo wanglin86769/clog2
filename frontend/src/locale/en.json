@@ -22,6 +22,7 @@
     "global_confirm_password": "Confirm Password",
     "global_success": "Success",
     "global_fail": "Fail",
+    "global_save_success": "Saved successfully",
     "global_current_password_cannot_empty": "Current password cannot be empty!",
     "global_password_cannot_empty": "Password cannot be empty!",
     "global_confirm_password_cannot_empty": "Confirm password cannot be empty!",
@@ -29,6 +30,7 @@
     "global_email_cannot_empty": "Email cannot be empty!",
     "global_name_cannot_empty": "Name cannot be empty!",
     "global_detail": "Detail",
+    "global_save": "Save",
     "global_create": "Create",
     "global_modify": "Modify",
     "global_add": "Add",
@@ -192,6 +194,7 @@
     "logedit_new_attachments": "New Attachments",
     "logedit_log_load_error": "Fail to load the current log",
     "logedit_tag_load_error": "Fail to load tag information",
+    "logedit_saved_log_readback_error": "Fail to readback the saved log",
     "logedit_catetory_options": "[\"Info\", \"Problem\", \"Request\", \"Suggestion\", \"Urgent\", \"Shift Summary\", \"Report\", \"Reply\", \"Fault\", \"Issue\", \"Resolved\", \"Maintenance\", \"Manual\", \"Parameter\"]",
 
 

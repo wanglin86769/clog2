@@ -52,6 +52,11 @@ export default class LogService {
 		return axios.get(url, {headers: authenticationService.authHeader()}).then(res => res.data);
 	}
 
+	saveLog(log) {
+		let url = `${config.serverPath}/logs/save`;
+		return axios.post(url, log, {headers: authenticationService.authHeader()}).then(res => res.data);
+	}
+
 	addLogFormData(formData) {
 		let url = `${config.serverPath}/logs`;
 		return axios.post(url, formData, {

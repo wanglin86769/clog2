@@ -16,6 +16,9 @@ router.get('/', logs.findLogs);
 // Create a log
 router.post('/', authorize.loggedIn, logs.createLogFormData);
 
+// Save a log
+router.post('/save', authorize.loggedIn, logs.saveLog);
+
 // Get single log
 router.get('/:logId', logs.findLog);
 

@@ -111,6 +111,7 @@ function generateSort(sort, sortField, sortOrder) {
         sort[sortField] = sortOrder;
     }
 
+    if(!sort['draft'])  sort['draft'] = -1;
     if(!sort['createdAt'])  sort['createdAt'] = -1;
 }
 
@@ -518,6 +519,34 @@ exports.updateLog = async (req, res, next) => {
 }
 
 
+exports.saveLog = async (req, res, next) => {
+    let user = req.headers['user'];
+    if(!user) return res.status(500).json({message: 'No user information is extracted.'});
+    
+    let timeNow = new Date();
+    req.body.savedAt = timeNow;
+    req.body.savedBy = user.email;
+    req.body.createdAt = timeNow;
+    req.body.createdBy = user.email;
+    req.body.updatedAt = timeNow;
+    req.body.updatedBy = user.email;
+    req.body.lastActiveAt = timeNow;
+    req.body.draft = true;
+
+    try {
+        let data;
+        if(req.body._id) {
+            data = await Log.findByIdAndUpdate(req.body._id, { $set: req.body }, { new: true });
+        } else {
+            data = await Log.create(req.body);
+        }
+        res.json(data)
+    } catch(error) {
+        res.status(500).json({message: error.message})
+    }
+}
+
+
 exports.createLogFormData = [upload.array('attachments', 20), async (req, res, next) => {
     let user = req.headers['user'];
     if(!user) return res.status(500).json({message: 'No user information is extracted.'});
@@ -532,6 +561,7 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
     log.updatedAt = timeNow;
     log.updatedBy = user.email;
     log.lastActiveAt = timeNow;
+    log.draft = false;
 
     let data;
     try {
@@ -555,8 +585,11 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
                 data = await Log.create(log);
             }
         } else {  // Process normal create request
-            // Create the log
-            data = await Log.create(log);
+            if(log._id) {  
+                data = await Log.findByIdAndUpdate(log._id, { $set: log }, { new: true }); // Create the log after saving
+            } else {
+                data = await Log.create(log); // Create the log directly
+            }
         }
 
         // Process attachments
@@ -605,6 +638,7 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
     log.updatedAt = timeNow;
     log.updatedBy = user.email;
     log.lastActiveAt = timeNow;
+    log.draft = false;
 
     let data;
     try {

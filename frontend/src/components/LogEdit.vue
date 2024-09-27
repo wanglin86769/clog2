@@ -3,6 +3,7 @@
 		<Card class="shadow-2" style="margin-bottom: 2em;">
             <template #title>
                 {{ $t('logedit_title') }}
+				<Button style="float: right; background-color: Peru; border-color: Peru;" :label="$t('global_save')" icon="fa fa-save" size="small" severity="info" @click="saveLog" />
             </template>
             <!-- <template #subtitle>
                 Subtitle
@@ -102,6 +103,7 @@
 	
 </template>
 <script>
+import dateFormat from "dateformat";
 import { ClassicEditor } from 'ckeditor5';
 import fileDownload from 'js-file-download';
 import LogService from '../service/LogService';
@@ -194,6 +196,26 @@ export default {
 		fetchEncodings() {
             this.encodings = LogService.encodings;
         },
+		fetchSavedLog(id) {
+            this.logService.findLog(id)
+            .then(log => {
+				this.log._id = log._id;
+				this.log.logbook = log.logbook._id;
+				if(log.tags && log.tags.length) {
+					this.log.tags = log.tags.map(function(a) {return a._id;});
+				}
+				this.log.category = log.category;
+				this.log.title = log.title;
+				this.log.description = log.description;
+				this.log.encoding = log.encoding;
+            }).catch((error) => {
+                if(error.response) {
+					this.$toast.add({ severity: 'error', summary: this.$t('logedit_saved_log_readback_error'), detail: error.response.data.message });
+				} else {
+					this.$toast.add({ severity: 'error', summary: this.$t('logedit_saved_log_readback_error'), detail: error.message });
+				}
+            })
+        },
 		editLog() {
 			let validity = this.logService.validate(this.log);
 			if(!validity.valid) {
@@ -237,6 +259,29 @@ export default {
 				loader.hide();
 			});
         },
+		saveLog() {
+			let validity = this.logService.validate(this.log);
+			if(!validity.valid) {
+				this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: validity.message });
+				return;
+			}
+
+			let loader = this.$loading.show();
+
+            this.logService.saveLog(this.log)
+			.then((log) => {
+				this.fetchSavedLog(log._id);
+				this.$toast.add({severity: 'info', summary: this.$t('global_save_success'), detail: `${this.showDateTimeWithSecond(log.savedAt)}`, life: 5000});
+            }).catch((error) => {
+                if(error.response) {
+					this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.response.data.message });
+				} else {
+					this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.message });
+				}
+            }).finally(() => {
+				loader.hide();
+			});
+        },
 		discardLog() {
 			this.$router.push({name: 'logbook', params: { id: this.currentLog.logbook._id }});
 		},
@@ -268,6 +313,9 @@ export default {
             }).catch(error => {
                 this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.message });
             });
+        },
+		showDateTimeWithSecond(value) {
+            return dateFormat(value, "yyyy-mm-dd HH:MM:ss");
         },
 	},
 

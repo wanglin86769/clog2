@@ -28,6 +28,7 @@ const History = new mongoose.Schema({
 
 let LogSchema = new Schema({
     /* Meta data */
+    draft: Boolean,
     active: {
         type: Boolean,
         default: true
@@ -48,6 +49,8 @@ let LogSchema = new Schema({
         type: String,
         required: true
     },
+    savedAt: Date,
+    savedBy: String,
     lastActiveAt: {
         type: Date,
         required: true

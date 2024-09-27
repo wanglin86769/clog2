@@ -22,6 +22,7 @@
     "global_confirm_password": "密码确认",
     "global_success": "操作完成",
     "global_fail": "操作失败",
+    "global_save_success": "保存成功",
     "global_current_password_cannot_empty": "当前密码不能为空！",
     "global_password_cannot_empty": "密码不能为空！",
     "global_confirm_password_cannot_empty": "密码确认不能为空！",
@@ -29,6 +30,7 @@
     "global_email_cannot_empty": "邮箱不能为空！",
     "global_name_cannot_empty": "姓名不能为空！",
     "global_detail": "详情",
+    "global_save": "保存",
     "global_create": "创建",
     "global_modify": "修改",
     "global_add": "添加",
@@ -192,6 +194,7 @@
     "logedit_new_attachments": "新增附件",
     "logedit_log_load_error": "当前日志加载失败",
     "logedit_tag_load_error": "标签加载失败",
+    "logedit_saved_log_readback_error": "已保存日志回读失败",
     "logedit_catetory_options": "[\"信息\", \"难题\", \"请求\", \"建议\", \"紧急\", \"值班总结\", \"汇报\", \"回复\", \"故障\", \"问题\", \"解决\", \"维护\", \"手册\", \"参数\"]",
 
 

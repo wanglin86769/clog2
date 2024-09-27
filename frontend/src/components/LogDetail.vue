@@ -313,6 +313,7 @@ export default {
 			return false;
 		},
 		creator() {
+			if(!this.log || !this.log.createdBy || !this.log.updatedBy) return null;
 			return `Created at: ${this.log.createdBy.name}    ${this.log.createdBy.email}    ${this.showDateTime(this.log.createdAt)}\nUpdated at: ${this.log.updatedBy.name}    ${this.log.updatedBy.email}    ${this.showDateTime(this.log.updatedAt)}`;
 		},
 		showCreator() {

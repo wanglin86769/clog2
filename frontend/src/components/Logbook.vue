@@ -38,7 +38,8 @@
 						</template>
 						<template #body="slotProps">
 							<!-- <span style="color: RGB(33,150,243)">{{currentPageFirstIndex + slotProps.index + 1}}</span> -->
-							<span style="color: RGB(33,150,243)">{{ slotProps.index + 1 }}</span>
+							<span v-if="slotProps.data.draft" style="color: ForestGreen">Draft</span>
+							<span v-else style="color: RGB(33,150,243)">{{ slotProps.index + 1 }}</span>
 						</template>
 					</Column>
 					<Column header="">
@@ -375,6 +376,10 @@ export default {
             if (!data) return
 			let dateNow = new Date();
 
+			if(data.draft) {
+				return 'draft-row';
+			}
+
 			if(data.updatedAt) {
 				let updatedAt = new Date(data.updatedAt);
 				if (updatedAt.getTime() > dateNow.getTime() - 3 * 60 * 1000) 
@@ -415,5 +420,9 @@ export default {
 
 	:deep(.updated-row) {
 		background-color: powderblue !important;
+	}
+
+	:deep(.draft-row) {
+		background-color: RGB(255, 208, 208) !important;
 	}
 </style>
