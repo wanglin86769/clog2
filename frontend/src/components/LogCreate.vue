@@ -169,7 +169,7 @@ export default {
 		// Load configuration for the rich text editor
 		this.editorConfig = this.logService.generateRichTextConfig(true);
 
-		this.intervalId = setInterval(this.saveLogToCache, 30000); // 30 seconds
+		// this.intervalId = setInterval(this.saveLogToCache, 30000); // 30 seconds
 	},
 
 	mounted() {
@@ -186,8 +186,6 @@ export default {
 		this.fetchTemplates();
 
 		// console.log(this.log);
-
-		this.restoreCacheToLog();
 	},
 
 	beforeUnmount(){
@@ -285,7 +283,6 @@ export default {
 
             this.logService.addLogFormData(formData)
 			.then(() => {
-				this.clearLogCache();
                 this.$router.push({name: 'logbook', params: { id: this.$route.params.logbookid }});
             }).catch((error) => {
                 if(error.response) {
@@ -321,7 +318,6 @@ export default {
 			});
         },
 		discardLog() {
-			this.clearLogCache();
 			this.$router.push({name: 'logbook', params: { id: this.$route.params.logbookid }});
 		},
 		handleFileUpload(){
@@ -332,7 +328,7 @@ export default {
 			if(!this.submittingAttachments || !this.submittingAttachments.length) return;
 			this.submittingAttachments.splice(index, 1);
 		},
-		saveLogToCache() {
+		saveLogToCache() { // This method is not used anymore
 			if(!this.userInfo || !this.userInfo.email) {
 				return;
 			}
@@ -341,7 +337,7 @@ export default {
 				localStorage.setItem(`${config.localStorageLogCachePrefix}:${this.userInfo.email}`, JSON.stringify(log));
 			}
         },
-		restoreCacheToLog() {
+		restoreCacheToLog() { // This method is not used anymore
 			if(!this.userInfo || !this.userInfo.email) {
 				return;
 			}
@@ -354,7 +350,7 @@ export default {
 			}
 			this.clearLogCache();
 		},
-		clearLogCache() {
+		clearLogCache() { // This method is not used anymore
 			if(!this.userInfo || !this.userInfo.email) {
 				return;
 			}
