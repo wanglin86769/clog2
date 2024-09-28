@@ -125,6 +125,8 @@ export default {
 			increaseAttachments: [],
 
 			imageMimeTypes: ['image/jpeg', 'image/png', 'image/bmp', 'image/gif'],
+
+			intervalId: null,
 		}
 	},
 
@@ -137,6 +139,8 @@ export default {
 
 		// Load configuration for the rich text editor
 		this.editorConfig = this.logService.generateRichTextConfig(true);
+
+		this.intervalId = setInterval(this.logAutoSave, 10 * 60 * 1000); // 10 minutes
 	},
 
 	mounted() {
@@ -144,6 +148,13 @@ export default {
 		// this.fetchTags();
 		this.fetchCategories();
 		this.fetchEncodings();
+	},
+
+	beforeUnmount(){
+		if(this.intervalId) {
+			clearInterval(this.intervalId);
+			this.intervalId = null;
+		}
 	},
 
 	methods: {
@@ -314,6 +325,11 @@ export default {
                 this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: error.message });
             });
         },
+		logAutoSave() {
+			if(this.log.title && this.log.description) {
+				this.saveLog();
+			}
+		},
 		showDateTimeWithSecond(value) {
             return dateFormat(value, "yyyy-mm-dd HH:MM:ss");
         },

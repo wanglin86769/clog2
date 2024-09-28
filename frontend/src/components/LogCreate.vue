@@ -169,7 +169,7 @@ export default {
 		// Load configuration for the rich text editor
 		this.editorConfig = this.logService.generateRichTextConfig(true);
 
-		// this.intervalId = setInterval(this.saveLogToCache, 30000); // 30 seconds
+		this.intervalId = setInterval(this.logAutoSave, 10 * 60 * 1000); // 10 minutes
 	},
 
 	mounted() {
@@ -355,6 +355,11 @@ export default {
 				return;
 			}
 			localStorage.removeItem(`${config.localStorageLogCachePrefix}:${this.userInfo.email}`);
+		},
+		logAutoSave() {
+			if(this.log.title && this.log.description) {
+				this.saveLog();
+			}
 		},
 		showDateTimeWithSecond(value) {
             return dateFormat(value, "yyyy-mm-dd HH:MM:ss");
