@@ -6,7 +6,7 @@
 					{{ $t('templatemanagement_title') }}
 				</div>
 
-				<Button v-if="userInfo && isAdmin" :label="$t('global_add')" icon="pi pi-plus" style="margin-bottom: 5px" class="p-button-success p-button-sm mr-2" @click="onAddClick" />
+				<Button v-if="userInfo" :label="$t('global_add')" icon="pi pi-plus" style="margin-bottom: 5px" class="p-button-success p-button-sm mr-2" @click="onAddClick" />
 				
 				<DataTable :value="templates" dataKey="_id" :rowHover="true" showGridlines responsiveLayout="stack">
 					<Column field="name" :header="$t('global_index')">
@@ -29,8 +29,8 @@
 							<i class="pi pi-cog" style="fontSize: 1.2rem" v-tooltip.top="$t('global_operate')"></i>
 						</template>
 						<template #body="slotProps">
-							<i v-if="userInfo && isAdmin" class="fa fa-pencil" v-tooltip.top="$t('global_edit')" style="cursor: pointer; color: orange; margin-right: .75em" @click="onEditClick(slotProps.data)"></i>
-							<i v-if="userInfo && isAdmin" class="fa fa-close" v-tooltip.top="$t('global_delete')" style="cursor: pointer; color: red; margin-right: .75em" @click="onDeleteClick(slotProps.data)"></i>
+							<i v-if="canEdit(slotProps.data)" class="fa fa-pencil" v-tooltip.top="$t('global_edit')" style="cursor: pointer; color: orange; margin-right: .75em" @click="onEditClick(slotProps.data)"></i>
+							<i v-if="canEdit(slotProps.data)" class="fa fa-close" v-tooltip.top="$t('global_delete')" style="cursor: pointer; color: red; margin-right: .75em" @click="onDeleteClick(slotProps.data)"></i>
 							<i class="fa fa-search-plus" v-tooltip.top="$t('global_detail')" style="cursor: pointer; color: RGB(29,149,243); margin-right: .75em" @click="onDetailClick(slotProps.data)"></i>
 						</template>
 					</Column>
@@ -63,6 +63,9 @@
 				</div>
 
 				<template #footer>
+					<div style="float: left">
+						<span v-if="template.updatedAt" style="color: RGB(104,159,56);" >{{ $t('global_log_last_update') }}: {{ showDateTime(template.updatedAt) }}&nbsp;&nbsp;{{ template.updatedBy.name }}</span>
+					</div>
 					<Button :label="$t('global_close')" icon="pi pi-times" class="p-button-text" @click="templateDialog=false"/>
 				</template>
 			</Dialog>
@@ -85,6 +88,7 @@
 </template>
 
 <script>
+import dateFormat from "dateformat";
 import TemplateService from '../service/TemplateService';
 
 export default {
@@ -146,6 +150,26 @@ export default {
 			}).finally(() => {
 				loader.hide();
 			});
+		},
+		showDate(value) {
+            return dateFormat(value, "yyyy-mm-dd");
+        },
+        showTime(value) {
+            return dateFormat(value, "HH:MM");
+        },
+        showDateTime(value) {
+            return dateFormat(value, "yyyy-mm-dd HH:MM");
+        },
+		canEdit(template) {
+			// Clog admin can edit the template
+			if(this.isAdmin) {
+				return true;
+			}
+			// Template author can edit the template
+			if(template.createdBy && this.userInfo && template.createdBy.email === this.userInfo.email) {
+				return true;
+			}
+			return false;
 		},
 	},
 	computed: {

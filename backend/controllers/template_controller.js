@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Template = require('../models/template_model.js');
 
 
@@ -7,7 +8,43 @@ exports.findAll = async (req, res, next) => {
     let sort = { number: 1 };
 
     try {
-        let templates = await Template.find(query).sort(sort);
+        let pipeline = [
+            { 
+                $match: query 
+            },
+            {
+                $sort: sort
+            },
+            {
+                $lookup: {
+                    from:"user",
+                    localField: "createdBy",
+                    foreignField: "email",
+                    as: "createdBy"
+                }
+            },
+            {
+                $unwind: {
+                    path: '$createdBy',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup: {
+                    from:"user",
+                    localField: "updatedBy",
+                    foreignField: "email",
+                    as: "updatedBy"
+                }
+            },
+            {
+                $unwind: {
+                    path: '$updatedBy',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+        ];
+        let templates = await Template.aggregate(pipeline);
         res.json(templates);
     } catch(error) {
         res.status(500).json({message: error.message})
@@ -33,9 +70,44 @@ exports.addTemplate = async (req, res, next) => {
 };
 
 // Get single template
-exports.findTemplate = async (req, res, next) => {	
+exports.findTemplate = async (req, res, next) => {
+    let query = { _id: new mongoose.Types.ObjectId(req.params.id) };
     try {
-        let template = await Template.findById(req.params.id);
+        let pipeline = [
+            { 
+                $match: query 
+            },
+            {
+                $lookup: {
+                    from:"user",
+                    localField: "createdBy",
+                    foreignField: "email",
+                    as: "createdBy"
+                }
+            },
+            {
+                $unwind: {
+                    path: '$createdBy',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $lookup: {
+                    from:"user",
+                    localField: "updatedBy",
+                    foreignField: "email",
+                    as: "updatedBy"
+                }
+            },
+            {
+                $unwind: {
+                    path: '$updatedBy',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+        ];
+        let templates = await Template.aggregate(pipeline);
+        let template = templates && templates.length ? templates[0] : null;
         res.json(template);
     } catch(error) {
         res.status(500).json({message: error.message})

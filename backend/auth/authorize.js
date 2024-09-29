@@ -5,6 +5,7 @@ const authenticate = require('../helpers/authenticate.js');
 const User = require('../models/user_model.js');
 const Log = require('../models/log_model.js');
 const Logbook = require('../models/logbook_model.js');
+const Template = require('../models/template_model.js');
 
 
 // Supporting basic base64-encoded and bearer token authentications, either one can be used.
@@ -151,6 +152,37 @@ async function canEditLog(req, res, next) {
 }
 
 
+async function canEditTemplate(req, res, next) {
+    let user = req.headers['user'];
+    if(!user) {
+        return res.status(401).json({ message: 'No user information was found.' });
+    }
+
+    let templateId = req.params.id;
+    if(!templateId) {
+        return res.status(401).json({ message: 'Cannot extract template id.' });
+    }
+
+    let template = await Template.findById(templateId);
+    if(!template) {
+        return res.status(401).json({ message: 'No template with specified id was found.' });
+    }
+
+    // Clog admin can edit the template
+    if(user.admin === true) {
+        return next();
+    }
+
+    // Template author can edit the template
+    if(template.createdBy === user.email) {
+        return next();
+    }
+
+    // authentication and authorization unsuccessful
+    return res.status(401).json({ message: 'Insufficient permission, only template author and Clog admin can edit / delete the template.' });
+}
+
+
 function admin(req, res, next) {
     let user = req.headers['user'];
     if(!user) {
@@ -188,6 +220,7 @@ module.exports = {
     loggedIn,
     loggedInRichText,
     canEditLog,
+    canEditTemplate,
     admin,
     getUserFromRequest,
 }
