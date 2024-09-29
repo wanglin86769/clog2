@@ -41,6 +41,7 @@
 							<!-- <span style="color: RGB(33,150,243)">{{currentPageFirstIndex + slotProps.index + 1}}</span> -->
 							<span v-if="slotProps.data.draft" style="color: ForestGreen">Draft</span>
 							<span v-else style="color: RGB(33,150,243)">{{ slotProps.index + 1 }}</span>
+							<i v-if="!slotProps.data.draft" class="fa fa-clone" v-tooltip.right="'Clone'" style="color: skyblue; margin-left: .5em; cursor: pointer" @click="onCloneClick(slotProps.data)"></i>
 						</template>
 					</Column>
 					<Column header="">
@@ -287,6 +288,9 @@ export default {
 		},
 		onNewClick() {
 			this.$router.push({ name: 'logcreate', params: { logbookid: this.$route.params.id } });
+		},
+		onCloneClick(log) {
+			this.$router.push({ name: 'logcreate', params: { logbookid: this.$route.params.id }, query: { prototype: log._id } });
 		},
 		onDetailClick(log) {
 			this.$router.push({ name: 'logdetail', params: { id: log._id } });

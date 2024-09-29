@@ -185,6 +185,7 @@
 
 
     "logcreate_title": "新建日志",
+    "logcreate_log_prototype_load_error": "日志原型加载失败",
 
 
     "logdetail_title": "日志查询",

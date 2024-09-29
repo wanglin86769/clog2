@@ -184,6 +184,7 @@ export default {
 		this.fetchCategories();
 		this.fetchEncodings();
 		this.fetchTemplates();
+		this.fetchPrototype();
 
 		// console.log(this.log);
 	},
@@ -256,6 +257,24 @@ export default {
 				}
             })
         },
+		fetchPrototype() {
+			if(!this.$route.query.prototype) return;
+			
+            this.logService.findLog(this.$route.query.prototype)
+            .then(log => {
+                this.log.title = log.title;
+				this.log.description = log.description;
+				this.log.category = log.category;
+				this.log.tags = log.tags.map(function(a) {return a._id;});
+				this.log.encoding = log.encoding;
+            }).catch((error) => {
+                if(error.response) {
+					this.$toast.add({ severity: 'error', summary: this.$t('logcreate_log_prototype_load_error'), detail: error.response.data.message });
+				} else {
+					this.$toast.add({ severity: 'error', summary: this.$t('logcreate_log_prototype_load_error'), detail: error.message });
+				}
+            });
+		},
 		onCancelClick() {
 			this.discardLogDialog = true;
 		},

@@ -185,6 +185,7 @@
 
 
     "logcreate_title": "New Log",
+    "logcreate_log_prototype_load_error": "Fail to load the log prototype",
 
 
     "logdetail_title": "Log Detail",
