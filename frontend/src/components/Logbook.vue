@@ -16,6 +16,7 @@
 						<div class="p-inputgroup">
 							<Button :label="$t('global_reset')" icon="pi pi-refresh" class="p-button-success p-button-sm" @click="resetSearch"/>
 							<InputText :placeholder="$t('logbook_search')" style="width: 20em" class="p-inputtext-sm" v-model="filters.search" @input="onSearchInput" />
+							<Button :label="$t('global_advanced')" icon="pi pi-caret-down" class="p-button-primary p-button-sm" style="background-color: Peru; border-color: Peru;" @click="toggleSearch"/>
 						</div>
 					</template>
 				</Toolbar>
@@ -161,6 +162,20 @@
 				</DataTable>
 			</div>
 		</div>
+		<OverlayPanel ref="search">
+            <div class="field grid">
+				<label class="col-fixed" style="width: 100px">{{ $t('global_start_date') }}</label>
+				<div class="col">
+					<Calendar v-model="filters.startDate" :showIcon="true" dateFormat="yy-mm-dd" @date-select="onStartDateInput" />
+				</div>
+			</div>
+			<div class="field grid">
+				<label class="col-fixed" style="width: 100px">{{ $t('global_end_date') }}</label>
+				<div class="col">
+					<Calendar v-model="filters.endDate" :showIcon="true" dateFormat="yy-mm-dd" @date-select="onEndDateInput" />
+				</div>
+			</div>
+        </OverlayPanel>
 	</div>
 
 </template>
@@ -316,6 +331,14 @@ export default {
 		onSearchInput() {
 			this.debounce(() => this.search());
 		},
+		onStartDateInput() {
+			this.filters.startDate = this.showDate(this.filters.startDate);
+			this.search();
+		},
+		onEndDateInput() {
+			this.filters.endDate = this.showDate(this.filters.endDate);
+			this.search();
+		},
 		resetLazyParams() {
 			this.lazyParams = {
 				first: 0,
@@ -334,6 +357,9 @@ export default {
 			this.filters = {};
 			this.resetLazyParams();
             this.loadLazyData();
+        },
+		toggleSearch(event) {
+            this.$refs.search.toggle(event);
         },
 		debounce(func, timeout = 500){
 			if(this.debounceTimer) {

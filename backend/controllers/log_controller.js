@@ -20,17 +20,33 @@ function generateQuery(query, filters) {
         for (const [key, value] of Object.entries(filters)) {
             if(!value)  continue;
 
+            let startDate, endDate;
             switch(key) {
                 case 'year':
                     let year = value;
-                    let startDate = new Date(year, 0, 1);
-                    let endDate = new Date(year + 1, 0, 1);
+                    startDate = new Date(year, 0, 1);
+                    endDate = new Date(year + 1, 0, 1);
                     // console.log(startDate);
                     // console.log(endDate);
                     query['createdAt'] = { 
                         $gte: startDate,
                         $lt: endDate
                     };
+                    break;
+                case 'startDate':
+                    startDate = new Date(value);
+                    startDate.setHours(0, 0, 0, 0);
+                    // console.log(startDate);
+                    if(!query['createdAt']) query['createdAt'] = {};
+                    query['createdAt']['$gte'] = startDate;
+                    break;
+                case 'endDate':
+                    endDate = new Date(value);
+                    endDate.setHours(0, 0, 0, 0);
+                    endDate.setDate(endDate.getDate() + 1); // Add one day
+                    // console.log(endDate);
+                    if(!query['createdAt']) query['createdAt'] = {};
+                    query['createdAt']['$lt'] = endDate;
                     break;
                 case 'author':
                     query['createdBy.name'] = { "$regex": value, "$options": "i" };
