@@ -129,7 +129,7 @@
 						</template>
 						<template #body="slotProps">
 							<span class="logdetail-link" @click="onDetailClick(slotProps.data)">{{ slotProps.data.title }}</span>
-							<i v-if="slotProps.data.histories && slotProps.data.histories.length" style="color: orange; margin-left: .2em;" class="fa fa-clock-o fa-lg" v-tooltip.top="$t('global_modification_history')"></i>
+							<!-- <i v-if="slotProps.data.histories && slotProps.data.histories.length" style="color: orange; margin-left: .2em;" class="fa fa-clock-o fa-lg" v-tooltip.top="$t('global_modification_history')"></i> -->
 						</template>
 					</Column>
 					<Column header="" headerStyle="width: 35%">
