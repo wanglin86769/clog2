@@ -21,6 +21,22 @@
 				</p>
 				<h5 style="font-weight: bold; color: RGB(29,149,243);">Changelog</h5>
 <pre>
+#### v2.2.1
+
+- Add font color plugin to ckeditor
+- Rich-text image on log detail page can be displayed on a new browser tab
+- Display selected files when uploading attachments
+- Add i18n support for log category
+- Divide tags into global and logbook-specific
+- Add draft log support
+- Remove the log cache function
+- Automatically save log to draft every 10 minutes
+- Add advanced search for log time searching
+- Normal users can manage log templates
+- Add log clone function
+- Remove the modification history icon on logbook page
+- Add changelog and version number to the about page
+
 #### v2.2.0
 
 - Add Docker deployment support

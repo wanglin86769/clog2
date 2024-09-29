@@ -1,6 +1,6 @@
 {
 	"name": "clog-frontend",
-	"version": "2.2.0",
+	"version": "2.2.1",
 	"description": "Frontend for Compact Electronic Logbook System (Clog)",
 	"author": "Lin Wang",
 	"license": "GPL",
