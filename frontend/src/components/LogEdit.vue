@@ -141,6 +141,8 @@ export default {
 		this.editorConfig = this.logService.generateRichTextConfig(true);
 
 		this.intervalId = setInterval(this.logAutoSave, 10 * 60 * 1000); // 10 minutes
+
+		window.addEventListener('beforeunload', this.beforeUnloadHandler);
 	},
 
 	mounted() {
@@ -155,9 +157,26 @@ export default {
 			clearInterval(this.intervalId);
 			this.intervalId = null;
 		}
+
+		window.removeEventListener('beforeunload', this.beforeUnloadHandler);
+	},
+
+	beforeRouteLeave (to, from , next) {
+		const answer = window.confirm('Do you really want to leave? You may have unsaved changes!')
+		if(answer) {
+			next()
+		} else {
+			next(false)
+		}
 	},
 
 	methods: {
+		beforeUnloadHandler(event) {
+			// Recommended
+			event.preventDefault();
+			// Included for legacy support, e.g. Chrome/Edge < 119
+			event.returnValue = true;
+		},
 		fetchLog() {
 			if(!this.$route.params.id) {
 				console.log('Log id not found.');
@@ -297,7 +316,8 @@ export default {
 			this.$router.push({name: 'logbook', params: { id: this.currentLog.logbook._id }});
 		},
 		onCancelClick() {
-			this.discardLogDialog = true;
+			// this.discardLogDialog = true;
+			this.discardLog();
 		},
 		handleIncreaseFileUpload() {
             this.increaseAttachments.push(...Array.from(this.$refs.increasefile.files));

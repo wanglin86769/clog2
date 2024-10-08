@@ -3,7 +3,7 @@
 	<div class="grid">
 		<div class="col-12">
 			<div class="card">
-				<h3 style="font-weight: bold; color: RGB(29,149,243); text-align: center;">Version 2.2.0</h3>
+				<h3 style="font-weight: bold; color: RGB(29,149,243); text-align: center;">Version 2.2.1</h3>
 				<h5 style="font-weight: bold; color: RGB(29,149,243);">Introduction</h5>
 				<p>Clog (Compact Electronic Logbook System) is a web-based application designed to be used for accelerator facilities.</p>
 				<h5 style="font-weight: bold; color: RGB(29,149,243);">Copyright</h5>
