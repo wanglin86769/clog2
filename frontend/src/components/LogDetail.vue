@@ -4,7 +4,7 @@
 		<Button :label="$t('global_edit')" icon="fa fa-pencil" class="p-button-warning" style="margin-right: 15px" @click="onEditClick" :disabled="!canEdit" />
 		<Button :label="$t('global_delete')" icon="fa fa-trash" class="p-button-danger" style="margin-right: 15px" @click="onDeleteClick" :disabled="!canEdit" />
 		<Button :label="$t('global_history')" icon="fa fa-info" class="p-button-info" @click="onHistoryClick" :disabled="!log.histories || !log.histories.length" />
-		<Card class="shadow-2" style="margin-bottom: 2em;">
+		<Card class="shadow-2">
             <template #title>
                 {{ $t('logdetail_title') }}
             </template>
@@ -101,6 +101,10 @@
 				</Panel>
             </template>
         </Card>
+
+		<div style="margin-bottom: 2em;">
+			<Button :label="$t('global_go_back')" icon="fa fa-arrow-left" class="p-button-help" style="margin-right: 15px" @click="onReturnClick" />
+		</div>
 
 		<Dialog v-model:visible="deleteLogDialog" :header="$t('global_message')" :modal="true" style="min-width: 40%">
 			<div>
