@@ -4,6 +4,12 @@
 		<Button :label="$t('global_edit')" icon="fa fa-pencil" class="p-button-warning" style="margin-right: 15px" @click="onEditClick" :disabled="!canEdit" />
 		<Button :label="$t('global_delete')" icon="fa fa-trash" class="p-button-danger" style="margin-right: 15px" @click="onDeleteClick" :disabled="!canEdit" />
 		<Button :label="$t('global_history')" icon="fa fa-info" class="p-button-info" @click="onHistoryClick" :disabled="!log.histories || !log.histories.length" />
+		
+		<Button icon="fa fa-angle-double-right" v-tooltip.left="$t('logdetail_last')" style="margin-left: 15px; float: right; background-color: Peru; border-color: Peru;" @click="fetchLastLog" />
+		<Button icon="fa fa-angle-right" v-tooltip.top="$t('logdetail_next')" style="margin-left: 15px; float: right; background-color: Peru; border-color: Peru;" @click="fetchNextLog" />
+		<Button icon="fa fa-angle-left" v-tooltip.top="$t('logdetail_previous')" style="margin-left: 15px; float: right; background-color: Peru; border-color: Peru;" @click="fetchPreviousLog" />
+		<Button icon="fa fa-angle-double-left" v-tooltip.top="$t('logdetail_first')" style="margin-left: 15px; float: right; background-color: Peru; border-color: Peru;" @click="fetchFirstLog" />
+		
 		<Card class="shadow-2">
             <template #title>
                 {{ $t('logdetail_title') }}
@@ -230,6 +236,102 @@ export default {
 					this.$toast.add({ severity: 'error', summary: this.$t('logdetail_log_load_error'), detail: error.message });
 				}
             });
+        },
+		fetchFirstLog() {
+			if(!this.$route.params.id) {
+				console.log('Log id not found.');
+				return;
+			}
+
+			let loader = this.$loading.show();
+            this.logService.findFirstLog(this.$route.params.id)
+            .then(log => {
+                if(log && log._id) {
+					this.$router.push({ name: 'logdetail', params: { id: log._id } });
+				} else {
+					this.$toast.add({severity: 'info', summary: this.$t('global_success'), detail: this.$t('logdetail_already_first'), life: 5000});
+				}
+            }).catch((error) => {
+                if(error.response) {
+					this.$toast.add({ severity: 'error', summary: this.$t('logdetail_log_load_error'), detail: error.response.data.message });
+				} else {
+					this.$toast.add({ severity: 'error', summary: this.$t('logdetail_log_load_error'), detail: error.message });
+				}
+            }).finally(() => {
+				loader.hide();
+			});
+        },
+		fetchLastLog() {
+			if(!this.$route.params.id) {
+				console.log('Log id not found.');
+				return;
+			}
+
+			let loader = this.$loading.show();
+            this.logService.findLastLog(this.$route.params.id)
+            .then(log => {
+                if(log && log._id) {
+					this.$router.push({ name: 'logdetail', params: { id: log._id } });
+				} else {
+					this.$toast.add({severity: 'info', summary: this.$t('global_success'), detail: this.$t('logdetail_already_last'), life: 5000});
+				}
+            }).catch((error) => {
+                if(error.response) {
+					this.$toast.add({ severity: 'error', summary: this.$t('logdetail_log_load_error'), detail: error.response.data.message });
+				} else {
+					this.$toast.add({ severity: 'error', summary: this.$t('logdetail_log_load_error'), detail: error.message });
+				}
+            }).finally(() => {
+				loader.hide();
+			});
+        },
+		fetchPreviousLog() {
+			if(!this.$route.params.id) {
+				console.log('Log id not found.');
+				return;
+			}
+
+			let loader = this.$loading.show();
+            this.logService.findPreviousLog(this.$route.params.id)
+            .then(log => {
+                if(log && log._id) {
+					this.$router.push({ name: 'logdetail', params: { id: log._id } });
+				} else {
+					this.$toast.add({severity: 'info', summary: this.$t('global_success'), detail: this.$t('logdetail_already_first'), life: 5000});
+				}
+            }).catch((error) => {
+                if(error.response) {
+					this.$toast.add({ severity: 'error', summary: this.$t('logdetail_log_load_error'), detail: error.response.data.message });
+				} else {
+					this.$toast.add({ severity: 'error', summary: this.$t('logdetail_log_load_error'), detail: error.message });
+				}
+            }).finally(() => {
+				loader.hide();
+			});
+        },
+		fetchNextLog() {
+			if(!this.$route.params.id) {
+				console.log('Log id not found.');
+				return;
+			}
+
+			let loader = this.$loading.show();
+            this.logService.findNextLog(this.$route.params.id)
+            .then(log => {
+                if(log && log._id) {
+					this.$router.push({ name: 'logdetail', params: { id: log._id } });
+				} else {
+					this.$toast.add({severity: 'info', summary: this.$t('global_success'), detail: this.$t('logdetail_already_last'), life: 5000});
+				}
+            }).catch((error) => {
+                if(error.response) {
+					this.$toast.add({ severity: 'error', summary: this.$t('logdetail_log_load_error'), detail: error.response.data.message });
+				} else {
+					this.$toast.add({ severity: 'error', summary: this.$t('logdetail_log_load_error'), detail: error.message });
+				}
+            }).finally(() => {
+				loader.hide();
+			});
         },
 		deleteLog() {
 			this.logService.deleteLog(this.$route.params.id).then(() => {

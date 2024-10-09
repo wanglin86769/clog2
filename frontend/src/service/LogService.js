@@ -52,6 +52,26 @@ export default class LogService {
 		return axios.get(url, {headers: authenticationService.authHeader()}).then(res => res.data);
 	}
 
+	findFirstLog(_id) {
+        let url = `${config.serverPath}/logs/first/${_id}`;
+		return axios.get(url, {headers: authenticationService.authHeader()}).then(res => res.data);
+	}
+
+	findLastLog(_id) {
+        let url = `${config.serverPath}/logs/last/${_id}`;
+		return axios.get(url, {headers: authenticationService.authHeader()}).then(res => res.data);
+	}
+
+	findPreviousLog(_id) {
+        let url = `${config.serverPath}/logs/previous/${_id}`;
+		return axios.get(url, {headers: authenticationService.authHeader()}).then(res => res.data);
+	}
+
+	findNextLog(_id) {
+        let url = `${config.serverPath}/logs/next/${_id}`;
+		return axios.get(url, {headers: authenticationService.authHeader()}).then(res => res.data);
+	}
+
 	saveLog(log) {
 		let url = `${config.serverPath}/logs/save`;
 		return axios.post(url, log, {headers: authenticationService.authHeader()}).then(res => res.data);

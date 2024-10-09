@@ -482,6 +482,102 @@ exports.findLog = async (req, res, next) => {
 }
 
 
+exports.findFirstLog = async (req, res, next) => {
+    let log = await Log.findById(req.params.logId);
+    if(!log) {
+        return res.status(401).json({ message: 'No log with specified id was found.' });
+    }
+
+    let logbook = await Logbook.findById(log.logbook);
+    if(!logbook) {
+        return res.status(401).json({ message: 'No logbook for the log was found.' });
+    }
+
+    let query = { active: true, logbook: logbook._id, createdAt: { $lt: log.createdAt } };
+    let sort = { draft: 1, createdAt: 1 };
+    
+    try {
+        let data = await Log.find(query).sort(sort).limit(1);
+        let id = data && data.length ? data[0]._id : null;
+        res.json({ _id: id })
+    } catch(error) {
+        res.status(500).json({message: error.message})
+    }
+}
+
+
+exports.findLastLog = async (req, res, next) => {
+    let log = await Log.findById(req.params.logId);
+    if(!log) {
+        return res.status(401).json({ message: 'No log with specified id was found.' });
+    }
+
+    let logbook = await Logbook.findById(log.logbook);
+    if(!logbook) {
+        return res.status(401).json({ message: 'No logbook for the log was found.' });
+    }
+
+    let query = { active: true, logbook: logbook._id, createdAt: { $gt: log.createdAt } };
+    let sort = { draft: -1, createdAt: -1 };
+    
+    try {
+        let data = await Log.find(query).sort(sort).limit(1);
+        let id = data && data.length ? data[0]._id : null;
+        res.json({ _id: id })
+    } catch(error) {
+        res.status(500).json({message: error.message})
+    }
+}
+
+
+exports.findPreviousLog = async (req, res, next) => {
+    let log = await Log.findById(req.params.logId);
+    if(!log) {
+        return res.status(401).json({ message: 'No log with specified id was found.' });
+    }
+
+    let logbook = await Logbook.findById(log.logbook);
+    if(!logbook) {
+        return res.status(401).json({ message: 'No logbook for the log was found.' });
+    }
+
+    let query = { active: true, logbook: logbook._id, createdAt: { $lt: log.createdAt } };
+    let sort = { draft: -1, createdAt: -1 };
+    
+    try {
+        let data = await Log.find(query).sort(sort).limit(1);
+        let id = data && data.length ? data[0]._id : null;
+        res.json({ _id: id })
+    } catch(error) {
+        res.status(500).json({message: error.message})
+    }
+}
+
+
+exports.findNextLog = async (req, res, next) => {
+    let log = await Log.findById(req.params.logId);
+    if(!log) {
+        return res.status(401).json({ message: 'No log with specified id was found.' });
+    }
+
+    let logbook = await Logbook.findById(log.logbook);
+    if(!logbook) {
+        return res.status(401).json({ message: 'No logbook for the log was found.' });
+    }
+
+    let query = { active: true, logbook: logbook._id, createdAt: { $gt: log.createdAt } };
+    let sort = { draft: 1, createdAt: 1 };
+    
+    try {
+        let data = await Log.find(query).sort(sort).limit(1);
+        let id = data && data.length ? data[0]._id : null;
+        res.json({ _id: id })
+    } catch(error) {
+        res.status(500).json({message: error.message})
+    }
+}
+
+
 exports.createLog = async (req, res, next) => {
     if(!req.headers['user']) return res.status(500).json({message: 'No user information is extracted.'});
     

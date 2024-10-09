@@ -13,6 +13,18 @@ router.get('/lastactive', logs.findLastActive);
 // Get logs
 router.get('/', logs.findLogs);
 
+// Get the first log Using current log as reference
+router.get('/first/:logId', logs.findFirstLog);
+
+// Get the last log Using current log as reference
+router.get('/last/:logId', logs.findLastLog);
+
+// Get the previous log Using current log as reference
+router.get('/previous/:logId', logs.findPreviousLog);
+
+// Get the next log Using current log as reference
+router.get('/next/:logId', logs.findNextLog);
+
 // Create a log
 router.post('/', authorize.loggedIn, logs.createLogFormData);
 

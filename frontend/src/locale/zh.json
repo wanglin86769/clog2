@@ -191,6 +191,12 @@
     "logdetail_title": "日志查询",
     "logdetail_delete_log_prompt": "确定要删除当前日志吗?",
     "logdetail_log_load_error": "当前日志加载失败",
+    "logdetail_first": "第一个",
+    "logdetail_previous": "前一个",
+    "logdetail_next": "后一个",
+    "logdetail_last": "最后一个",
+    "logdetail_already_first": "已经是第一个条目",
+    "logdetail_already_last": "已经最后一个条目",
 
 
     "logedit_title": "编辑日志",
