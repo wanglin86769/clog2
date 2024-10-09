@@ -128,6 +128,8 @@ export default {
 			imageMimeTypes: ['image/jpeg', 'image/png', 'image/bmp', 'image/gif'],
 
 			intervalId: null,
+
+			submitted: false,
 		}
 	},
 
@@ -163,11 +165,15 @@ export default {
 	},
 
 	beforeRouteLeave (to, from , next) {
+		if(this.submitted === true) {
+			return next();
+		}
+
 		const answer = window.confirm('Do you really want to leave? You may have unsaved changes!')
 		if(answer) {
-			next()
+			next();
 		} else {
-			next(false)
+			next(false);
 		}
 	},
 
@@ -279,6 +285,7 @@ export default {
             }
 
             this.logService.editLogFormData(this.log._id, formData).then(() => {
+				this.submitted = true;
                 this.$router.push({name: 'logbook', params: { id: this.currentLog.logbook._id }});
             }).catch((error) => {
                 if(error.response) {

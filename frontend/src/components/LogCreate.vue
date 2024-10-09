@@ -151,6 +151,8 @@ export default {
 			editorConfig: {},
 
 			intervalId: null,
+
+			submitted: false,
 		}
 	},
 
@@ -202,11 +204,15 @@ export default {
 	},
 
 	beforeRouteLeave (to, from , next) {
+		if(this.submitted === true) {
+			return next();
+		}
+
 		const answer = window.confirm('Do you really want to leave? You may have unsaved changes!')
 		if(answer) {
-			next()
+			next();
 		} else {
-			next(false)
+			next(false);
 		}
 	},
 
@@ -323,6 +329,7 @@ export default {
 
             this.logService.addLogFormData(formData)
 			.then(() => {
+				this.submitted = true;
                 this.$router.push({name: 'logbook', params: { id: this.$route.params.logbookid }});
             }).catch((error) => {
                 if(error.response) {
