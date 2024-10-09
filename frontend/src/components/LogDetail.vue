@@ -12,7 +12,8 @@
 		
 		<Card class="shadow-2">
             <template #title>
-                {{ $t('logdetail_title') }}
+                <!-- {{ $t('logdetail_title') }} -->
+				{{ log.title }}
             </template>
             <template #subtitle>
 				<span v-if="log && log.updatedBy && log.updatedAt" v-tooltip="{ value: creator, disabled: !showCreator }">
