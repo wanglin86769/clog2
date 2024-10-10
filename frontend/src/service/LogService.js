@@ -103,6 +103,9 @@ export default class LogService {
 	}
 
 	attachmentUrl(logId, fileName) {
+		// Encode the filename if it is not a valid URL
+		fileName = encodeURIComponent(fileName);
+
 		let url = `${config.serverPath}/logs/attachments/${logId}/${fileName}`;
 		return url;
 	}
@@ -143,6 +146,9 @@ export default class LogService {
 	}
 
 	findAttachment(logId, fileName) {
+		// Encode the filename if it is not a valid URL
+		fileName = encodeURIComponent(fileName);
+		
 		let url = `${config.serverPath}/logs/attachments/${logId}/${fileName}`;
 		return axios.get(url, {headers: authenticationService.authHeader(), responseType: 'blob'}).then(res => res.data);
 	}

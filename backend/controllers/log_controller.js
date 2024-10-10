@@ -942,6 +942,9 @@ exports.createRichTextImage = [upload.single('upload'), async (req, res, next) =
     fileFullPath = path.join(fileDir, fileName);
     await fs.writeFile(fileFullPath, file.buffer, "binary");
 
+    // Encode the filename if it is not a valid URL, after saving the file in the file system
+    fileName = encodeURIComponent(fileName);
+
     // Return the available URL to the rich-text editor
     let url = `${backendConfig.url}/logs/richtext/${year}/${month}/${day}/${fileName}`;
     res.json({ url: url });
