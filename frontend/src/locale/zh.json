@@ -34,6 +34,7 @@
     "global_name_cannot_empty": "姓名不能为空！",
     "global_detail": "详情",
     "global_save": "保存",
+    "global_submit": "提交",
     "global_create": "创建",
     "global_modify": "修改",
     "global_add": "添加",

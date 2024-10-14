@@ -84,7 +84,7 @@
 				</Panel>
             </template>
             <template #footer>
-				<Button icon="pi pi-check" :label="$t('global_ok')" @click="editLog" />
+				<Button icon="pi pi-check" :label="$t('global_submit')" @click="editLog" />
 				<Button icon="pi pi-times" :label="$t('global_cancel')" class="p-button-text" style="margin-left: 1em" @click="onCancelClick" />
 				<Button style="float: right; background-color: Peru; border-color: Peru;" :label="$t('global_save')" icon="fa fa-save" size="small" severity="info" @click="saveLog" />
 			</template>

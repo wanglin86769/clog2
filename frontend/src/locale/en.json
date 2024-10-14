@@ -34,6 +34,7 @@
     "global_name_cannot_empty": "Name cannot be empty!",
     "global_detail": "Detail",
     "global_save": "Save",
+    "global_submit": "Submit",
     "global_create": "Create",
     "global_modify": "Modify",
     "global_add": "Add",
