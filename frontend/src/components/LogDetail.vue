@@ -13,7 +13,8 @@
 		<Card class="shadow-2">
             <template #title>
                 <!-- {{ $t('logdetail_title') }} -->
-				{{ log.title }}
+				<span style="vertical-align: middle;">{{ log.title }}</span>
+				<Badge v-if="log.draft===true" value="Draft" severity="warning" size="large" rounded style="vertical-align: middle; background-color: RGB(255, 208, 208); margin-left: 1em;"></Badge>
             </template>
             <template #subtitle>
 				<span v-if="log && log.updatedBy && log.updatedAt" v-tooltip="{ value: creator, disabled: !showCreator }">
