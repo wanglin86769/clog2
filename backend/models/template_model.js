@@ -7,6 +7,10 @@ let TemplateSchema = new Schema({
         required: true
     },
     number: Number,
+    category: {
+        type: String,
+        required: true
+    },
     content: {
         type: String,
         required: true

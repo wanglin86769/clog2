@@ -19,6 +19,11 @@
 							{{slotProps.data.name}}
 						</template>
 					</Column>
+					<Column field="category" :header="$t('global_log_category')">
+						<template #body="slotProps">
+							{{slotProps.data.category}}
+						</template>
+					</Column>
 					<Column field="number" :header="$t('global_number')">
 						<template #body="slotProps">
 							{{slotProps.data.number}}
@@ -46,6 +51,10 @@
 				<div class="field">
 					<span style="color: red">* </span><label>{{ $t('global_naming') }}</label>
 					<InputText v-model.trim="template.name" class="p-inputtext-sm" :disabled="true" />
+				</div>
+				<div class="field">
+					<span style="color: red">* </span><label>{{ $t('global_log_category') }}</label>
+					<InputText v-model.trim="template.category" class="p-inputtext-sm" :disabled="true" />
 				</div>
 				<div class="field">
 					<label>{{ $t('global_number') }}</label>

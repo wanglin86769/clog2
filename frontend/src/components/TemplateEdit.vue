@@ -15,6 +15,10 @@
 								<InputText v-model.trim="template.name" class="p-inputtext-sm" autofocus />
 							</div>
 							<div class="field">
+								<span style="color: red">* </span><label>{{ $t('global_log_category') }}</label>
+								<Dropdown v-model="template.category" :options="categories" class="p-inputtext-sm" :placeholder="$t('global_select')" />
+							</div>
+							<div class="field">
 								<label>{{ $t('global_number') }}</label>
 								<InputText v-model.trim="template.number" class="p-inputtext-sm" />
 							</div>
@@ -54,6 +58,7 @@ import LogService from '../service/LogService';
 export default {
 	data() {
 		return {
+			categories: [],
 			template: {},
 			discardTemplateDialog: false,
 
@@ -72,6 +77,7 @@ export default {
 	},
 	mounted() {
 		this.fetchTemplate();
+		this.fetchCategories();
 	},
 	methods: {
 		fetchTemplate() {
@@ -81,6 +87,7 @@ export default {
 			.then(template => {
 				this.template._id = template._id;
 				this.template.name = template.name;
+				this.template.category = template.category;
 				this.template.number = template.number;
 				this.template.content = template.content;
 			}).catch(error => {
@@ -121,6 +128,12 @@ export default {
 				loader.hide();
 			});
 		},
+		fetchCategories() {
+            this.categories = JSON.parse(this.$t('logedit_catetory_options'));
+			if(this.categories && this.categories.length) {
+				this.template.category = this.categories[0];
+			}
+        },
 		onCancelClick() {
 			this.discardTemplateDialog = true;
 		},
@@ -138,7 +151,12 @@ export default {
 		isAdmin() {
 			return this.$store.state.authentication.user && this.$store.state.authentication.user.admin === true;
         },
-    }
+    },
+	watch: {
+		'$i18n.locale'() {
+            this.fetchCategories();
+        },
+	},
 }
 </script>
 

@@ -103,6 +103,11 @@
 						{{slotProps.data.name}}
 					</template>
 				</Column>
+				<Column field="category" :header="$t('global_log_category')">
+					<template #body="slotProps">
+						{{slotProps.data.category}}
+					</template>
+				</Column>
 				<Column headerStyle="width: 8em">
 					<template #header>
 						<i class="pi pi-cog" style="fontSize: 1.2rem" v-tooltip.top="$t('global_operate')"></i>
@@ -310,6 +315,7 @@ export default {
 		},
 		onSelectTemplateClick(template) {
 			this.log.description = template.content;
+			this.log.category = template.category;
 			this.importLogTemplateDialog = false;
 		},
 		createLog() {
