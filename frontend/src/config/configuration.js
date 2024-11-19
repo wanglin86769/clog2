@@ -2,6 +2,7 @@ export default {
     localStorageUser: "clogUser",
     localStoragePageBeforeLogin: "clogPageBeforeLogin",
     localStorageLogCachePrefix: "log-cache",
+    localStorageLogScroll: "clogLogScroll",
 
 
     // Login options: "local", "ldap", "oauth"

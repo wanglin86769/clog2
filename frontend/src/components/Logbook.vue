@@ -187,6 +187,7 @@ import TagService from '../service/TagService';
 import LogService from '../service/LogService';
 // const dateFormat = require('dateformat');
 import dateFormat from "dateformat";
+import config from '@/config/configuration.js';
 
 export default {
 	data() {
@@ -239,6 +240,12 @@ export default {
         // console.log("deactivated()");
 		this.stopRefresh();
     },
+	beforeRouteLeave (to, from , next) {
+		if(window.scrollY) {
+			localStorage.setItem(config.localStorageLogScroll, window.scrollY);
+		}
+		next();
+	},
 	methods: {
 		fetchLogbook() {
 			if(!this.$route.params.id) {
@@ -260,6 +267,15 @@ export default {
 		fetchCategories() {
             this.categories = JSON.parse(this.$t('logedit_catetory_options'));
         },
+		restoreScroll() {
+			let scroll = localStorage.getItem(config.localStorageLogScroll);
+			if(scroll) {
+				this.$nextTick(() => {
+					window.scroll(0, scroll);
+				});
+				localStorage.removeItem(config.localStorageLogScroll);
+			}
+		},
 		loadLazyData() {
 			this.loading = true;
 			this.logService.findLogs(this.$route.params.id, this.lazyParams)
@@ -267,6 +283,7 @@ export default {
 				this.logs = data.entries;
 				this.totalRecords = data.count;
 				this.removeHTMLTags(this.logs);
+				this.restoreScroll();
 			}).catch(error => {
 				if(error.response) {
 					this.$toast.add({ severity: 'error', summary: this.$t('logbook_log_load_error'), detail: error.response.data.message });
