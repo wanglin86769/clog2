@@ -638,8 +638,6 @@ exports.saveLog = async (req, res, next) => {
     let timeNow = new Date();
     req.body.savedAt = timeNow;
     req.body.savedBy = user.email;
-    req.body.createdAt = timeNow;
-    req.body.createdBy = user.email;
     req.body.updatedAt = timeNow;
     req.body.updatedBy = user.email;
     req.body.lastActiveAt = timeNow;
@@ -650,6 +648,8 @@ exports.saveLog = async (req, res, next) => {
         if(req.body._id) {
             data = await Log.findByIdAndUpdate(req.body._id, { $set: req.body }, { new: true });
         } else {
+            req.body.createdAt = timeNow;
+            req.body.createdBy = user.email;
             data = await Log.create(req.body);
         }
         res.json(data)
