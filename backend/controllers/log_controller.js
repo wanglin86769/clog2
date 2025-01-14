@@ -799,6 +799,15 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
         // Update the log
         data = await Log.findByIdAndUpdate(req.params.logId, { $set: log, $push: push }, { new: true });
 
+        // Reduce attachments
+        let reduceAttachments = JSON.parse(req.body.reduceAttachments);
+        for(let fileName of reduceAttachments) {
+            let fileFullPath = path.join(fileDir, fileName);
+            if(fs.existsSync(fileFullPath)) {
+                await fs.unlink(fileFullPath);
+            }
+        }
+
         // Increase attachments
         if(Array.isArray(req.files) && req.files.length) {
             await fs.mkdir(fileDir, { recursive: true });
@@ -814,15 +823,6 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
                 
                 let fileFullPath = path.join(fileDir, file.originalname);
                 await fs.writeFile(fileFullPath, file.buffer, "binary");
-            }
-        }
-
-        // Reduce attachments
-        let reduceAttachments = JSON.parse(req.body.reduceAttachments);
-        for(let fileName of reduceAttachments) {
-            let fileFullPath = path.join(fileDir, fileName);
-            if(fs.existsSync(fileFullPath)) {
-                await fs.unlink(fileFullPath);
             }
         }
 
