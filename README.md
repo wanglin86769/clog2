@@ -111,6 +111,10 @@ Login page for CSNS OAuth2 authentication
 
 ![Alt text](docs/screenshots/template_import.png?raw=true "Title")
 
+### Log reply
+
+![Alt text](docs/screenshots/log_reply.png?raw=true "Title")
+
 ## API token
 
 ### Generate API token
