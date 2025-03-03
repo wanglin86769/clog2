@@ -1,8 +1,9 @@
 <template>
 	<div style="margin-left: 1%; margin-right: 1%; margin-top: 20px;">
 		<Button :label="$t('global_go_back')" icon="fa fa-arrow-left" class="p-button-help" style="margin-right: 15px" @click="onReturnClick" />
-		<Button :label="$t('global_edit')" icon="fa fa-pencil" class="p-button-warning" style="margin-right: 15px" @click="onEditClick" :disabled="!canEdit" />
-		<Button :label="$t('global_delete')" icon="fa fa-trash" class="p-button-danger" style="margin-right: 15px" @click="onDeleteClick" :disabled="!canEdit" />
+		<Button :label="$t('global_edit')" icon="fa fa-pencil" class="p-button-warning" style="margin-right: 15px" @click="onEditClick" :disabled="!canEditLog" />
+		<Button :label="$t('global_delete')" icon="fa fa-trash" class="p-button-danger" style="margin-right: 15px" @click="onDeleteClick" :disabled="!canEditLog" />
+		<Button :label="$t('global_reply')" icon="fa fa-mail-reply" class="p-button-success" style="margin-right: 15px" @click="onReplyClick" />
 		<Button :label="$t('global_history')" icon="fa fa-info" class="p-button-info" @click="onHistoryClick" :disabled="!log.histories || !log.histories.length" />
 		
 		<Button icon="fa fa-angle-double-right" v-tooltip.left="$t('logdetail_last')" style="margin-left: 15px; float: right; background-color: Peru; border-color: Peru;" @click="fetchLastLog" />
@@ -110,6 +111,52 @@
             </template>
         </Card>
 
+		<Card v-if="replies && replies.length" class="shadow-2" style="margin-top: 2em">
+			<template #title>
+				<div>{{ $t('global_reply') }}</div>
+            </template>
+			<template #content>
+				<Panel v-for="(reply, index) in replies" :key="index" class="p-shadow-1" style="margin-bottom: 2em;">
+					<template #header>
+						<span v-if="reply.updatedAt && reply.updatedBy">
+							<i class="fa fa-user-circle-o" style="color: rgb(33,150,243); margin-right: .2em"></i>
+							<span style="margin-right: 1em">{{ reply.updatedBy.name }}</span>
+							<i class="fa fa-pencil-square-o" style="color: rgb(33,150,243); margin-right: .2em"></i>
+							<span>{{ showDateTime(reply.updatedAt) }}</span>
+						</span>
+					</template>
+					<template #icons>
+						<span v-if="canEditReply(reply)" style="color: rgb(59,130,246); text-decoration: underline; cursor: pointer; margin-right: 1em;" @click="onEditReplyClick(reply)">{{ $t('global_edit') }}</span>
+						<span v-if="canEditReply(reply)" style="color: rgb(239,68,68); text-decoration: underline; cursor: pointer;" @click="onDeleteReplyClick(reply)">{{ $t('global_delete') }}</span>
+					</template>
+					<div>
+						<div v-if="reply.encoding === 'HTML'" v-html="reply.description" class="ck-content" style="padding: 10px" ></div>
+						<div v-else class="descriptionBox" >
+							{{ reply.description }}
+						</div>
+					</div>
+					<div class="grid" style="margin-top: 2em">
+						<div class="col-12 md:col-6 lg:col-4 xl:col-3" v-for="(attachment, index) in reply.attachments" :key="index" style="padding: 1em;">
+							<div v-if="imageMimeTypes.includes(attachment.contentType)">
+								<Image :src="attachmentUrl(reply._id, attachment.name)" alt="Attachment Image" width="200" preview />
+								<div id="attachmentLink" style="cursor: pointer;" @click="openAttachment(reply._id, attachment.name)">
+									<span style="margin-right: 1em; color: rgb(59,130,246);">{{ attachment.name }}</span>
+									<span>{{ Math.round(attachment.size/1000) }} KB</span>
+								</div>
+							</div>
+							<div v-else>
+								<img alt="Attachment File" :src="attachmentIcon(attachment.name)" width="150" style="cursor: pointer;" @click="downloadAttachment(log._id, attachment.name)" />
+								<div id="attachmentLink" style="cursor: pointer;" @click="downloadAttachment(reply._id, attachment.name)">
+									<span style="margin-right: 1em; color: rgb(59,130,246);">{{ attachment.name }}</span>
+									<span>{{ Math.round(attachment.size/1000) }} KB</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</Panel>
+			</template>
+		</Card>
+
 		<div style="margin-bottom: 2em;">
 			<Button :label="$t('global_go_back')" icon="fa fa-arrow-left" class="p-button-help" style="margin-right: 15px" @click="onReturnClick" />
 		</div>
@@ -122,6 +169,17 @@
 			<template #footer>
 				<Button :label="$t('global_cancel')" icon="pi pi-times" class="p-button-text" @click="deleteLogDialog = false"/>
 				<Button :label="$t('global_ok')" icon="pi pi-check" class="p-button-primary" @click="deleteLog" />
+			</template>
+		</Dialog>
+
+		<Dialog v-model:visible="deleteReplyDialog" :header="$t('global_message')" :modal="true" style="min-width: 40%">
+			<div>
+				<i class="pi pi-exclamation-triangle mr-3" style="font-size: 2em; color: orange; vertical-align: middle;" />
+				<span style="color: orange; font-size: 1.2em;">{{ $t('logdetail_delete_reply_prompt') }}</span>
+			</div>
+			<template #footer>
+				<Button :label="$t('global_cancel')" icon="pi pi-times" class="p-button-text" @click="deleteReplyDialog = false"/>
+				<Button :label="$t('global_ok')" icon="pi pi-check" class="p-button-primary" @click="deleteReply" />
 			</template>
 		</Dialog>
 
@@ -184,12 +242,16 @@ export default {
 			categories: [],
 			log: {},
 			deleteLogDialog: false,
+			deleteReplyDialog: false,
 
 			histories: [],
 			logHistoryDialog: false,
 
 			imageMimeTypes: ['image/jpeg', 'image/png', 'image/bmp', 'image/gif'],
 			previewSrcList: [],
+
+			replies: [],
+			selectedReply: null,
 		}
 	},
 
@@ -201,6 +263,7 @@ export default {
 
 	mounted() {
 		this.fetchLog();
+		this.fetchLogReplies();
 	},
 
 	methods: {
@@ -231,6 +294,23 @@ export default {
             .then(log => {
                 this.log = log;
 				this.processAttachments(log);
+            }).catch((error) => {
+                if(error.response) {
+					this.$toast.add({ severity: 'error', summary: this.$t('logdetail_log_load_error'), detail: error.response.data.message });
+				} else {
+					this.$toast.add({ severity: 'error', summary: this.$t('logdetail_log_load_error'), detail: error.message });
+				}
+            });
+        },
+		fetchLogReplies() {
+			if(!this.$route.params.id) {
+				console.log('Log id not found.');
+				return;
+			}
+
+            this.logService.findLogReplies(this.$route.params.id)
+            .then(replies => {
+                this.replies = replies;
             }).catch((error) => {
                 if(error.response) {
 					this.$toast.add({ severity: 'error', summary: this.$t('logdetail_log_load_error'), detail: error.response.data.message });
@@ -347,6 +427,18 @@ export default {
 				}
             });
 		},
+		deleteReply() {
+			this.logService.deleteLog(this.selectedReply._id).then(() => {
+				this.deleteReplyDialog = false;
+                this.fetchLogReplies();
+            }).catch((error) => {
+                if(error.response) {
+					this.$toast.add({ severity: 'error', summary: this.$t("global_fail"), detail: error.response.data.message });
+				} else {
+					this.$toast.add({ severity: 'error', summary: this.$t("global_fail"), detail: error.message });
+				}
+            });
+		},
 		onReturnClick() {
 			this.$router.push({name: 'logbook', params: { id: this.log.logbook._id }});
 		},
@@ -355,6 +447,16 @@ export default {
 		},
 		onDeleteClick() {
 			this.deleteLogDialog = true;
+		},
+		onReplyClick() {
+			this.$router.push({name: 'logreply', params: { id: this.$route.params.id }});
+		},
+		onEditReplyClick(reply) {
+			this.$router.push({name: 'logreplyedit', params: { id: reply._id }});
+		},
+		onDeleteReplyClick(reply) {
+			this.selectedReply = reply;
+			this.deleteReplyDialog = true;
 		},
 		onHistoryClick() {
 			if(!this.log.histories || !this.log.histories.length)  return;
@@ -387,6 +489,21 @@ export default {
                 this.$toast.add({ severity: 'error', summary: this.$t("global_fail"), detail: error.message });
             });
         },
+		canEditReply(reply) {
+			// Clog admin can edit the reply
+			if(this.isAdmin) {
+				return true;
+			}
+			// Reply author can edit the reply
+			if(reply && reply.createdBy && this.userInfo && reply.createdBy.email === this.userInfo.email) {
+				return true;
+			}
+			// Logbook admin can edit the reply
+			if(reply && reply.logbook && reply.logbook.admins && this.userInfo && reply.logbook.admins.includes(this.userInfo.email)) {
+				return true;
+			}
+			return false;
+		},
 		showDate(value) {
             return dateFormat(value, "yyyy-mm-dd");
         },
@@ -405,7 +522,7 @@ export default {
 		isAdmin() {
 			return this.$store.state.authentication.user && this.$store.state.authentication.user.admin === true;
         },
-		canEdit() {
+		canEditLog() {
 			// Clog admin can edit the log
 			if(this.isAdmin) {
 				return true;

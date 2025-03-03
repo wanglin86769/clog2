@@ -145,6 +145,10 @@
 							<div style="white-space: pre-wrap" class="logdetail-link" @click="onDetailClick(slotProps.data)">
 								<span v-if="slotProps.data.description && slotProps.data.description.length > 50">{{slotProps.data.description.slice(0, 50)}} <span style="color: RGB(29,149,243); font-size: 1.5em;">......</span></span>
 								<span v-else>{{ slotProps.data.description }}</span>
+								<span v-if="slotProps.data.replyCount" style="margin-left: .5em; color: RGB(33,150,243);">
+									<i class="fa fa-commenting" style="vertical-align: middle;"></i>
+									<span style="margin-left: .2em; vertical-align: middle;">{{ slotProps.data.replyCount }}</span>
+								</span>
 							</div>
 						</template>
 					</Column>

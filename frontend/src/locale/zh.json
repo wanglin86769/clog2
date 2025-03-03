@@ -42,6 +42,7 @@
     "global_operate": "操作",
     "global_edit": "编辑",
     "global_delete": "删除",
+    "global_reply": "回复",
     "global_no_data": "暂无数据",
     "global_naming": "名称",
     "global_number": "编号",
@@ -189,6 +190,10 @@
     "logcreate_log_prototype_load_error": "日志原型加载失败",
 
 
+    "logreply_title": "回复日志",
+    "logreplyedit_title": "编辑回复",
+
+
     "logdetail_title": "日志查询",
     "logdetail_delete_log_prompt": "确定要删除当前日志吗?",
     "logdetail_log_load_error": "当前日志加载失败",
@@ -198,6 +203,7 @@
     "logdetail_last": "最后一个",
     "logdetail_already_first": "已经是第一个条目",
     "logdetail_already_last": "已经最后一个条目",
+    "logdetail_delete_reply_prompt": "确定要删除这个回复吗?",
 
 
     "logedit_title": "编辑日志",

@@ -47,6 +47,11 @@ export default class LogService {
 		return axios.get(url, {headers: authenticationService.authHeader(), params: {logbook: logbook, lazyEvent: JSON.stringify(lazyParams)}}).then(res => res.data);
 	}
 
+	findLogReplies(_id) {
+		let url = `${config.serverPath}/logs/replies/${_id}`;
+		return axios.get(url, {headers: authenticationService.authHeader()}).then(res => res.data);
+	}
+
 	findLog(_id) {
         let url = `${config.serverPath}/logs/${_id}`;
 		return axios.get(url, {headers: authenticationService.authHeader()}).then(res => res.data);

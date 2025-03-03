@@ -29,6 +29,10 @@ const History = new mongoose.Schema({
 let LogSchema = new Schema({
     /* Meta data */
     draft: Boolean,
+    replyTo: {
+        type: Schema.Types.ObjectId,
+        ref: 'Log'
+    },
     active: {
         type: Boolean,
         default: true

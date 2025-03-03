@@ -25,6 +25,9 @@ router.get('/previous/:logId', logs.findPreviousLog);
 // Get the next log Using current log as reference
 router.get('/next/:logId', logs.findNextLog);
 
+// Get the log replies
+router.get('/replies/:logId', logs.findLogReplies);
+
 // Create a log
 router.post('/', authorize.loggedIn, logs.createLogFormData);
 

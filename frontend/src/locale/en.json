@@ -42,6 +42,7 @@
     "global_operate": "Operate",
     "global_edit": "Edit",
     "global_delete": "Delete",
+    "global_reply": "Reply",
     "global_no_data": "No records found.",
     "global_naming": "Name",
     "global_number": "Number",
@@ -189,6 +190,10 @@
     "logcreate_log_prototype_load_error": "Fail to load the log prototype",
 
 
+    "logreply_title": "Reply Log",
+    "logreplyedit_title": "Edit Reply",
+
+
     "logdetail_title": "Log Detail",
     "logdetail_delete_log_prompt": "Are you sure you want to delete the current log?",
     "logdetail_log_load_error": "Fail to load the current log",
@@ -198,6 +203,7 @@
     "logdetail_last": "Last",
     "logdetail_already_first": "This is the first entry",
     "logdetail_already_last": "This is the last entry",
+    "logdetail_delete_reply_prompt": "Are you sure you want to delete the reply?",
 
 
     "logedit_title": "Edit Log",

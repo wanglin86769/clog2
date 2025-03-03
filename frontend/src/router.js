@@ -93,6 +93,16 @@ const routes = [
         component: () => import('./components/LogEdit.vue'),
     },
     {
+        path: '/logreply/:id',
+        name: 'logreply',
+        component: () => import('./components/LogReply.vue'),
+    },
+    {
+        path: '/logreplyedit/:id',
+        name: 'logreplyedit',
+        component: () => import('./components/LogReplyEdit.vue'),
+    },
+    {
         path: '/logdetail/:id',
         name: 'logdetail',
         component: () => import('./components/LogDetail.vue'),

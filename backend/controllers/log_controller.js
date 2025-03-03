@@ -143,7 +143,8 @@ exports.findLastActive = async (req, res, next) => {
             { 
                 $match: {
                     logbook: new mongoose.Types.ObjectId(logbook),
-                    active: true
+                    active: true,
+                    replyTo: null,
                 }
             },
             {
@@ -212,7 +213,7 @@ exports.findLogs = async (req, res, next) => {
         return res.status(401).json({ message: 'Starting data and quantity are not specified.' });
     }
 
-    let query = { active: true, logbook: new mongoose.Types.ObjectId(logbook) };
+    let query = { active: true, replyTo: null, logbook: new mongoose.Types.ObjectId(logbook) };
     generateQuery(query, filters);
 
     let sort = {};
@@ -328,6 +329,12 @@ exports.findLogs = async (req, res, next) => {
             }
         }
 
+        // Post process for replies
+        for(let log of results) {
+            let replies = await Log.find({ active: true, replyTo: log._id });
+            log.replyCount = replies && replies.length ? replies.length : 0;
+        }
+
         let finalData = {};
         finalData.entries = results;
         finalData.count = count;
@@ -352,6 +359,91 @@ exports.findLogs = async (req, res, next) => {
 
         // console.log(finalData);
         res.json(finalData);
+    } catch(error) {
+        res.status(500).json({message: error.message})
+    }
+}
+
+
+exports.findLogReplies = async (req, res, next) => {
+    let query = { active: true, replyTo: new mongoose.Types.ObjectId(req.params.logId) };
+    let sort = { createdAt: 1 };
+
+    let pipeline = [
+        { 
+            $match: query 
+        },
+        {
+            $sort: sort
+        },
+        {
+            $lookup: {
+                from:"user",
+                localField: "createdBy",
+                foreignField: "email",
+                as: "createdBy"
+            }
+        },
+        {
+            $unwind: {
+                path: '$createdBy',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from:"user",
+                localField: "updatedBy",
+                foreignField: "email",
+                as: "updatedBy"
+            }
+        },
+        {
+            $unwind: {
+                path: '$updatedBy',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        { 
+            $project: { 
+                'attachments': 0
+            } 
+        }
+    ];
+
+    // console.log(pipeline);
+
+    try {
+        // Retrieve data
+        let results = await Log.aggregate(pipeline);
+        if(!results) results = [];
+
+        // console.log(results);
+
+        // Post process for attachments
+        for(let log of results) {
+            let date = new Date(log.createdAt);
+            let month = date.getUTCMonth() + 1; //months from 1-12
+            let day = date.getUTCDate();
+            let year = date.getUTCFullYear();
+
+            let fileDir = path.join(attachmentdir, year.toString(), month.toString(), day.toString(), log._id.toString());
+
+            if(fs.existsSync(fileDir)) {
+                let files = await fs.readdir(fileDir);
+                if(files && files.length) {
+                    let attachments = [];
+                    for (const file of files){
+                        let fileFullPath = path.join(fileDir, file);
+                        let stats = await fs.stat(fileFullPath);
+                        attachments.push({name: file, size: stats.size, contentType: mime.getType(file)});
+                    }
+                    log.attachments = attachments;
+                }
+            }
+        }
+       
+        res.json(results);
     } catch(error) {
         res.status(500).json({message: error.message})
     }
@@ -493,7 +585,7 @@ exports.findFirstLog = async (req, res, next) => {
         return res.status(401).json({ message: 'No logbook for the log was found.' });
     }
 
-    let query = { active: true, logbook: logbook._id, createdAt: { $lt: log.createdAt } };
+    let query = { active: true, replyTo: null, logbook: logbook._id, createdAt: { $lt: log.createdAt } };
     let sort = { draft: 1, createdAt: 1 };
     
     try {
@@ -517,7 +609,7 @@ exports.findLastLog = async (req, res, next) => {
         return res.status(401).json({ message: 'No logbook for the log was found.' });
     }
 
-    let query = { active: true, logbook: logbook._id, createdAt: { $gt: log.createdAt } };
+    let query = { active: true, replyTo: null, logbook: logbook._id, createdAt: { $gt: log.createdAt } };
     let sort = { draft: -1, createdAt: -1 };
     
     try {
@@ -541,7 +633,7 @@ exports.findPreviousLog = async (req, res, next) => {
         return res.status(401).json({ message: 'No logbook for the log was found.' });
     }
 
-    let query = { active: true, logbook: logbook._id, createdAt: { $lt: log.createdAt } };
+    let query = { active: true, replyTo: null, logbook: logbook._id, createdAt: { $lt: log.createdAt } };
     let sort = { draft: -1, createdAt: -1 };
     
     try {
@@ -565,7 +657,7 @@ exports.findNextLog = async (req, res, next) => {
         return res.status(401).json({ message: 'No logbook for the log was found.' });
     }
 
-    let query = { active: true, logbook: logbook._id, createdAt: { $gt: log.createdAt } };
+    let query = { active: true, replyTo: null, logbook: logbook._id, createdAt: { $gt: log.createdAt } };
     let sort = { draft: 1, createdAt: 1 };
     
     try {
@@ -678,7 +770,7 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
     let data;
     try {
         if(req.query.append) {  // Process append request
-            let existingLog = await Log.findOne({ logbook: log.logbook, title: log.title, active: true }, null, { sort: { updatedAt: -1 } });
+            let existingLog = await Log.findOne({ logbook: log.logbook, title: log.title, active: true, replyTo: null }, null, { sort: { updatedAt: -1 } });
             if(existingLog) {
                 if(log.description) {
                     existingLog.createdAt = timeNow;
