@@ -21,6 +21,7 @@
     "global_advanced": "Advanced",
     "global_start_date": "Start date",
     "global_end_date": "End date",
+    "global_show_attachments": "Show Attachments",
     "global_password": "Password",
     "global_confirm_password": "Confirm Password",
     "global_success": "Success",
@@ -51,6 +52,7 @@
     "global_log_author": "Author",
     "global_log_author_email": "Author Email",
     "global_log_create_date": "Created At",
+    "global_log_date": "Date",
     "global_log_category": "Category",
     "global_log_tag": "Tag",
     "global_log_title": "Title",
@@ -137,6 +139,8 @@
 
     "logbook_search": "Keyword",
     "logbook_log_load_error": "Fail to load logs",
+    "logbook_full_display": "Full",
+    "logbook_summary_display": "Summary",
 
 
     "logbookmanagement_title": "Logbook Management",

@@ -21,6 +21,7 @@
     "global_advanced": "高级",
     "global_start_date": "开始时间",
     "global_end_date": "结束时间",
+    "global_show_attachments": "显示附件",
     "global_password": "密码",
     "global_confirm_password": "密码确认",
     "global_success": "操作完成",
@@ -51,6 +52,7 @@
     "global_log_author": "作者",
     "global_log_author_email": "作者邮箱",
     "global_log_create_date": "创建日期",
+    "global_log_date": "日期",
     "global_log_category": "类别",
     "global_log_tag": "标签",
     "global_log_title": "标题",
@@ -137,6 +139,8 @@
 
     "logbook_search": "作者、标题、内容、附件",
     "logbook_log_load_error": "日志加载失败",
+    "logbook_full_display": "完整",
+    "logbook_summary_display": "摘要",
 
 
     "logbookmanagement_title": "记录本信息",

@@ -5,6 +5,7 @@
 				<div v-if="logbook" style="text-align: center; font-size: 1.8em; font-weight: bold; margin-bottom: .2em;">
 					<i class="fa fa-book" style="vertical-align: middle; color: mediumorchid;"></i>
 					<span style="vertical-align: middle; color: RGB(29,149,243); margin-left: .2em;">{{ logbook.name }}</span>
+					<Button :label="$t('logbook_full_display')" severity="info" size="small" style="float: right" outlined @click="switchToFullDisplay" />
 				</div>
 				<Toolbar class="mb-0">
 					<template #start>
@@ -251,6 +252,9 @@ export default {
 		next();
 	},
 	methods: {
+		switchToFullDisplay() {
+			this.$router.push({ name: 'logbookfull', params: { id: this.$route.params.id } });
+		},
 		fetchLogbook() {
 			if(!this.$route.params.id) {
 				console.log('Logbook id not found.');

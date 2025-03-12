@@ -83,6 +83,11 @@ const routes = [
         component: () => import('./components/Logbook.vue'),
     },
     {
+        path: '/logbookfull/:id',
+        name: 'logbookfull',
+        component: () => import('./components/LogbookFullDisplay.vue'),
+    },
+    {
         path: '/logcreate/:logbookid',
         name: 'logcreate',
         component: () => import('./components/LogCreate.vue'),
