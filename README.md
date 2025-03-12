@@ -79,6 +79,10 @@ Login page for CSNS OAuth2 authentication
 
 ![Alt text](docs/screenshots/log_preview.png?raw=true "Title")
 
+### Log full display page
+
+![Alt text](docs/screenshots/log_full_display.png?raw=true "Title")
+
 ### Log detail page
 
 ![Alt text](docs/screenshots/log_detail.png?raw=true "Title")
