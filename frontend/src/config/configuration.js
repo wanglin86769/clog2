@@ -18,6 +18,9 @@ export default {
     softwareCopyright: "Copyright © 2022 中国科学院高能物理研究所（IHEP）",
 
 
+    logAutoSave: false,
+
+
     oauthUrl: 'https://login.csns.ihep.ac.cn/oauth2/authorize',
     tokenUrl: 'https://login.csns.ihep.ac.cn/oauth2/token',
     logoutUrl: 'https://login.csns.ihep.ac.cn/logout',

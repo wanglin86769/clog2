@@ -178,7 +178,9 @@ export default {
 		// Load configuration for the rich text editor
 		this.editorConfig = this.logService.generateRichTextConfig(true);
 
-		this.intervalId = setInterval(this.logAutoSave, 10 * 60 * 1000); // 10 minutes
+		if(config.logAutoSave === true) {
+			this.intervalId = setInterval(this.logAutoSave, 10 * 60 * 1000); // 10 minutes
+		}
 
 		window.addEventListener('beforeunload', this.beforeUnloadHandler);
 	},
