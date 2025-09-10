@@ -730,8 +730,6 @@ exports.saveLog = async (req, res, next) => {
     let timeNow = new Date();
     req.body.savedAt = timeNow;
     req.body.savedBy = user.email;
-    req.body.updatedAt = timeNow;
-    req.body.updatedBy = user.email;
     req.body.lastActiveAt = timeNow;
     req.body.draft = true;
 
@@ -742,6 +740,8 @@ exports.saveLog = async (req, res, next) => {
         } else {
             req.body.createdAt = timeNow;
             req.body.createdBy = user.email;
+            req.body.updatedAt = timeNow;
+            req.body.updatedBy = user.email;
             data = await Log.create(req.body);
         }
         res.json(data)
@@ -769,8 +769,8 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
 
     let data;
     try {
-        if(req.query.append) {  // Process append request
-            let existingLog = await Log.findOne({ logbook: log.logbook, title: log.title, active: true, replyTo: null }, null, { sort: { updatedAt: -1 } });
+        let existingLog = await Log.findOne({ logbook: log.logbook, title: log.title, active: true, replyTo: null }, null, { sort: { updatedAt: -1 } });
+        if(req.query.append) {  // Process append request    
             if(existingLog) {
                 if(log.description) {
                     existingLog.createdAt = timeNow;
@@ -789,7 +789,19 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
                 data = await Log.create(log);
             }
         } else {  // Process normal create request
-            if(log._id) {  
+            if(log._id) { 
+                if(!log.editTimestamp) {
+                    return res.status(400).json({ message: 'editTimestamp is required for creation.' });
+                }
+                if(isNaN(new Date(log.editTimestamp).getTime())) {
+                    return res.status(400).json({ message: 'Invalid editTimestamp format for creation.' });
+                }
+                if(new Date(log.editTimestamp).getTime() !== existingLog.updatedAt.getTime()) {
+                    return res.status(409).json({ 
+                        message: 'Creation conflict: Log has been updated by another user or client.' 
+                    });
+                }
+
                 data = await Log.findByIdAndUpdate(log._id, { $set: log }, { new: true }); // Create the log after saving
             } else {
                 data = await Log.create(log); // Create the log directly
@@ -848,6 +860,18 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
     try {
         let currentLog = await Log.findById(req.params.logId);
         if(!currentLog) return res.status(400).json({message: "CurrentLog not found."});
+
+        if(!log.editTimestamp) {
+            return res.status(400).json({ message: 'editTimestamp is required for updates.' });
+        }
+        if(isNaN(new Date(log.editTimestamp).getTime())) {
+            return res.status(400).json({ message: 'Invalid editTimestamp format for update.' });
+        }
+        if(new Date(log.editTimestamp).getTime() !== currentLog.updatedAt.getTime()) {
+            return res.status(409).json({ 
+                message: 'Edit conflict: Log has been updated by another user or client.' 
+            });
+        }
 
         // Locate current attachments
         let date = new Date(currentLog.createdAt);

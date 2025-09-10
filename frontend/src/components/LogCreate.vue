@@ -158,6 +158,7 @@ export default {
 			intervalId: null,
 
 			submitted: false,
+			editTimestamp: null,
 		}
 	},
 
@@ -280,6 +281,11 @@ export default {
 				this.log.title = log.title;
 				this.log.description = log.description;
 				this.log.encoding = log.encoding;
+
+				// The first save
+				if(!this.editTimestamp && log.updatedAt) {
+					this.editTimestamp = log.updatedAt;
+				}
             }).catch((error) => {
                 if(error.response) {
 					this.$toast.add({ severity: 'error', summary: this.$t('logedit_saved_log_readback_error'), detail: error.response.data.message });
@@ -326,6 +332,9 @@ export default {
 			}
 
 			let loader = this.$loading.show();
+
+			// Append the log timestamp when creating
+			this.log.editTimestamp = this.editTimestamp;
 
 			let formData = new FormData();
             formData.append('log', JSON.stringify(this.log));
