@@ -70,7 +70,7 @@
 							<div v-else class="descriptionBox" >
 								{{ log.description }}
 							</div>
-							<div style="margin-top: .8em; margin-bottom: .8em; padding: 10px;">
+							<div style="margin-top: .8em; margin-bottom: .8em; padding: 10px; clear: both;">
 								<span style="font-weight: bold; margin-right: 1em;">Encoding:</span>
 								<span>{{ log.encoding ? log.encoding : 'plain' }}</span>
 							</div>
