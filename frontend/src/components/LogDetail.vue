@@ -183,7 +183,7 @@
 			</template>
 		</Dialog>
 
-		<Dialog v-model:visible="logHistoryDialog" :modal="true" class="p-fluid" :style="{width: '80vw'}">
+		<Dialog v-model:visible="logHistoryDialog" :modal="true" class="p-fluid" :style="{width: '98vw'}">
 			<template #header>
 				<div style="font-size: 1.2em; color: RGB(29,149,243);">{{ $t('global_modification_history') }}</div>
 			</template>
@@ -206,7 +206,14 @@
 					</template>
 				</Column>
 				<Column field="title" :header="$t('global_log_title')" headerStyle="width: 15%"></Column>
-				<Column field="description" :header="$t('global_log_description')" headerStyle="width: 35%"></Column>
+				<Column :header="$t('global_log_description')" headerStyle="width: 35%">
+					<template #body="slotProps">
+						<div v-if="slotProps.data.encoding === 'HTML'" v-html="slotProps.data.description" class="ck-content" style="padding: 0px" ></div>
+						<div v-else class="descriptionBox" >
+							{{ slotProps.data.description }}
+						</div>
+					</template>
+				</Column>
 				<Column field="attachments" :header="$t('global_log_attachment')" headerStyle="width: 15%">
 					<template #body="slotProps">
 						<div v-for="(item, index) in slotProps.data.attachments" :key="index">
@@ -462,7 +469,7 @@ export default {
 			if(!this.log.histories || !this.log.histories.length)  return;
 
 			this.histories = [];
-			this.histories.push(this.log);
+			// this.histories.push(this.log);
 
 			for(let i = this.log.histories.length - 1; i >= 0; i--) {
 				this.histories.push(this.log.histories[i]);

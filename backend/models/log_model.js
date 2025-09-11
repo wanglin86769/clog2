@@ -23,6 +23,7 @@ const History = new mongoose.Schema({
     title: String,
     description: String,
     attachments: [Attachment],
+    encoding: String,
 });
 
 

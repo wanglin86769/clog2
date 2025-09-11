@@ -87,6 +87,32 @@ function generateQuery(query, filters) {
 }
 
 
+/**
+ * Fixes filenames that were incorrectly decoded due to UTF-8 bytes being interpreted as Latin-1.
+ * 
+ * Common issue when browsers send UTF-8 encoded filenames but servers treat them as ISO-8859-1.
+ * 
+ * Example: "café😊.txt" might arrive as "cafÃ©ðŸ˜Š.txt" → this function restores it.
+ * 
+ * @param {string} filename - The potentially corrupted filename
+ * @returns {string} - Properly decoded UTF-8 filename
+ */
+function fixFilenameEncoding(filename) {
+    if (!filename || typeof filename !== 'string') {
+        return filename;
+    }
+
+    // Check if all characters are within Latin-1 range (\u0000 - \u00ff)
+    if (!/[^\u0000-\u00ff]/.test(filename)) {
+        // Re-interpret the string: treat it as Latin-1 bytes, then decode as UTF-8
+        return Buffer.from(filename, 'latin1').toString('utf8');
+    }
+
+    // If it contains non-Latin-1 chars, assume it's already correctly decoded
+    return filename;
+}
+
+
 exports.runScript = async (req, res, next) => {
     /**** Convert attachments from MongoDB to file system ****/
     // let logs = await Log.find();
@@ -767,6 +793,30 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
     log.lastActiveAt = timeNow;
     log.draft = false;
 
+    // Build the log histories
+    historyItem = {};
+    historyItem.createdAt = log.createdAt;
+    historyItem.createdBy = log.createdBy;
+    historyItem.updatedAt = log.updatedAt;
+    historyItem.updatedBy = log.updatedBy;
+    historyItem.logbook = log.logbook;
+    historyItem.tags = log.tags;
+    historyItem.category = log.category;
+    historyItem.title = log.title;
+    historyItem.description = log.description;
+    historyItem.encoding = log.encoding;
+
+    // History attachments construction
+    historyItem.attachments = [];
+    if(Array.isArray(req.files) && req.files.length) {
+        for(let file of req.files) {
+            const originalname = fixFilenameEncoding(file.originalname);
+            historyItem.attachments.push({ name: originalname, size: file.size, contentType: file.mimetype });
+        }
+    }
+
+    log.histories = [historyItem];
+
     let data;
     try {
         let existingLog = await Log.findOne({ logbook: log.logbook, title: log.title, active: true, replyTo: null }, null, { sort: { updatedAt: -1 } });
@@ -820,15 +870,8 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
 
             // Create attachments in the directory
             for(let file of req.files) {
-                /* 
-                 * By default, 
-                 * if all chars are latin1, then re-decoding
-                 */
-                if (!/[^\u0000-\u00ff]/.test(file.originalname)) {
-                    file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
-                }
-                
-                let fileFullPath = path.join(fileDir, file.originalname);
+                const originalname = fixFilenameEncoding(file.originalname);                
+                let fileFullPath = path.join(fileDir, originalname);
                 await fs.writeFile(fileFullPath, file.buffer, "binary");
             }
         }
@@ -881,39 +924,34 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
 
         let fileDir = path.join(attachmentdir, year.toString(), month.toString(), day.toString(), currentLog._id.toString());
 
-        let currentAttachments = [];
+        // Build the log histories
+        historyItem = {};
+        historyItem.createdAt = currentLog.createdAt;
+        historyItem.createdBy = currentLog.createdBy;
+        historyItem.updatedAt = log.updatedAt;
+        historyItem.updatedBy = log.updatedBy;
+        historyItem.logbook = log.logbook;
+        historyItem.tags = log.tags;
+        historyItem.category = log.category;
+        historyItem.title = log.title;
+        historyItem.description = log.description;
+        historyItem.encoding = log.encoding;
+        historyItem.attachments = [];
+
+        // let currentAttachments = [];
         if(fs.existsSync(fileDir)) {
             let files = await fs.readdir(fileDir);
             if(files && files.length) {
                 for (const file of files){
                     let fileFullPath = path.join(fileDir, file);
                     let stats = await fs.stat(fileFullPath);
-                    currentAttachments.push({name: file, size: stats.size, contentType: mime.getType(file)});
+                    // currentAttachments.push({name: file, size: stats.size, contentType: mime.getType(file)});
+
+                    // History attachments construction
+                    historyItem.attachments.push({ name: file, size: stats.size, contentType: mime.getType(file) });
                 }
             }
         }
-
-        // Build the log histories
-        historyItem = {};
-        historyItem.active = currentLog.active;
-        historyItem.createdAt = currentLog.createdAt;
-        historyItem.createdBy = currentLog.createdBy;
-        historyItem.updatedAt = currentLog.updatedAt;
-        historyItem.updatedBy = currentLog.updatedBy;
-        historyItem.lastActiveAt = currentLog.lastActiveAt;
-        historyItem.logbook = currentLog.logbook;
-        historyItem.tags = currentLog.tags;
-        historyItem.category = currentLog.category;
-        historyItem.title = currentLog.title;
-        historyItem.description = currentLog.description;
-        if(currentAttachments && currentAttachments.length) {
-            historyItem.attachments = currentAttachments;
-        }
-
-        let push = { histories: historyItem };
-
-        // Update the log
-        data = await Log.findByIdAndUpdate(req.params.logId, { $set: log, $push: push }, { new: true });
 
         // Reduce attachments
         let reduceAttachments = JSON.parse(req.body.reduceAttachments);
@@ -922,6 +960,12 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
             if(fs.existsSync(fileFullPath)) {
                 await fs.unlink(fileFullPath);
             }
+
+            // History attachments construction
+            const index = historyItem.attachments.findIndex(att => att.name === fileName);
+            if(index !== -1) {
+                historyItem.attachments.splice(index, 1);
+            }
         }
 
         // Increase attachments
@@ -929,18 +973,19 @@ exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, n
             await fs.mkdir(fileDir, { recursive: true });
 
             for(let file of req.files) {
-                /* 
-                 * By default, 
-                 * if all chars are latin1, then re-decoding
-                 */
-                if (!/[^\u0000-\u00ff]/.test(file.originalname)) {
-                    file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
-                }
-                
-                let fileFullPath = path.join(fileDir, file.originalname);
+                const originalname = fixFilenameEncoding(file.originalname);                
+                let fileFullPath = path.join(fileDir, originalname);
                 await fs.writeFile(fileFullPath, file.buffer, "binary");
+
+                // History attachments construction
+                historyItem.attachments.push({ name: originalname, size: file.size, contentType: file.mimetype });
             }
         }
+
+        let push = { histories: historyItem };
+
+        // Update the log
+        data = await Log.findByIdAndUpdate(req.params.logId, { $set: log, $push: push }, { new: true });
 
         res.json(data);
     } catch(error) {
@@ -1036,23 +1081,15 @@ exports.createRichTextImage = [upload.single('upload'), async (req, res, next) =
     await fs.mkdir(fileDir, { recursive: true });
 
     /* Create the image in the directory */
-
-    /* 
-     * By default, 
-     * if all chars are latin1, then re-decoding
-     */
-    if (!/[^\u0000-\u00ff]/.test(file.originalname)) {
-        file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
-    }
-    
-    let fileFullPath = path.join(fileDir, file.originalname);
+    const originalname = fixFilenameEncoding(file.originalname);
+    let fileFullPath = path.join(fileDir, originalname);
     let fileName;
     if(fs.existsSync(fileFullPath)) { // If filename already exists, append timestamp to avoid duplication
-        let name = file.originalname.substring(0, file.originalname.lastIndexOf('.'));
-        let extension = file.originalname.substring(file.originalname.lastIndexOf('.') + 1);
+        let name = originalname.substring(0, originalname.lastIndexOf('.'));
+        let extension = originalname.substring(originalname.lastIndexOf('.') + 1);
         fileName = `${name}_${String(Date.now())}.${extension}`;
     } else {
-        fileName = file.originalname;
+        fileName = originalname;
     }
     
     fileFullPath = path.join(fileDir, fileName);
