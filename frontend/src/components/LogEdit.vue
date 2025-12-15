@@ -42,10 +42,16 @@
 								<Textarea v-model="log.description" :placeholder="$t('global_log_description_placeholder')" :autoResize="true" rows="10" style="width: 100%;" />
 							</div>
 							<div style="margin-top: .8em;">
-								<span style="font-weight: bold; margin-right: 1em;">Encoding:</span>
-								<span v-for="(item, index) in encodings" :key="index">
-									<RadioButton v-model="log.encoding" :inputId="item" :value="item" />
-									<label :for="item" class="ml-2">{{ item }}</label>
+								<span>
+									<span style="font-weight: bold; margin-right: 1em;">Encoding:</span>
+									<span v-for="(item, index) in encodings" :key="index">
+										<RadioButton v-model="log.encoding" :inputId="item" :value="item" />
+										<label :for="item" class="ml-2">{{ item }}</label>
+									</span>
+								</span>
+								<span style="margin-left: 4em">
+									<Checkbox v-model="log.pinned" :binary="true" inputId="pinned" />
+									<label for="pinned" class="ml-2" style="font-weight: bold; user-select: none;">{{ $t('global_log_pinned') }}</label>
 								</span>
 							</div>
 						</td>
@@ -207,6 +213,7 @@ export default {
 				this.log.title = log.title;
 				this.log.description = log.description;
 				this.log.encoding = log.encoding;
+				this.log.pinned = log.pinned;
 				// console.log(this.log);
 
 				// Fetch tags for the logbook
@@ -252,6 +259,7 @@ export default {
 				this.log.title = log.title;
 				this.log.description = log.description;
 				this.log.encoding = log.encoding;
+				this.log.pinned = log.pinned;
             }).catch((error) => {
                 if(error.response) {
 					this.$toast.add({ severity: 'error', summary: this.$t('logedit_saved_log_readback_error'), detail: error.response.data.message });

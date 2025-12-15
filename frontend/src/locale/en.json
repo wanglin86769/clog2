@@ -62,6 +62,7 @@
     "global_log_description_placeholder": "Please enter the log content",
     "global_log_discard_edit_prompt": "Are you sure you want to abandon editing the current log?",
     "global_log_last_update": "Last Update",
+    "global_log_pinned": "Pinned",
     "global_keyword": "Keyword",
     "global_select": "Select",
     "global_grouping": "Grouping",

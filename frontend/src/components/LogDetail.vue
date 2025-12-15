@@ -16,7 +16,8 @@
                 <!-- {{ $t('logdetail_title') }} -->
 				<span style="vertical-align: middle;">{{ log.title }}</span>
 				<Badge v-if="log.draft===true" value="Draft" severity="warning" size="large" rounded style="vertical-align: middle; background-color: RGB(255, 208, 208); margin-left: 1em;"></Badge>
-            </template>
+				<Badge v-if="log.pinned === true" :value="$t('global_log_pinned')" severity="success" size="large" rounded style="vertical-align: middle; background-color: #e8f5e9; color: #2e7d32; margin-left: 1em;"></Badge>
+			</template>
             <template #subtitle>
 				<span v-if="log && log.updatedBy && log.updatedAt" v-tooltip="{ value: creator, disabled: !showCreator }">
 					<span style="margin-right: 10px">

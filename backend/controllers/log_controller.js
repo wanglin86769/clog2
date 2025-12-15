@@ -153,6 +153,7 @@ function generateSort(sort, sortField, sortOrder) {
         sort[sortField] = sortOrder;
     }
 
+    if(!sort['pinned'])  sort['pinned'] = -1;
     if(!sort['draft'])  sort['draft'] = -1;
     if(!sort['createdAt'])  sort['createdAt'] = -1;
 }

@@ -130,6 +130,7 @@
 						</template>
 						<template #body="slotProps">
 							<span class="logdetail-link" @click="onDetailClick(slotProps.data)">{{ slotProps.data.title }}</span>
+							<Badge v-if="slotProps.data.pinned" :value="$t('global_log_pinned')" severity="success" size="small" style="vertical-align: middle; margin-left: 0.5em; background-color: #e8f5e9; color: #2e7d32; border: 1px solid #4caf50;"/>
 							<!-- <i v-if="slotProps.data.histories && slotProps.data.histories.length" style="color: orange; margin-left: .2em;" class="fa fa-clock-o fa-lg" v-tooltip.top="$t('global_modification_history')"></i> -->
 						</template>
 					</Column>
@@ -435,6 +436,10 @@ export default {
 				return 'draft-row';
 			}
 
+			if(data.pinned) {
+				return 'pinned-row';
+			}
+
 			if(data.updatedAt) {
 				let updatedAt = new Date(data.updatedAt);
 				if (updatedAt.getTime() > dateNow.getTime() - 3 * 60 * 1000) 
@@ -480,4 +485,8 @@ export default {
 	:deep(.draft-row) {
 		background-color: RGB(255, 208, 208) !important;
 	}
+
+	:deep(.pinned-row) {
+	background-color: #f1f8e9 !important;
+}
 </style>
