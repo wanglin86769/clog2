@@ -111,6 +111,54 @@ async function loggedInRichText(req, res, next) {
 }
 
 
+async function canSaveLog(req, res, next) {
+    let user = req.headers['user'];
+    if (!user) {
+        return res.status(401).json({ message: 'No user information was found.' });
+    }
+
+    const logId = req.body?._id;
+    if (logId) {
+        const log = await Log.findById(logId);
+        if (!log) {
+            return res.status(401).json({ message: 'No log with specified id was found.' });
+        }
+
+        // Clog admin can save
+        if (user.admin === true) {
+            return next();
+        }
+
+        // Log author can save
+        if (log.createdBy === user.email) {
+            return next();
+        }
+
+        // If sharedEditing is enabled, anyone can save
+        if (log.sharedEditing === true) {
+            return next();
+        }
+
+        // Logbook admin can save
+        const logbookId = log.logbook;
+        const logbook = await Logbook.findById(logbookId);
+        if (logbook) {
+            const admins = logbook.admins;
+            if (admins && admins.includes(user.email)) {
+                return next();
+            }
+        }
+
+        return res.status(401).json({
+            message: 'Insufficient permission, only log author, Clog admin and logbook admin can save this log.'
+        });
+    } else {
+        // New draft
+        return next();
+    }
+}
+
+
 async function canEditLog(req, res, next) {
     let user = req.headers['user'];
     if(!user) {
@@ -265,6 +313,7 @@ function getUserFromRequest(req) {
 module.exports = {
     loggedIn,
     loggedInRichText,
+    canSaveLog,
     canEditLog,
     canDeleteLog,
     canEditTemplate,

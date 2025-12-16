@@ -32,7 +32,7 @@ router.get('/replies/:logId', logs.findLogReplies);
 router.post('/', authorize.loggedIn, logs.createLogFormData);
 
 // Save a log
-router.post('/save', authorize.loggedIn, logs.saveLog);
+router.post('/save', authorize.loggedIn, authorize.canSaveLog, logs.saveLog);
 
 // Get single log
 router.get('/:logId', logs.findLog);
