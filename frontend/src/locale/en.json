@@ -63,6 +63,7 @@
     "global_log_discard_edit_prompt": "Are you sure you want to abandon editing the current log?",
     "global_log_last_update": "Last Update",
     "global_log_pinned": "Pinned",
+    "global_log_shared_editing": "Shared",
     "global_keyword": "Keyword",
     "global_select": "Select",
     "global_grouping": "Grouping",

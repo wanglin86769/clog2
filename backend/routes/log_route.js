@@ -41,7 +41,7 @@ router.get('/:logId', logs.findLog);
 router.put('/:logId', authorize.loggedIn, authorize.canEditLog, logs.updateLogFormData);
 
 // Delete a log
-router.delete('/:logId', authorize.loggedIn, authorize.canEditLog, logs.deleteLog);
+router.delete('/:logId', authorize.loggedIn, authorize.canDeleteLog, logs.deleteLog);
 
 // Get single attachment
 router.get('/attachments/:logId/:fileName', logs.findAttachment);

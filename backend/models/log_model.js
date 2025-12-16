@@ -98,6 +98,10 @@ let LogSchema = new Schema({
         type: Boolean,
         default: false
     },
+    sharedEditing: {
+        type: Boolean,
+        default: false
+    },
     // Attachments are stored in file system
     // attachments: {
     //     type: [Attachment],

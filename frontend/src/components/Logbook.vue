@@ -131,6 +131,7 @@
 						<template #body="slotProps">
 							<span class="logdetail-link" @click="onDetailClick(slotProps.data)">{{ slotProps.data.title }}</span>
 							<Badge v-if="slotProps.data.pinned" :value="$t('global_log_pinned')" severity="success" size="small" style="vertical-align: middle; margin-left: 0.5em; background-color: #e8f5e9; color: #2e7d32; border: 1px solid #4caf50;"/>
+							<Badge v-if="slotProps.data.sharedEditing" :value="$t('global_log_shared_editing')" severity="info" size="small" style="vertical-align: middle; margin-left: 0.5em; background-color: #e3f2fd; color: #1976d2; border: 1px solid #90caf9;"/>
 							<!-- <i v-if="slotProps.data.histories && slotProps.data.histories.length" style="color: orange; margin-left: .2em;" class="fa fa-clock-o fa-lg" v-tooltip.top="$t('global_modification_history')"></i> -->
 						</template>
 					</Column>

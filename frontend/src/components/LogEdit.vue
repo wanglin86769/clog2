@@ -53,6 +53,10 @@
 									<Checkbox v-model="log.pinned" :binary="true" inputId="pinned" />
 									<label for="pinned" class="ml-2" style="font-weight: bold; user-select: none;">{{ $t('global_log_pinned') }}</label>
 								</span>
+								<span style="margin-left: 4em">
+									<Checkbox v-model="log.sharedEditing" :binary="true" inputId="sharedEditing" />
+									<label for="sharedEditing" class="ml-2" style="font-weight: bold; user-select: none;">{{ $t('global_log_shared_editing') }}</label>
+								</span>
 							</div>
 						</td>
                     </tr>
@@ -214,6 +218,7 @@ export default {
 				this.log.description = log.description;
 				this.log.encoding = log.encoding;
 				this.log.pinned = log.pinned;
+				this.log.sharedEditing = log.sharedEditing;
 				// console.log(this.log);
 
 				// Fetch tags for the logbook
@@ -260,6 +265,7 @@ export default {
 				this.log.description = log.description;
 				this.log.encoding = log.encoding;
 				this.log.pinned = log.pinned;
+				this.log.sharedEditing = log.sharedEditing;
             }).catch((error) => {
                 if(error.response) {
 					this.$toast.add({ severity: 'error', summary: this.$t('logedit_saved_log_readback_error'), detail: error.response.data.message });

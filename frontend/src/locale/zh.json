@@ -63,6 +63,7 @@
     "global_log_discard_edit_prompt": "确定要放弃编辑当前日志吗?",
     "global_log_last_update": "最后更新",
     "global_log_pinned": "置顶",
+    "global_log_shared_editing": "共享",
     "global_keyword": "关键词",
     "global_select": "请选择",
     "global_grouping": "分组",

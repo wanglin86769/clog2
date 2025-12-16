@@ -132,6 +132,11 @@ async function canEditLog(req, res, next) {
         return next();
     }
 
+    // If sharedEditing is enabled, anyone can edit
+    if (log.sharedEditing === true) {
+        return next();
+    }
+
     // Log author can edit the log
     if(log.createdBy === user.email) {
         return next();
@@ -148,7 +153,48 @@ async function canEditLog(req, res, next) {
     }
 
     // authentication and authorization unsuccessful
-    return res.status(401).json({ message: 'Insufficient permission, only log author, Clog admin and logbook admin can edit / delete the log.' });
+    return res.status(401).json({ message: 'Insufficient permission, only log author, Clog admin and logbook admin can edit the log.' });
+}
+
+
+async function canDeleteLog(req, res, next) {
+    let user = req.headers['user'];
+    if(!user) {
+        return res.status(401).json({ message: 'No user information was found.' });
+    }
+
+    let logId = req.params.logId;
+    if(!logId) {
+        return res.status(401).json({ message: 'Cannot extract log id.' });
+    }
+
+    let log = await Log.findById(logId);
+    if(!log) {
+        return res.status(401).json({ message: 'No log with specified id was found.' });
+    }
+
+    // Clog admin can edit the log
+    if(user.admin === true) {
+        return next();
+    }
+
+    // Log author can edit the log
+    if(log.createdBy === user.email) {
+        return next();
+    }
+
+    // Logbook admin can edit the log
+    let logbookId = log.logbook;
+    let logbook = await Logbook.findById(logbookId);
+    if(logbook) {
+        let admins = logbook.admins;
+        if(admins && admins.includes(user.email)) {
+            return next();
+        }
+    }
+
+    // authentication and authorization unsuccessful
+    return res.status(401).json({ message: 'Insufficient permission, only log author, Clog admin and logbook admin can delete the log.' });
 }
 
 
@@ -220,6 +266,7 @@ module.exports = {
     loggedIn,
     loggedInRichText,
     canEditLog,
+    canDeleteLog,
     canEditTemplate,
     admin,
     getUserFromRequest,

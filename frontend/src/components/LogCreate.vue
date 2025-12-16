@@ -61,6 +61,10 @@
 									<Checkbox v-model="log.pinned" :binary="true" inputId="pinned" />
 									<label for="pinned" class="ml-2" style="font-weight: bold; user-select: none;">{{ $t('global_log_pinned') }}</label>
 								</span>
+								<span style="margin-left: 4em">
+									<Checkbox v-model="log.sharedEditing" :binary="true" inputId="sharedEditing" />
+									<label for="sharedEditing" class="ml-2" style="font-weight: bold; user-select: none;">{{ $t('global_log_shared_editing') }}</label>
+								</span>
 							</div>
 						</td>
                     </tr>

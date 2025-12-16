@@ -2,7 +2,7 @@
 	<div style="margin-left: 1%; margin-right: 1%; margin-top: 20px;">
 		<Button :label="$t('global_go_back')" icon="fa fa-arrow-left" class="p-button-help" style="margin-right: 15px" @click="onReturnClick" />
 		<Button :label="$t('global_edit')" icon="fa fa-pencil" class="p-button-warning" style="margin-right: 15px" @click="onEditClick" :disabled="!canEditLog" />
-		<Button :label="$t('global_delete')" icon="fa fa-trash" class="p-button-danger" style="margin-right: 15px" @click="onDeleteClick" :disabled="!canEditLog" />
+		<Button :label="$t('global_delete')" icon="fa fa-trash" class="p-button-danger" style="margin-right: 15px" @click="onDeleteClick" :disabled="!canDeleteLog" />
 		<Button :label="$t('global_reply')" icon="fa fa-mail-reply" class="p-button-success" style="margin-right: 15px" @click="onReplyClick" />
 		<Button :label="$t('global_history')" icon="fa fa-info" class="p-button-info" @click="onHistoryClick" :disabled="!log.histories || !log.histories.length" />
 		
@@ -531,6 +531,25 @@ export default {
 			return this.$store.state.authentication.user && this.$store.state.authentication.user.admin === true;
         },
 		canEditLog() {
+			// Clog admin can edit the log
+			if(this.isAdmin) {
+				return true;
+			}
+			// If sharedEditing is enabled, anyone can edit
+			if (this.log && this.log.sharedEditing === true) {
+				return true;
+			}
+			// Log author can edit the log
+			if(this.log && this.log.createdBy && this.userInfo && this.log.createdBy.email === this.userInfo.email) {
+				return true;
+			}
+			// Logbook admin can edit the log
+			if(this.log && this.log.logbook && this.log.logbook.admins && this.userInfo && this.log.logbook.admins.includes(this.userInfo.email)) {
+				return true;
+			}
+			return false;
+		},
+		canDeleteLog() {
 			// Clog admin can edit the log
 			if(this.isAdmin) {
 				return true;
