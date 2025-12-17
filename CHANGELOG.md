@@ -2,6 +2,19 @@
 
 ### v2.0
 
+#### v2.2.2
+
+- Show confirmation popup when leaving log create or log edit page
+- Add first, last, previous and next buttons on log detail page
+- Add log reply function
+- Add log full display page
+- Config vite to listen on all network interfaces
+- Add conflict check for log update
+- Make log auto save configurable and default to false
+- Adjust log history saving and display strategy
+- Add pin-to-top function for logs
+- Add shared editing function for logs
+
 #### v2.2.1
 
 - Add font color plugin to ckeditor

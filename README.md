@@ -4,9 +4,10 @@
 
 ## Significant change
 
-* From v2.1.0, attachment storage is moved from MongoDB to file system due to 16MB limitation and performance issue
-* The attachment directory is `/srv/clog2`
-* The attachment directory is migrated to `/srv/clog2/attachments`
+* From v2.1.0, attachment storage is moved from MongoDB to file system due to 16MB limitation and performance issue, and the attachment directory is `/srv/clog2`.
+* From v2.2.0, rich text is supported and the attachment directory is migrated to `/srv/clog2/attachments`.
+* From v2.2.2, pin-to-top function is supported and the database needs to be migrated with the following MongoDB shell command,
+`db.log.updateMany({ pinned: { $exists: false } }, { $set: { pinned: false } })`
 
 ## Features
 
