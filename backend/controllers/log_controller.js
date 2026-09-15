@@ -778,7 +778,7 @@ exports.saveLog = async (req, res, next) => {
 }
 
 
-exports.createLogFormData = [upload.array('attachments', 20), async (req, res, next) => {
+exports.createLogFormData = [upload.array('attachments', 100), async (req, res, next) => {
     let user = req.headers['user'];
     if(!user) return res.status(500).json({message: 'No user information is extracted.'});
 
@@ -888,7 +888,7 @@ exports.createLogFormData = [upload.array('attachments', 20), async (req, res, n
 }];
 
 
-exports.updateLogFormData = [upload.array('attachments', 20), async (req, res, next) => {
+exports.updateLogFormData = [upload.array('attachments', 100), async (req, res, next) => {
     let user = req.headers['user'];
     if(!user) return res.status(500).json({message: 'No user information is extracted.'});
 
