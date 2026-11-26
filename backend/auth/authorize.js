@@ -290,6 +290,36 @@ function admin(req, res, next) {
 }
 
 
+async function canExportLogs(req, res, next) {
+    let user = req.headers['user'];
+    if(!user) {
+        return res.status(401).json({ message: 'No user information was found.' });
+    }
+
+    // Clog admin can export
+    if(user.admin === true) {
+        return next();
+    }
+
+    let logbookId = req.query.logbook;
+    if(!logbookId) {
+        return res.status(401).json({ message: 'Logbook is not specified.' });
+    }
+
+    let logbook = await Logbook.findById(logbookId);
+    if(!logbook) {
+        return res.status(401).json({ message: 'The specified logbook cannot be found.' });
+    }
+
+    // Logbook admin can export
+    if(logbook.admins && logbook.admins.includes(user.email)) {
+        return next();
+    }
+
+    return res.status(403).json({ message: 'Insufficient permission, only Clog admin and logbook admin can export logs.' });
+}
+
+
 function getUserFromRequest(req) {
     let authHeader = req.headers['authorization'];
     if(!authHeader)  return null;
@@ -317,6 +347,7 @@ module.exports = {
     canEditLog,
     canDeleteLog,
     canEditTemplate,
+    canExportLogs,
     admin,
     getUserFromRequest,
 }

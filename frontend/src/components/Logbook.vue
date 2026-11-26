@@ -11,6 +11,8 @@
 					<template #start>
 						<Button :label="$t('global_go_back')" icon="fa fa-arrow-left" class="p-button-help" style="margin-right: 15px" @click="onReturnClick" />
 						<Button :label="$t('global_new')" icon="pi pi-plus" class="p-button-primary" style="margin-right: 10px" @click="onNewClick" :disabled="!userInfo" />
+						<Button v-if="canExport" :label="$t('logbook_export')" icon="pi pi-download" class="p-button-warning" style="margin-right: 10px" :loading="exporting" @click="toggleExportMenu" />
+						<Menu ref="exportMenu" :model="exportMenuItems" :popup="true" />
 					</template>
 
 					<template #end>
@@ -194,6 +196,7 @@ import TagService from '../service/TagService';
 import LogService from '../service/LogService';
 // const dateFormat = require('dateformat');
 import dateFormat from "dateformat";
+import fileDownload from 'js-file-download';
 import config from '@/config/configuration.js';
 
 export default {
@@ -202,6 +205,7 @@ export default {
 			lazyParams: {},
 			totalRecords: 0,
 			loading: false,
+			exporting: false,
 			currentPageFirstIndex: 0,
 
 			tags: [],
@@ -392,6 +396,48 @@ export default {
 		toggleSearch(event) {
             this.$refs.search.toggle(event);
         },
+		toggleExportMenu(event) {
+			this.$refs.exportMenu.toggle(event);
+		},
+		async onExport(format) {
+			if (!this.canExport) {
+				this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: this.$t('logbook_export_no_permission') });
+				return;
+			}
+
+			const exportOptions = {
+				filters: this.filters && Object.keys(this.filters).length ? this.filters : null,
+				sortField: this.lazyParams.sortField,
+				sortOrder: this.lazyParams.sortOrder
+			};
+
+			this.exporting = true;
+			try {
+				const result = await this.logService.exportLogs(this.$route.params.id, exportOptions, format);
+				fileDownload(result.blob, result.filename);
+				this.$toast.add({ severity: 'success', summary: this.$t('global_success'), detail: this.$t('logbook_export_success') });
+			} catch (error) {
+				let detail = this.$t('logbook_export_error');
+				if (error.response) {
+					if (error.response.status === 403 || error.response.status === 401) {
+						detail = this.$t('logbook_export_no_permission');
+					} else if (error.response.data) {
+						try {
+							const text = await error.response.data.text();
+							const parsed = JSON.parse(text);
+							if (parsed && parsed.message) detail = parsed.message;
+						} catch (e) {
+							// keep default detail
+						}
+					}
+				} else if (error.message) {
+					detail = error.message;
+				}
+				this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail });
+			} finally {
+				this.exporting = false;
+			}
+		},
 		debounce(func, timeout = 500){
 			if(this.debounceTimer) {
 				clearTimeout(this.debounceTimer);
@@ -462,6 +508,31 @@ export default {
 	computed: {
         userInfo() {
             return this.$store.state.authentication.user;
+		},
+		isAdmin() {
+			return this.userInfo && this.userInfo.admin === true;
+		},
+		canExport() {
+			if (!this.userInfo) return false;
+			if (this.isAdmin) return true;
+			if (this.logbook && this.logbook.admins && this.logbook.admins.includes(this.userInfo.email)) {
+				return true;
+			}
+			return false;
+		},
+		exportMenuItems() {
+			return [
+				{
+					label: this.$t('logbook_export_excel'),
+					icon: 'pi pi-file-excel',
+					command: () => this.onExport('xlsx')
+				},
+				{
+					label: this.$t('logbook_export_word'),
+					icon: 'pi pi-file-word',
+					command: () => this.onExport('docx')
+				}
+			];
 		},
     },
 	watch: {

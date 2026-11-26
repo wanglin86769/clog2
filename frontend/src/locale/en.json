@@ -137,12 +137,23 @@
     "home_last_submit": "Last Submission",
     "home_default_group": "Default Group",
     "home_logbook_load_error": "Fail to load logbook information",
+    "home_export_all_excel": "Export All Excel",
+    "home_export_all_word": "Export All Word",
+    "home_export_all_success": "Export succeeded",
+    "home_export_all_error": "Export failed",
+    "home_export_all_no_permission": "Only Clog admins can export all logs",
 
 
     "logbook_search": "Keyword",
     "logbook_log_load_error": "Fail to load logs",
     "logbook_full_display": "Full",
     "logbook_summary_display": "Summary",
+    "logbook_export": "Export",
+    "logbook_export_excel": "Export Excel",
+    "logbook_export_word": "Export Word",
+    "logbook_export_success": "Export succeeded",
+    "logbook_export_error": "Export failed",
+    "logbook_export_no_permission": "Only logbook admins and Clog admins can export",
 
 
     "logbookmanagement_title": "Logbook Management",

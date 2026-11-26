@@ -47,6 +47,53 @@ export default class LogService {
 		return axios.get(url, {headers: authenticationService.authHeader(), params: {logbook: logbook, lazyEvent: JSON.stringify(lazyParams)}}).then(res => res.data);
 	}
 
+	exportLogs(logbook, options, format) {
+		let url = `${config.serverPath}/logs/export`;
+		const params = {
+			logbook: logbook,
+			format: format
+		};
+		if (options && options.filters && Object.keys(options.filters).length) {
+			params.filters = JSON.stringify(options.filters);
+		}
+		if (options && options.sortField && (options.sortOrder === 1 || options.sortOrder === -1)) {
+			params.sortField = options.sortField;
+			params.sortOrder = options.sortOrder;
+		}
+		return axios.get(url, {
+			headers: authenticationService.authHeader(),
+			params: params,
+			responseType: 'blob',
+			timeout: 0
+		}).then(res => {
+			const ext = format === 'docx' ? 'docx' : 'xlsx';
+			const now = new Date();
+			const yyyy = now.getFullYear();
+			const mm = String(now.getMonth() + 1).padStart(2, '0');
+			const dd = String(now.getDate()).padStart(2, '0');
+			const filename = `clog_export_${yyyy}-${mm}-${dd}.${ext}`;
+			return { blob: res.data, filename };
+		});
+	}
+
+	exportAllLogs(format) {
+		let url = `${config.serverPath}/logs/export-all`;
+		return axios.get(url, {
+			headers: authenticationService.authHeader(),
+			params: { format: format },
+			responseType: 'blob',
+			timeout: 0
+		}).then(res => {
+			const ext = format === 'docx' ? 'docx' : 'xlsx';
+			const now = new Date();
+			const yyyy = now.getFullYear();
+			const mm = String(now.getMonth() + 1).padStart(2, '0');
+			const dd = String(now.getDate()).padStart(2, '0');
+			const filename = `clog_export_all_${yyyy}-${mm}-${dd}.${ext}`;
+			return { blob: res.data, filename };
+		});
+	}
+
 	findLogReplies(_id) {
 		let url = `${config.serverPath}/logs/replies/${_id}`;
 		return axios.get(url, {headers: authenticationService.authHeader()}).then(res => res.data);

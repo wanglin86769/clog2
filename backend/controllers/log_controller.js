@@ -8,8 +8,10 @@ const fs = require('fs-extra');
 const mime = require('mime');
 const authorize = require('../auth/authorize.js');
 const Logbook = require('../models/logbook_model.js');
+const Group = require('../models/group_model.js');
 const notifier = require('../helpers/notifier.js');
 const backendConfig = require('../config/backend.js');
+const logExport = require('../helpers/log_export.js');
 const rootdir = path.normalize(require('../config/attachment').rootdir);
 const attachmentdir = path.join(rootdir, require('../config/attachment').attachments_path);
 const richtextdir = path.join(rootdir, require('../config/attachment').rich_text_images_path);
@@ -388,6 +390,230 @@ exports.findLogs = async (req, res, next) => {
         res.json(finalData);
     } catch(error) {
         res.status(500).json({message: error.message})
+    }
+}
+
+
+exports.exportLogs = async (req, res, next) => {
+    if(!req.query.logbook) {
+        return res.status(401).json({ message: 'Logbook is not specified.' });
+    }
+
+    const format = (req.query.format || 'xlsx').toLowerCase();
+    if(format !== 'xlsx' && format !== 'docx') {
+        return res.status(400).json({ message: 'Unsupported export format.' });
+    }
+
+    let logbookDoc = await Logbook.findById(req.query.logbook);
+    if(!logbookDoc) {
+        return res.status(401).json({ message: 'The specified logbook cannot be found.' });
+    }
+
+    // If the logbook is private, check if the current user have sufficient permission.
+    if(logbookDoc.members && logbookDoc.members.length) {
+        let u = req.headers['user'] || authorize.getUserFromRequest(req);
+        if(!u || !(u.admin || (logbookDoc.admins && logbookDoc.admins.includes(u.email)) || logbookDoc.members.includes(u.email))) {
+            return res.status(403).json({ message: 'Permission denied.' });
+        }
+    }
+
+    let filters = null;
+    if(req.query.filters) {
+        try {
+            filters = JSON.parse(req.query.filters);
+        } catch (error) {
+            return res.status(400).json({ message: 'Invalid filters parameter.' });
+        }
+    }
+
+    let logbook = req.query.logbook;
+    let sortField = req.query.sortField || null;
+    let sortOrder = Number(req.query.sortOrder);
+    if(sortOrder !== 1 && sortOrder !== -1) {
+        sortField = null;
+        sortOrder = null;
+    }
+
+    // Export current filter results only: active top-level logs, exclude drafts and replies
+    let query = {
+        active: true,
+        replyTo: null,
+        draft: { $ne: true },
+        logbook: new mongoose.Types.ObjectId(logbook)
+    };
+    generateQuery(query, filters);
+
+    let sort = {};
+    generateSort(sort, sortField, sortOrder);
+
+    let pipeline = [
+        {
+            $lookup: {
+                from:"user",
+                localField: "createdBy",
+                foreignField: "email",
+                as: "createdBy"
+            }
+        },
+        {
+            $unwind: {
+                path: '$createdBy',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $match: query
+        },
+        {
+            $sort: sort
+        },
+        {
+            $lookup: {
+                from:"tag",
+                localField: "tags",
+                foreignField: "_id",
+                as: "tags"
+            }
+        },
+        {
+            $project: {
+                'attachments': 0,
+                'histories': 0
+            }
+        }
+    ];
+
+    try {
+        let results = await Log.aggregate(pipeline);
+        if(!results) results = [];
+
+        for(let log of results) {
+            log.attachments = await logExport.loadAttachmentNames(attachmentdir, log);
+        }
+
+        const filename = logExport.buildExportFilename(format);
+
+        if(format === 'docx') {
+            await logExport.writeWord(res, results, filename, logbookDoc.name);
+        } else {
+            await logExport.writeExcel(res, results, filename);
+        }
+    } catch(error) {
+        console.log(error);
+        if(!res.headersSent) {
+            res.status(500).json({message: error.message});
+        }
+    }
+}
+
+
+async function loadLogsForExport(logbookId) {
+    let query = {
+        active: true,
+        replyTo: null,
+        draft: { $ne: true },
+        logbook: new mongoose.Types.ObjectId(logbookId)
+    };
+
+    let sort = {};
+    generateSort(sort, null, null);
+
+    let pipeline = [
+        {
+            $lookup: {
+                from: 'user',
+                localField: 'createdBy',
+                foreignField: 'email',
+                as: 'createdBy'
+            }
+        },
+        {
+            $unwind: {
+                path: '$createdBy',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $match: query
+        },
+        {
+            $sort: sort
+        },
+        {
+            $lookup: {
+                from: 'tag',
+                localField: 'tags',
+                foreignField: '_id',
+                as: 'tags'
+            }
+        },
+        {
+            $project: {
+                attachments: 0,
+                histories: 0
+            }
+        }
+    ];
+
+    let results = await Log.aggregate(pipeline);
+    if (!results) results = [];
+
+    for (let log of results) {
+        log.attachments = await logExport.loadAttachmentNames(attachmentdir, log);
+    }
+
+    return results;
+}
+
+
+async function listAllLogbooksForExport() {
+    let sort = { number: 1 };
+    let ordered = [];
+
+    let groups = await Group.find().sort(sort);
+    for (let group of groups) {
+        let logbooks = await Logbook.find({ group: group._id }).sort(sort);
+        ordered.push(...logbooks);
+    }
+
+    let ungrouped = await Logbook.find({
+        $or: [{ group: null }, { group: { $exists: false } }]
+    }).sort(sort);
+    ordered.push(...ungrouped);
+
+    return ordered;
+}
+
+
+exports.exportAllLogs = async (req, res, next) => {
+    const format = (req.query.format || 'xlsx').toLowerCase();
+    if (format !== 'xlsx' && format !== 'docx') {
+        return res.status(400).json({ message: 'Unsupported export format.' });
+    }
+
+    try {
+        let logbooks = await listAllLogbooksForExport();
+        let sections = [];
+
+        for (let logbook of logbooks) {
+            let logs = await loadLogsForExport(logbook._id);
+            sections.push({
+                name: logbook.name,
+                logs
+            });
+        }
+
+        const filename = logExport.buildExportAllFilename(format);
+        if (format === 'docx') {
+            await logExport.writeWordAll(res, sections, filename);
+        } else {
+            await logExport.writeExcelAll(res, sections, filename);
+        }
+    } catch (error) {
+        console.log(error);
+        if (!res.headersSent) {
+            res.status(500).json({ message: error.message });
+        }
     }
 }
 

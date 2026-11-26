@@ -137,12 +137,23 @@
     "home_last_submit": "最后提交",
     "home_default_group": "默认分组",
     "home_logbook_load_error": "记录本信息加载失败",
+    "home_export_all_excel": "导出全部 Excel",
+    "home_export_all_word": "导出全部 Word",
+    "home_export_all_success": "导出成功",
+    "home_export_all_error": "导出失败",
+    "home_export_all_no_permission": "仅系统管理员可导出全部日志",
 
 
     "logbook_search": "作者、标题、内容、附件",
     "logbook_log_load_error": "日志加载失败",
     "logbook_full_display": "完整",
     "logbook_summary_display": "摘要",
+    "logbook_export": "导出",
+    "logbook_export_excel": "导出 Excel",
+    "logbook_export_word": "导出 Word",
+    "logbook_export_success": "导出成功",
+    "logbook_export_error": "导出失败",
+    "logbook_export_no_permission": "仅记录本管理员和系统管理员可导出",
 
 
     "logbookmanagement_title": "记录本信息",

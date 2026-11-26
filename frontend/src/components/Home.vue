@@ -37,6 +37,10 @@
 							<th style="text-align: left;"><span style="margin-left: 1em; color: orange;">{{ $t('global_no_data') }}</span></th>
 						</tr>
 					</table>
+					<div v-if="isAdmin" style="margin-top: 1.2em; text-align: center;">
+						<Button :label="$t('home_export_all_excel')" icon="pi pi-file-excel" class="p-button-warning" style="margin-right: 10px" :loading="exporting" :disabled="exporting" @click="onExportAll('xlsx')" />
+						<Button :label="$t('home_export_all_word')" icon="pi pi-file-word" class="p-button-warning" :loading="exporting" :disabled="exporting" @click="onExportAll('docx')" />
+					</div>
 				</div>
 			</div>
 		</div>
@@ -45,17 +49,22 @@
 
 <script>
 import LogbookService from '@/service/LogbookService';
+import LogService from '@/service/LogService';
 import dateFormat from "dateformat";
+import fileDownload from 'js-file-download';
 
 export default {
 	data() {
 		return {
 			groups: [],
+			exporting: false,
 		}
 	},
 	logbookService: null,
+	logService: null,
 	created() {
 		this.logbookService = new LogbookService();
+		this.logService = new LogService();
 	},
 	mounted() {
 		this.loadData();
@@ -100,9 +109,50 @@ export default {
         showTime(value) {
             return dateFormat(value, "HH:MM");
         },
-        showDateTime(value) {
+		showDateTime(value) {
             return dateFormat(value, "yyyy-mm-dd HH:MM");
         },
+		async onExportAll(format) {
+			if (!this.isAdmin) {
+				this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail: this.$t('home_export_all_no_permission') });
+				return;
+			}
+
+			this.exporting = true;
+			try {
+				const result = await this.logService.exportAllLogs(format);
+				fileDownload(result.blob, result.filename);
+				this.$toast.add({ severity: 'success', summary: this.$t('global_success'), detail: this.$t('home_export_all_success') });
+			} catch (error) {
+				let detail = this.$t('home_export_all_error');
+				if (error.response) {
+					if (error.response.status === 403 || error.response.status === 401) {
+						detail = this.$t('home_export_all_no_permission');
+					} else if (error.response.data) {
+						try {
+							const text = await error.response.data.text();
+							const parsed = JSON.parse(text);
+							if (parsed && parsed.message) detail = parsed.message;
+						} catch (e) {
+							// keep default detail
+						}
+					}
+				} else if (error.message) {
+					detail = error.message;
+				}
+				this.$toast.add({ severity: 'error', summary: this.$t('global_fail'), detail });
+			} finally {
+				this.exporting = false;
+			}
+		},
+	},
+	computed: {
+		userInfo() {
+			return this.$store.state.authentication.user;
+		},
+		isAdmin() {
+			return this.userInfo && this.userInfo.admin === true;
+		},
 	},
 }
 </script>

@@ -13,6 +13,12 @@ router.get('/lastactive', logs.findLastActive);
 // Get logs
 router.get('/', logs.findLogs);
 
+// Export logs (Excel / Word)
+router.get('/export', authorize.loggedIn, authorize.canExportLogs, logs.exportLogs);
+
+// Export logs from every logbook (Excel / Word). Super admin only.
+router.get('/export-all', authorize.loggedIn, authorize.admin, logs.exportAllLogs);
+
 // Get the first log Using current log as reference
 router.get('/first/:logId', logs.findFirstLog);
 
